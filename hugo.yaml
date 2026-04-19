@@ -16,15 +16,20 @@ markup:
   highlight:
     noClasses: false
 
+outputs:
+  home: [html, llms]
+  page: [html]
+  section: [html, rss]
+
 menu:
   main:
-    - name: Docs
+    - name: Chuyện Data
       pageRef: /docs
       weight: 1
     - name: Blog
       pageRef: /blog
       weight: 2
-    - name: About
+    - name: Về tui
       pageRef: /about
       weight: 3
     - name: Search
