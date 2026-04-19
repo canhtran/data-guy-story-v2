@@ -48,10 +48,10 @@ Hãy tự nhiên dạo quanh, đọc bài bạn thích, bỏ qua bài chưa cầ
 
 Cảm ơn bạn vì đã đọc đến dòng cuối cùng của bức thư này.
 
-**Hành trình vui vẻ với dữ liệu nhé.**
+**Hành trình vui vẻ với dữ liệu nhé !**
 
 {{< cards >}}
-  {{< card link="docs" title="Docs" icon="book-open" >}}
+  {{< card link="docs" title="Chuyện Data" icon="book-open" >}}
   {{< card link="about" title="Youtube" icon="youtube" >}}
 {{< /cards >}}
 
