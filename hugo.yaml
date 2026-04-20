@@ -23,7 +23,7 @@ outputs:
 
 menu:
   main:
-    - name: Chuyện Data
+    - name: Sổ tay
       pageRef: /docs
       weight: 1
     - name: Blog
@@ -57,6 +57,10 @@ params:
       link: /
       width: 40
       height: 20
+
+  blog:
+    list:
+      displayTags: true
 
   footer:
     displayCopyright: false
