@@ -39,3 +39,7 @@ Bởi vì trong các công ty nhỏ hoặc startup, một người có thể là
 | Data Engineer | Người gom nguyên liệu, xây kho | Data Pipeline, Data Warehouse, ETL |
 | Data Analyst | Đầu bếp xào nấu nguyên liệu | Dashboard, Report, Visualize |
 | Data Scientist | Chuyên gia ẩm thực, đoán khẩu vị | AI, Machine Learning, Predict |
+
+---
+
+Bài sau mình sẽ kể tiếp: **Vòng đời của dữ liệu – từ khi sinh ra đến khi được phân tích**
