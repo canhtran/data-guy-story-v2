@@ -1,79 +1,38 @@
-# Hextra Starter Template
+📘 Kiến thức nền tảng (đã sắp xếp lại, bắt đầu từ Data)
+Data là gì? Chuyện cái danh sách mua sắm cũng là data
 
-[![Deploy Hugo site to Pages](https://github.com/imfing/hextra-starter-template/actions/workflows/pages.yaml/badge.svg)](https://github.com/imfing/hextra-starter-template/actions/workflows/pages.yaml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/6e83fd88-5ffe-4808-9689-c0f3b100bfe3/deploy-status)](https://app.netlify.com/sites/hextra-starter-template/deploys)
-![Vercel Deployment Status](https://img.shields.io/github/deployments/imfing/hextra-starter-template/production?logo=vercel&logoColor=white&label=vercel&labelColor=black&link=https%3A%2F%2Fhextra-starter-template.vercel.app%2F)
+Data Engineer làm gì? Phân biệt với Data Scientist, Data Analyst
 
+Vòng đời của dữ liệu: từ khi sinh ra đến khi được phân tích
 
-🐣 Minimal template for getting started with [Hextra](https://github.com/imfing/hextra)
+Các loại dữ liệu: có cấu trúc, bán cấu trúc, phi cấu trúc
 
-![hextra-template](https://github.com/imfing/hextra-starter-template/assets/5097752/c403b9a9-a76c-47a6-8466-513d772ef0b7)
+Lưu trữ dữ liệu: file, thư mục, và tại sao cần database
 
-[🌐 Demo ↗](https://imfing.github.io/hextra-starter-template/)
+SQL là "cơm ngày" của Data Engineer (chỉ cần 4 câu lệnh là bắt đầu được)
 
-## Quick Start
+Cơ sở dữ liệu quan hệ (RDBMS) hoạt động thế nào?
 
-Use this template to create your own repository:
+Tại sao có cả NoSQL? Khi nào dùng, khi nào không
 
-<img src="https://docs.github.com/assets/cb-77734/mw-1440/images/help/repository/use-this-template-button.webp" width=400 />
+OLTP vs OLAP: hai thế giới khác biệt
 
-You can also quickly start developing using the following online development environment:
+Data Warehouse là gì? Câu chuyện về một "kho dữ liệu sạch"
 
-- [GitHub Codespaces](https://github.com/codespaces)
+ETL: lấy dữ liệu từ A, làm sạch, bỏ vào B
 
-    [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/imfing/hextra-starter-template)
+ELT: đảo ngược thứ tự, lợi ích bất ngờ
 
-    Create a new codespace and follow the [Local Development](#local-development) to launch the preview
+Data Pipeline: cái "ống dẫn" nối mọi thứ lại với nhau
 
+Batch processing vs Real-time processing: gửi thư hay nhắn tin
 
-## Deployment
+Data Modeling cơ bản: fact table, dimension table, star schema
 
-### GitHub Pages
+Những "cơn ác mộng" thường gặp: dữ liệu trùng, null, sai kiểu
 
-A GitHub Actions workflow is provided in [`.github/workflows/pages.yaml`](./.github/workflows/pages.yaml) to [publish to GitHub Pages](https://github.blog/changelog/2022-07-27-github-pages-custom-github-actions-workflows-beta/) for free. 
+Data quality: làm sao biết dữ liệu có tin được không?
 
-For details, see [Publishing with a custom GitHub Actions workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow).
+Làm quen với workflow: chạy một pipeline tự động mỗi ngày
 
-Note: in the settings, make sure to set the Pages deployment source to **GitHub Actions**:
-
-<img src="https://github.com/imfing/hextra-starter-template/assets/5097752/99676430-884e-42ab-b901-f6534a0d6eee" width=600 />
-
-[Run the workflow manually](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) if it's not triggered automatically.
-
-### Netlify
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/imfing/hextra-starter-template)
-
-### Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fimfing%2Fhextra-starter-template&env=HUGO_VERSION)
-
-Override the configuration:
-
-<img src="https://github.com/imfing/hextra-starter-template/assets/5097752/e2e3cecd-c884-47ec-b064-14f896fee08d" width=600 />
-
-## Local Development
-
-Pre-requisites: [Hugo](https://gohugo.io/getting-started/installing/), [Go](https://golang.org/doc/install) and [Git](https://git-scm.com)
-
-```shell
-# Clone the repo
-git clone https://github.com/imfing/hextra-starter-template.git
-
-# Change directory
-cd hextra-starter-template
-
-# Start the server
-hugo mod tidy
-hugo server --logLevel debug --disableFastRender -p 1313
-```
-
-### Update theme
-
-```shell
-hugo mod get -u
-hugo mod tidy
-```
-
-See [Update modules](https://gohugo.io/hugo-modules/use-modules/#update-modules) for more details.
-
+Giới thiệu nhẹ nhàng về distributed computing (máy chạy dàn trải)

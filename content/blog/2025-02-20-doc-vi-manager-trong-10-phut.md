@@ -4,7 +4,7 @@ date: 2025-02-20
 authors:
   - name: Hieu Nguyen
     link: https://soliloqui.vn/p/doc-vi-manager-trong-10-phut
-    image: https://substackcdn.com/image/fetch/$s_!Xd3H!,w_80,h_80,c_fill,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F86e025a2-a6e2-4135-b361-f9b4fc835cd8_512x512.png
+    image: /images/hieu.png
 tags:
   - Chuyện đi làm
 ---
