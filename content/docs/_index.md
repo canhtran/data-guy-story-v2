@@ -12,7 +12,7 @@ Khoảng 5 năm trước, trong một video trên kênh YouTube cũ kỹ của m
 
 Rồi… nhiều biến cố xảy ra. Công việc Data Engineer của mình bận rộn hơn mình tưởng. Nào pipeline chạy lỗi, nào đêm lần theo log, nào lo performance, nào lo data quality. Hết dự án này đến dự án khác. Mình cũng không còn làm YouTube nữa. Cái sổ tay ấy cứ lần lữa, lần lữa… thành “nợ”.
 
-Và rồi, vào cuối tháng 4 năm 2026, mình ngồi lại, nhìn đống “nợ” chưa trả. Mình nghĩ: “Đã 5 năm, không thể để nó thành nợ mãi được.” Thế là mình viết.
+Và rồi, vào cuối tháng 4 năm 2026, mình ngồi lại, nhìn đống “nợ” chưa trả. Mình nghĩ: “Đã 5 năm, không thể để nó thành nợ mãi được.” Thế là mình đã kêu gọi sự trợ giúp của 500 anh em làm data.
 
 ---
 

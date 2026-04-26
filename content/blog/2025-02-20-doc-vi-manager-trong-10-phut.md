@@ -2,7 +2,7 @@
 title: Đọc vị manager trong 10 phút
 date: 2025-02-20
 authors:
-  - name: Hieu Nguyen
+  - name: Hiếu
     link: https://soliloqui.vn/p/doc-vi-manager-trong-10-phut
     image: /images/hieu.png
 tags:

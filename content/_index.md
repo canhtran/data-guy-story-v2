@@ -7,8 +7,6 @@ toc: false
 
 Gửi bạn,
 
-Mình là Cảnh – cũng chính là người đứng sau trang web này.
-
 Nếu bạn đang đọc những dòng này, có lẽ bạn cũng có chút tò mò, hoặc trăn trở, hoặc niềm đam mê nào đó với dữ liệu – giống như mình đã từng. Vậy thì… chào mừng bạn đến với câu chuyện của mình.
 
 **Data Guy Story** không phải là một trang web khô khan, cũng chẳng phải nơi mình khoe mình giỏi giang. Nó đơn giản là nhật ký của một người làm Data Engineer – từ những ngày loay hoay với SQL, đêm vật lộn với pipeline chạy lỗi, cho đến khi bắt đầu nhìn thấy hệ thống dữ liệu vận hành trơn tru.

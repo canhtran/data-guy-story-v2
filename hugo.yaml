@@ -68,3 +68,6 @@ params:
 
   editURL:
     enable: false
+
+  imageZoom:
+    enable: true

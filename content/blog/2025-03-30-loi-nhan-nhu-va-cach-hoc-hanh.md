@@ -2,7 +2,7 @@
 title: Lời nhắn nhủ và cách học hành
 date: 2025-03-30
 authors:
-  - name: Hieu Nguyen
+  - name: Hiếu
     link: https://soliloqui.vn/p/loi-nhan-nhu-va-cach-hoc-hanh
     image: /images/hieu.png
 tags:
