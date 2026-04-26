@@ -61,6 +61,7 @@ params:
   blog:
     list:
       displayTags: true
+      pagerSize: 10
 
   footer:
     displayCopyright: false
