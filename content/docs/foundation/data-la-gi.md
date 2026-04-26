@@ -3,39 +3,36 @@ title: "1. Data là gì?"
 weight: 1
 ---
 
+Nếu bạn đang nghĩ "data" là cái gì đó cao siêu, toàn số má với biểu đồ chằng chịt, chỉ có dân làm AI mới hiểu nổi – thì mình kể bạn nghe chuyện này nhé.
 
-Nếu bạn nghĩ "data" là thứ gì đó cao siêu, toàn số với biểu đồ, chỉ có AI mới hiểu – thì tui xin phép kể một câu chuyện nhỏ.
-
-Hôm qua, vợ (hay mẹ, hay chính bạn) đưa cho tui một mảnh giấy ghi:
+Hôm qua, lúc chuẩn bị đi siêu thị, mẹ đưa cho mình một tờ giấy ghi:
 
 > *Trứng, sữa, bánh mì, táo, khoai tây, thịt heo.*
 
 Đó có phải là **dữ liệu** không?
 
-Theo sách vở thì: **Data** là những thông tin thô, chưa qua xử lý, có thể là số, chữ, hình ảnh, âm thanh... Nói nôm na: **data là những thứ cơ bản nhất mà bạn thu thập được**.
+Theo sách vở định nghĩa thì: **Data** là những thông tin thô, chưa qua xử lý, có thể là số, chữ, hình ảnh, âm thanh... 
+Nói nôm na dễ hiểu: **data là những thứ cơ bản nhất mà bạn lượm lặt được**.
 
-Cái mảnh giấy mua sắm kia – nó là data.  
-Tin nhắn bạn gửi hôm qua – nó là data.  
-Giá xăng hôm nay 25.000 đồng/lít – cũng là data.  
-Cả cái ảnh mèo bạn vừa chụp để đăng Facebook – cũng là data nốt.
+Cái mảnh giấy đi chợ kia – nó là data.  
+Tin nhắn bạn nhắn cho người yêu hôm qua – nó là data.  
+Cốc cafe sáng nay bạn mua giá 35.000đ – cũng là data.  
+Cả cái ảnh dìm hàng đứa bạn thân vừa up lên Facebook – cũng là data nốt.
 
-**Data nó đơn giản như đi chợ vậy.** Chỉ có điều, khi bạn có quá nhiều mảnh giấy (hàng triệu tờ), lúc đó mới cần đến "nghề data" để xử lý.
+**Thật ra, data nó đời thường như chuyện đi chợ vậy.** Nhưng hãy tưởng tượng, bạn không chỉ cầm 1 tờ giấy đi chợ, mà có hàng triệu tờ giấy như thế đổ về từ khắp các siêu thị trên cả nước mỗi giây. 
 
-Vậy nên, đừng sợ. Nếu bạn biết đọc danh sách mua sắm, bạn đã hiểu data rồi đó.
+Lúc này, bạn không thể vứt một đống giấy lộn xộn giữa nhà được. Bạn sẽ cần nhờ ai đó **xây một cái nhà kho siêu to khổng lồ**, rồi **lắp đặt hệ thống băng chuyền** để tự động phân loại, chạy rào rào và cất mấy tờ giấy đó lên kệ cho gọn gàng. Người đứng ra nhận thầu xây cái nhà kho và băng chuyền đó, chính là **Data Engineer** (Kỹ sư dữ liệu).
 
----
-
-### Tóm lại cái cốt lõi
-
-| Khái niệm | Giải thích kiểu thường |
-|-----------|------------------------|
-| Data | Thông tin thô, chưa xử lý |
-| Ví dụ | Danh sách mua sắm, nhiệt độ, tin nhắn, ảnh chụp |
+Vậy nên, đừng sợ. Nếu bạn đọc hiểu được tờ giấy đi chợ, bạn đã hiểu data là gì rồi đấy.
 
 ---
 
-Bài sau tui sẽ kể tiếp: **Data Engineer là đứa nào? Và nó khác Data Scientist, Data Analyst ra sao?**  
+### Tóm lại cho dễ nhớ
 
-Hẹn bạn ở **bài 2** nha.
+| Khái niệm | Hiểu kiểu đời thường | Ví dụ thực tế trong hệ thống IT |
+|-----------|----------------------------|-------------------------|
+| Data (Dữ liệu) | Thông tin thô, chưa nhào nặn gì cả (như danh sách đi chợ, tin nhắn, ảnh) | Lịch sử click chuột trên Shopee, file log của máy chủ web, danh sách user đăng ký |
 
-*Data Guy – Calvin*
+---
+
+Bài sau mình sẽ kể tiếp: **Data Engineer là đứa nào? Và nó khác gì với Data Scientist, Data Analyst ra sao?**  

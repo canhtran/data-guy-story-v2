@@ -4,8 +4,8 @@ title: Nền tảng - Hành trang cho người mới
 type: docs
 prev: docs/
 next: docs/advanced
-# sidebar:
-#   open: true
+sidebar:
+  open: true
 weight: 2
 ---
 
