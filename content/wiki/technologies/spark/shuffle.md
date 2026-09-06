@@ -2,7 +2,7 @@
 title: "Shuffle trong Spark"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 6
 level: "beginner"
 topics: ["spark"]

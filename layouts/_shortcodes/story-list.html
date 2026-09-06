@@ -1,0 +1,22 @@
+{{- $stories := .Page.RegularPages.ByDate.Reverse -}}
+{{- if $stories }}
+  <div class="story-list">
+    {{- range $stories }}
+      <article class="hx:py-5 hx:border-b hx:border-gray-200 hx:dark:border-neutral-800">
+        <h2 class="hx:mt-0 hx:mb-2 hx:text-xl hx:font-semibold">
+          <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+        </h2>
+        {{- with .Description }}
+          <p class="hx:my-0 hx:text-gray-600 hx:dark:text-gray-400">{{ . }}</p>
+        {{- end }}
+        {{- if not .Date.IsZero }}
+          <time class="hx:block hx:mt-2 hx:text-sm hx:text-gray-500" datetime="{{ .Date.Format "2006-01-02" }}">
+            {{ .Date | time.Format "2 January 2006" }}
+          </time>
+        {{- end }}
+      </article>
+    {{- end }}
+  </div>
+{{- else }}
+  <p><em>Chưa có bài viết.</em></p>
+{{- end }}

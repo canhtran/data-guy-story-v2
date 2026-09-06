@@ -2,7 +2,7 @@
 title: "Các mức cô lập giao dịch"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 5
 level: "beginner"
 topics: ["database"]

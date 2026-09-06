@@ -2,7 +2,7 @@
 title: "Cơ sở dữ liệu"
 description: "Tài liệu tham khảo về Cơ sở dữ liệu dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 2
 ---
 

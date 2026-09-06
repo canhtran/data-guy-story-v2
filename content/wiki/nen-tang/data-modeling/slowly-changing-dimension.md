@@ -2,7 +2,7 @@
 title: "Dimension thay đổi chậm (SCD)"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 5
 level: "beginner"
 topics: ["data-modeling"]

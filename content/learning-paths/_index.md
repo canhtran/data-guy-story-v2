@@ -2,7 +2,9 @@
 title: "Lộ trình học"
 description: "Lộ trình học dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
+cascade:
+  type: docs
 ---
 
 Chọn chủ đề để bắt đầu. Các bài đang trong giai đoạn biên soạn.

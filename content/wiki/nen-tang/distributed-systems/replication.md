@@ -2,7 +2,7 @@
 title: "Sao chép dữ liệu"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 3
 level: "beginner"
 topics: ["distributed-systems"]

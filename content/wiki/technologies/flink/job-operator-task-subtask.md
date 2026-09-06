@@ -2,7 +2,7 @@
 title: "Job, Operator, Task và Subtask"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 3
 level: "beginner"
 topics: ["flink"]

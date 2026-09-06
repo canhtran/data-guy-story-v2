@@ -2,7 +2,7 @@
 title: "SQL"
 description: "Tài liệu tham khảo về SQL dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 3
 ---
 

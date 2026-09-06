@@ -2,7 +2,7 @@
 title: "Kết hợp dữ liệu với JOIN"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 2
 level: "beginner"
 topics: ["sql"]

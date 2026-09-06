@@ -2,7 +2,7 @@
 title: "Phân vùng dữ liệu"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 2
 level: "beginner"
 topics: ["distributed-systems"]

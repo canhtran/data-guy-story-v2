@@ -2,7 +2,7 @@
 title: "Lộ trình nghề Data Engineer"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 3
 level: "beginner"
 topics: ["bat-dau"]

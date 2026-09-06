@@ -2,7 +2,7 @@
 title: "Mô hình hóa dữ liệu"
 description: "Tài liệu tham khảo về Mô hình hóa dữ liệu dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 4
 ---
 

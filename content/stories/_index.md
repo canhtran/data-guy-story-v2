@@ -2,10 +2,12 @@
 title: "Chuyện thực tế"
 description: "Các bài tóm tắt và phân tích từ engineering blog, tập trung vào kiến trúc, sự cố, chuyển đổi và mở rộng hệ thống dữ liệu."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 5
 aliases:
   - /wiki/stories/
+cascade:
+  type: docs
 ---
 
 Các câu chuyện có nguồn về hệ thống dữ liệu trong thực tế.

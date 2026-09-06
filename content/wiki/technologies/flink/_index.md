@@ -2,7 +2,7 @@
 title: "Apache Flink"
 description: "Tài liệu tham khảo về Apache Flink dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 8
 ---
 

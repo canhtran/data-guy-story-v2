@@ -2,7 +2,7 @@
 title: "Học Flink từ đầu"
 description: ""
 draft: true
-type: "learning-path"
+contentType: "learning-path"
 weight: 3
 ---
 

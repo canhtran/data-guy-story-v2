@@ -2,7 +2,7 @@
 title: "Ngữ nghĩa chuyển giao trong Kafka"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 8
 level: "beginner"
 topics: ["kafka"]

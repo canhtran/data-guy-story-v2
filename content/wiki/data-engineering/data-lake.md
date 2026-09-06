@@ -2,7 +2,7 @@
 title: "Hồ dữ liệu (Data Lake)"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 6
 level: "beginner"
 topics: ["data-engineering"]

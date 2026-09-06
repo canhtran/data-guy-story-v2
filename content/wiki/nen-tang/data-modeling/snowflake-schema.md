@@ -2,7 +2,7 @@
 title: "Mô hình bông tuyết"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 4
 level: "beginner"
 topics: ["data-modeling"]

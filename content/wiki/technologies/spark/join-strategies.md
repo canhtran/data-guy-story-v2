@@ -2,7 +2,7 @@
 title: "Các chiến lược JOIN trong Spark"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 8
 level: "beginner"
 topics: ["spark"]

@@ -2,7 +2,7 @@
 title: "Học Kafka từ đầu"
 description: ""
 draft: true
-type: "learning-path"
+contentType: "learning-path"
 weight: 2
 ---
 

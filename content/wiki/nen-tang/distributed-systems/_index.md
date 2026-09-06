@@ -2,7 +2,7 @@
 title: "Hệ thống phân tán"
 description: "Tài liệu tham khảo về Hệ thống phân tán dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 5
 ---
 

@@ -2,7 +2,7 @@
 title: "Bộ tối ưu Catalyst"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 7
 level: "beginner"
 topics: ["spark"]

@@ -2,7 +2,7 @@
 title: "Apache Spark"
 description: "Tài liệu tham khảo về Apache Spark dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 9
 ---
 
