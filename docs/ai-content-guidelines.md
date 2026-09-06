@@ -3,7 +3,7 @@
 The site exposes three machine-discovery layers:
 
 - `/sitemap.xml` lists canonical HTML pages for search crawlers.
-- `/llms.txt` provides a concise, curated content map for assistants.
+- `/llms.txt` provides a concise content map for assistants and preserves the section hierarchy used in the site navigation.
 - Every published content page also has a Markdown alternative. For example, `/blog/example/` is HTML and `/blog/example.md` is clean source content. HTML pages advertise this using `rel="alternate" type="text/markdown"` and point back to `/llms.txt` with `rel="describedby"`.
 
 Drafts remain excluded from production HTML, Markdown, the sitemap, and `llms.txt`. Local `hugo server` includes them through the development configuration.

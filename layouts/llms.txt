@@ -40,6 +40,15 @@ Tài liệu cũ đang chờ rà soát và chuyển vào Sổ tay mới.
 - [{{ .Title }}]({{ $target }}): {{ with .Description }}{{ . | plainify | strings.TrimSpace }}{{ else }}{{ .Summary | plainify | truncate 140 | strings.TrimSpace }}{{ end }}{{ with .Date }} — Xuất bản {{ .Format "2006-01-02" }}{{ end }}
   {{- end }}
   {{- range where $context.Sections "Params.llms" "ne" false }}
-    {{- template "ai-section-tree" (dict "context" . "level" (add $.level 1)) }}
+    {{- if gt (len .RegularPagesRecursive) 0 }}
+
+{{ strings.Repeat (add $.level 3) "#" }} {{ .Title }}
+{{ with .Description }}
+
+{{ . | plainify | strings.TrimSpace }}
+{{ end }}
+
+{{- template "ai-section-tree" (dict "context" . "level" (add $.level 1)) }}
+    {{- end }}
   {{- end }}
 {{- end }}
