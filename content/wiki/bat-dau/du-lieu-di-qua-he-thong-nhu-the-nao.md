@@ -19,52 +19,47 @@ Với bạn, giao dịch đó đã kết thúc. Với hệ thống data, nó ch�
 Sơ đồ dưới đây là đường đi chúng ta sẽ theo trong bài:
 
 ```mermaid
-flowchart LR
-    A[Source System<br/>Order, payment, delivery] --> B[Data Ingestion<br/>Batch, CDC, event]
-    B --> C[Data Storage<br/>Warehouse, lake, lakehouse]
-    C --> D[Data Transformation<br/>Clean, join, calculate]
-    D --> E[Data Serving<br/>Dashboard, model, API]
-    E --> F[Data Retention / Deletion<br/>Archive or remove]
+flowchart TD
+    A["1. Source System<br/>App tạo ra data"]
+    B["2. Data Ingestion<br/>Đưa data về một nơi"]
+    C["3. Data Storage<br/>Lưu data"]
+    D["4. Data Transformation<br/>Làm sạch và kết hợp"]
+    E["5. Data Serving<br/>Đưa data cho người dùng"]
+    F["6. Retention / Deletion<br/>Lưu giữ hoặc xoá"]
+    A --> B --> C --> D --> E --> F
 ```
 
 ## Data Generation
 
 **Data Generation** (quá trình data được tạo ra) bắt đầu khi đơn hàng được đặt. Hệ thống có thể ghi lại mã đơn, nhà hàng, món ăn, giá tiền, phương thức thanh toán và thời gian tạo đơn. Trong lúc giao hàng, nó tiếp tục nhận vị trí tài xế và các lần thay đổi trạng thái.
 
-Data này không nhất thiết nằm cùng một chỗ. Đơn hàng có thể ở PostgreSQL, thanh toán đến từ một dịch vụ khác, còn vị trí tài xế được gửi liên tục qua event stream.
+Data này không nhất thiết nằm cùng một chỗ. Đơn hàng có thể nằm trong một database như MySQL. Kết quả thanh toán nằm trong hệ thống thanh toán, còn trạng thái giao hàng nằm trong hệ thống của tài xế.
 
 Đây là các **Source System** (hệ thống nguồn). Chúng được xây để ứng dụng hoạt động, chứ không phải để trả lời mọi câu hỏi phân tích của công ty.
 
-Một event được tạo ra khi đơn hàng đổi trạng thái có thể trông như sau:
+Khi bạn đặt món, application có thể thêm một row vào bảng `orders` trong MySQL:
 
-```json
-{
-  "event_id": "evt-8471",
-  "event_type": "order_delivered",
-  "order_id": "ORD-1042",
-  "restaurant_id": "RES-18",
-  "driver_id": "DRV-92",
-  "occurred_at": "2026-09-06T12:32:18+08:00"
-}
-```
+| order_id | restaurant_id | status | total_amount | created_at |
+| --- | --- | --- | ---: | --- |
+| ORD-1042 | RES-18 | created | 120,000 | 2026-09-06 12:02:10 |
 
-Đây là data gần với hoạt động của application: nó ghi lại một việc vừa xảy ra, chưa trả lời câu hỏi business nào cả.
+Khi nhà hàng nhận đơn hoặc tài xế giao hàng thành công, row này có thể được cập nhật sang trạng thái mới. Đây là data phục vụ hoạt động của application. Nó chưa được chuẩn bị để trả lời những câu hỏi như “Hôm nay có bao nhiêu đơn giao trễ?”.
 
 ## Data Ingestion
 
 Đội vận hành muốn biết hôm nay có bao nhiêu đơn giao trễ. Đội tài chính cần đối soát thanh toán. Nhà hàng muốn xem món nào bán chạy. Nếu tất cả cùng truy vấn thẳng vào database của ứng dụng, họ có thể làm chậm hệ thống đang phục vụ khách hàng.
 
-Vì vậy, data được đưa ra khỏi các Source System. Quá trình này được gọi là **Data Ingestion** (thu thập và đưa data vào hệ thống). Có nguồn được lấy theo lịch, chẳng hạn mỗi giờ một lần. Có nguồn gửi event ngay khi thay đổi xảy ra.
+Vì vậy, data được sao chép từ các Source System về một nơi dành cho việc xử lý và phân tích. Quá trình này được gọi là **Data Ingestion** (thu thập và đưa data vào hệ thống).
 
 Cùng một đơn hàng có thể đi vào nền tảng data qua nhiều đường:
 
-| Source System | Data cần lấy | Cách ingest | Thời điểm |
-| --- | --- | --- | --- |
-| PostgreSQL | Đơn hàng và nhà hàng | CDC | Gần như ngay khi row thay đổi |
-| Payment API | Trạng thái thanh toán | Batch | Mỗi 15 phút |
-| Delivery service | Vị trí và trạng thái giao hàng | Event stream | Liên tục |
+| Source System | Data cần lấy | Khi nào lấy? |
+| --- | --- | --- |
+| MySQL của application | Đơn hàng và nhà hàng | Mỗi 5 phút |
+| Hệ thống thanh toán | Kết quả thanh toán | Mỗi 15 phút |
+| Hệ thống giao hàng | Trạng thái giao hàng | Mỗi 5 phút |
 
-Sau Data Ingestion, event ở trên vẫn nên giữ `event_id`, `order_id` và `occurred_at`. Những field này giúp pipeline nhận ra event trùng, ghép đúng đơn hàng và biết sự việc thật sự xảy ra lúc nào.
+Sau Data Ingestion, mỗi nguồn vẫn cần giữ `order_id`. Nhờ đó, pipeline biết giao dịch thanh toán và chuyến giao hàng nào thuộc về `ORD-1042`.
 
 ## Data Storage
 
@@ -76,9 +71,9 @@ Data của `ORD-1042` có thể được lưu ở ba lớp:
 
 | Lớp | Ví dụ data | Mục đích |
 | --- | --- | --- |
-| Raw | Event JSON giống Source System | Giữ lại bản gốc để kiểm tra hoặc xử lý lại |
-| Cleaned | Event đúng schema, không trùng, timestamp đã chuẩn hoá | Tạo đầu vào ổn định cho các pipeline khác |
-| Curated | Một row đơn hàng đã ghép payment, restaurant và delivery | Phục vụ phân tích và sản phẩm data |
+| Raw | Bản sao các row từ Source System | Giữ lại bản gốc để kiểm tra hoặc xử lý lại |
+| Cleaned | Các row đúng cấu trúc, không trùng, thời gian đã chuẩn hoá | Tạo đầu vào ổn định cho các pipeline khác |
+| Curated | Một row đơn hàng đã ghép thanh toán, nhà hàng và giao hàng | Phục vụ phân tích và sản phẩm data |
 
 Không phải hệ thống nào cũng gọi ba lớp này bằng cùng một cái tên. Điều cần nhớ là data gốc và data đã qua xử lý thường được tách ra để tránh ghi đè lên nhau.
 
@@ -96,13 +91,13 @@ Nếu bước này sai, dashboard phía sau có thể vẫn trông rất đẹp 
 
 Ví dụ, pipeline nhận được ba row sau:
 
-| order_id | status | event_time | delivery_fee |
+| order_id | status | updated_at | delivery_fee |
 | --- | --- | --- | ---: |
 | ORD-1042 | delivered | 12:32:18 +08:00 | 18,000 |
 | ORD-1042 | delivered | 12:32:18 +08:00 | 18,000 |
 | ORD-1043 | delivered | 04:41:02 UTC | 22,000 |
 
-Hai row đầu là cùng một event được gửi lại. Row cuối dùng UTC thay vì giờ Singapore. Sau khi loại trùng và chuẩn hoá timezone, pipeline mới tính được:
+Hai row đầu là cùng một lần cập nhật bị sao chép hai lần. Row cuối dùng UTC thay vì giờ Singapore. Sau khi loại trùng và chuẩn hoá timezone, pipeline mới tính được:
 
 | delivery_date | delivered_orders | total_delivery_fee |
 | --- | ---: | ---: |
@@ -123,9 +118,9 @@ Từ row của `ORD-1042`, các đầu ra có thể rất khác nhau:
 | Operations dashboard | Số đơn giao trễ theo khu vực và nhà hàng |
 | Finance report | Tổng tiền hàng, delivery fee và trạng thái đối soát |
 | ETA model | Thời gian chuẩn bị món, quãng đường và thời gian giao thực tế |
-| Alert service | Event cảnh báo khi một đơn chờ tài xế quá lâu |
+| Alert service | Thông báo khi một đơn chờ tài xế quá lâu |
 
-Data Serving vì vậy không chỉ có dashboard. Đầu ra cũng có thể là table, feature, API hoặc event cho một hệ thống khác.
+Data Serving vì vậy không chỉ có dashboard. Đầu ra cũng có thể là table, file hoặc API cho một hệ thống khác.
 
 ## Data Retention and Deletion
 
@@ -138,10 +133,10 @@ Ví dụ, công ty có thể áp dụng các quy tắc khác nhau cho từng lo�
 | Data | Retention | Sau thời hạn đó |
 | --- | --- | --- |
 | Vị trí chi tiết của tài xế | 30 ngày | Xoá |
-| Event trạng thái đơn hàng | 1 năm | Chuyển sang storage rẻ hơn |
-| Dữ liệu tài chính cần đối soát | 7 năm | Archive theo quy định |
+| Lịch sử trạng thái đơn hàng | 1 năm | Chuyển sang storage rẻ hơn |
+| Data tài chính cần đối soát | 7 năm | Archive theo quy định |
 
-Metadata của bảng đơn hàng cũng có thể ghi rõ owner là `data-commerce`, pipeline tạo bảng là `fct_orders_daily`, và dashboard nào đang phụ thuộc vào nó. Khi pipeline thay đổi, team biết cần kiểm tra những đầu ra nào.
+Metadata của bảng đơn hàng cũng có thể ghi rõ team nào chịu trách nhiệm, pipeline nào tạo ra bảng và dashboard nào đang sử dụng nó. Khi pipeline thay đổi, team biết cần kiểm tra những đầu ra nào.
 
 ## Bức tranh cần nhớ
 
