@@ -3,7 +3,7 @@ title: "Học Data Engineering từ đâu?"
 description: "Cách chọn điểm bắt đầu, thứ tự kiến thức và một số điều chưa cần học ngay khi bước vào Data Engineering."
 draft: true
 contentType: "concept"
-weight: 5
+weight: 6
 level: "beginner"
 topics: ["bat-dau"]
 prerequisites: ["data-engineer-la-gi", "du-lieu-di-qua-he-thong-nhu-the-nao"]
