@@ -1,7 +1,7 @@
 ---
 title: "Sổ tay"
 description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
-draft: true
+draft: false
 contentType: "hub"
 weight: 1
 sidebar:
@@ -24,27 +24,9 @@ Nếu chưa rõ Data Engineer làm gì, cần học những gì, hoặc đang đ
 
 → [Bắt đầu với Data Engineering]({{< relref "/wiki/bat-dau/_index.md" >}})
 
-### Muốn học lại cho chắc phần gốc
+### Các phần tiếp theo
 
-Database, SQL, data modeling và distributed systems. Không phải chủ đề nào cũng vui, nhưng thiếu chúng thì học công nghệ mới rất dễ rơi vào cảnh nhớ câu lệnh mà không hiểu chuyện gì đang xảy ra.
-
-→ [Kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
-
-### Đang làm Data Engineer
-
-Phần này nói về những việc gặp thường xuyên hơn trong công việc: ETL/ELT, batch, streaming, data warehouse, data quality, orchestration... và còn nhiều món khác sẽ được thêm dần.
-
-→ [Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
-
-### Đang cần hiểu một công nghệ
-
-Kafka, Flink và Spark. Mình không định viết kiểu chép lại documentation. Mục tiêu là giải thích từng khái niệm, chúng nối với nhau ra sao, và tại sao lúc chạy thật mọi thứ thường không ngoan như trong ví dụ.
-
-→ [Công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
-
-## Không biết nên đọc bài nào trước?
-
-Vậy thì xem [Lộ trình học]({{< relref "/learning-paths/_index.md" >}}). Mình đã xếp các bài theo một thứ tự tương đối dễ đi. Không cần theo đúng 100%, nhưng ít nhất sẽ đỡ phải đoán bài tiếp theo là gì.
+Mình đang viết tiếp phần nền tảng, Data Engineering và các công nghệ như Kafka, Flink, Spark. Khi từng phần đủ nội dung để đọc, nó sẽ xuất hiện ở đây.
 
 ## Chuyện cái Sổ tay này
 

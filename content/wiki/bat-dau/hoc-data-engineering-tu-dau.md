@@ -1,9 +1,9 @@
 ---
 title: "Học Data Engineering từ đâu?"
 description: "Cách chọn điểm bắt đầu, thứ tự kiến thức và một số điều chưa cần học ngay khi bước vào Data Engineering."
-draft: true
+draft: false
 contentType: "concept"
-weight: 5
+weight: 6
 level: "beginner"
 topics: ["bat-dau"]
 prerequisites: ["data-engineer-la-gi", "du-lieu-di-qua-he-thong-nhu-the-nao"]
@@ -60,7 +60,7 @@ Project đầu tiên chỉ cần có:
 4. Một nơi lưu trữ.
 5. Một đầu ra có người đọc được.
 
-Sau khi chạy được, hãy thử chạy lần hai. Nếu dữ liệu bị nhân đôi, bạn vừa gặp một bài học thực tế về idempotency. Thử làm API lỗi giữa chừng, thay đổi một cột hoặc gửi dữ liệu thiếu. Đây là lúc project bắt đầu dạy bạn cách pipeline thật sự vận hành.
+Sau khi chạy được, hãy thử chạy lần hai. Nếu data bị nhân đôi, pipeline chưa có **Idempotency** (khả năng chạy lại nhiều lần mà không tạo thêm kết quả ngoài ý muốn). Thử làm API lỗi giữa chừng, thay đổi một cột hoặc gửi data thiếu. Đây là lúc project bắt đầu dạy bạn cách pipeline thật sự vận hành.
 
 ## Học data modeling và chất lượng dữ liệu
 
