@@ -62,5 +62,3 @@ Bạn không cần học hết mọi công cụ trước khi bắt đầu. Kafka
 ## Tóm lại
 
 Data Engineer xây phần hạ tầng và luồng xử lý giúp dữ liệu có thể được sử dụng một cách ổn định. Công việc không chỉ là di chuyển dữ liệu, mà còn là giữ cho nó đúng, dễ hiểu, đến đúng lúc và có thể vận hành lâu dài.
-
-Nếu bạn đang cân nhắc theo nghề này, hãy đọc tiếp [Học Data Engineering từ đâu?]({{< relref "/wiki/bat-dau/hoc-data-engineering-tu-dau.md" >}}).
