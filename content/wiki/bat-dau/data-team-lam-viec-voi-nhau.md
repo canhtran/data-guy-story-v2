@@ -1,7 +1,7 @@
 ---
 title: "Một data team làm việc với nhau như thế nào?"
 description: "Theo dấu một câu hỏi business để xem Data Engineer, Data Analyst, Backend Engineer và các team khác phối hợp ra sao."
-draft: true
+draft: false
 contentType: "concept"
 weight: 4
 level: "beginner"

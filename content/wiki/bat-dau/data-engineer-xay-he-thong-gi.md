@@ -1,7 +1,7 @@
 ---
 title: "Data Engineer xây những hệ thống gì?"
 description: "Những mảnh ghép chính của một hệ thống data, từ lúc lấy data về đến khi đưa nó cho người sử dụng."
-draft: true
+draft: false
 contentType: "concept"
 weight: 3
 level: "beginner"

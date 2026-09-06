@@ -1,7 +1,7 @@
 ---
 title: "Data đi qua một hệ thống như thế nào?"
 description: "Theo dấu data của một đơn hàng từ Source System đến khi xuất hiện trên dashboard."
-draft: true
+draft: false
 contentType: "concept"
 weight: 2
 level: "beginner"

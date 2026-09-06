@@ -1,7 +1,7 @@
 ---
 title: "Có AI rồi, còn cần học nền tảng không?"
 description: "AI có thể giúp viết code và giải thích khái niệm, nhưng kiến thức nền tảng giúp Data Engineer biết câu trả lời có đúng hay không."
-draft: true
+draft: false
 contentType: "concept"
 weight: 5
 level: "beginner"

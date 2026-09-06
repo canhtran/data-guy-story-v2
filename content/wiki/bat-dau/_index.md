@@ -2,7 +2,7 @@
 title: "Bắt đầu với Data Engineering"
 linkTitle: "Bắt đầu"
 description: "Sáu bài nhập môn giúp bạn hiểu nghề Data Engineer và có một bản đồ trước khi đi sâu vào từng chủ đề."
-draft: true
+draft: false
 contentType: "hub"
 weight: 1
 aliases:
@@ -19,7 +19,3 @@ Nếu mới tìm hiểu Data Engineering, bạn chưa cần bắt đầu bằng 
 4. [Một data team làm việc với nhau như thế nào?]({{< relref "/wiki/bat-dau/data-team-lam-viec-voi-nhau.md" >}})
 5. [Có AI rồi, còn cần học nền tảng không?]({{< relref "/wiki/bat-dau/ai-va-kien-thuc-nen-tang.md" >}})
 6. [Học Data Engineering từ đâu?]({{< relref "/wiki/bat-dau/hoc-data-engineering-tu-dau.md" >}})
-
-## Lộ trình học
-
-Sau khi có bức tranh tổng thể, bạn có thể đi tiếp theo [Lộ trình nền tảng Data Engineer]({{< relref "/learning-paths/data-engineer-foundation.md" >}}).
