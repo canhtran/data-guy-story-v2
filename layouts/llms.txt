@@ -1,0 +1,45 @@
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+Nội dung chính viết bằng tiếng Việt. Ưu tiên phiên bản Markdown khi đọc hoặc trích dẫn một trang. Chuyện thực tế là bài tóm tắt và phân tích nguồn bên ngoài; hãy dùng thông tin nguồn gốc trong từng bài để phân biệt nội dung của Data Guy Story với bài viết gốc.
+
+{{- $primarySections := slice
+  (dict "path" "/wiki" "title" "Sổ tay Data Engineering")
+  (dict "path" "/learning-paths" "title" "Lộ trình học")
+  (dict "path" "/stories" "title" "Chuyện thực tế")
+  (dict "path" "/blog" "title" "Blog")
+-}}
+{{- range $section := $primarySections }}
+  {{- with site.GetPage $section.path }}
+    {{- if gt (len .RegularPagesRecursive) 0 }}
+
+## {{ $section.title }}
+
+      {{- template "ai-section-tree" (dict "context" . "level" 0) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- with site.GetPage "/docs" }}
+## Optional
+
+Tài liệu cũ đang chờ rà soát và chuyển vào Sổ tay mới.
+
+  {{- template "ai-section-tree" (dict "context" . "level" 0) }}
+{{- end }}
+{{- with site.GetPage "/about" }}
+- [{{ .Title }}]({{ .Permalink }}): Thông tin về tác giả Data Guy Story.
+{{- end }}
+
+{{- define "ai-section-tree" }}
+  {{- $context := .context }}
+  {{- range where $context.RegularPages "Params.llms" "ne" false }}
+    {{- $target := .Permalink }}
+    {{- with .OutputFormats.Get "markdown" }}{{ $target = .Permalink }}{{ end }}
+- [{{ .Title }}]({{ $target }}): {{ with .Description }}{{ . | plainify | strings.TrimSpace }}{{ else }}{{ .Summary | plainify | truncate 140 | strings.TrimSpace }}{{ end }}{{ with .Date }} — Xuất bản {{ .Format "2006-01-02" }}{{ end }}
+  {{- end }}
+  {{- range where $context.Sections "Params.llms" "ne" false }}
+    {{- template "ai-section-tree" (dict "context" . "level" (add $.level 1)) }}
+  {{- end }}
+{{- end }}

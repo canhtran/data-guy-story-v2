@@ -1,0 +1,3 @@
+# Show the scaffold while running `hugo server` locally.
+# Production builds continue to exclude draft content.
+buildDrafts: true

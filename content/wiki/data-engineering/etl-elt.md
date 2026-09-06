@@ -1,0 +1,13 @@
+---
+title: "ETL và ELT"
+description: ""
+draft: true
+type: "concept"
+weight: 1
+level: "beginner"
+topics: ["data-engineering"]
+prerequisites: []
+related: []
+---
+
+TODO: Bổ sung nội dung bài viết.
