@@ -4,10 +4,6 @@ description: "Các câu chuyện về mở rộng hệ thống dữ liệu, hi�
 draft: true
 contentType: "hub"
 weight: 4
-cascade:
-  params:
-    sidebar:
-      exclude: true
 ---
 
 Các câu chuyện về mở rộng hệ thống dữ liệu, hiệu năng và chi phí vận hành.

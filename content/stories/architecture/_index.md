@@ -4,10 +4,6 @@ description: "Các câu chuyện về thiết kế kiến trúc hệ thống d�
 draft: true
 contentType: "hub"
 weight: 1
-cascade:
-  params:
-    sidebar:
-      exclude: true
 ---
 
 Các câu chuyện về thiết kế kiến trúc hệ thống dữ liệu và những đánh đổi trong thực tế.

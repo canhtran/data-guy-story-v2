@@ -4,10 +4,6 @@ description: "Các câu chuyện về sự cố production, nguyên nhân, cách
 draft: true
 contentType: "hub"
 weight: 2
-cascade:
-  params:
-    sidebar:
-      exclude: true
 ---
 
 Các câu chuyện về sự cố production, nguyên nhân, cách xử lý và bài học dành cho Data Engineer.
