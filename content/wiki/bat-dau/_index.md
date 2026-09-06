@@ -14,7 +14,7 @@ Nếu mới tìm hiểu Data Engineering, bạn chưa cần bắt đầu bằng 
 ## Bài viết
 
 1. [Data Engineer là gì?]({{< relref "/wiki/bat-dau/data-engineer-la-gi.md" >}})
-2. [Dữ liệu đi qua một hệ thống như thế nào?]({{< relref "/wiki/bat-dau/du-lieu-di-qua-he-thong-nhu-the-nao.md" >}})
+2. [Data đi qua một hệ thống như thế nào?]({{< relref "/wiki/bat-dau/du-lieu-di-qua-he-thong-nhu-the-nao.md" >}})
 3. [Data Engineer xây những hệ thống gì?]({{< relref "/wiki/bat-dau/data-engineer-xay-he-thong-gi.md" >}})
 4. [Một data team làm việc với nhau như thế nào?]({{< relref "/wiki/bat-dau/data-team-lam-viec-voi-nhau.md" >}})
 5. [Học Data Engineering từ đâu?]({{< relref "/wiki/bat-dau/hoc-data-engineering-tu-dau.md" >}})
