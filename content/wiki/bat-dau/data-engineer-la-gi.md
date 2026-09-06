@@ -37,7 +37,7 @@ Phạm vi công việc khác nhau ở mỗi công ty, nhưng thường có năm 
 
 ### Xây Data Pipeline
 
-**Data Pipeline** (luồng xử lý đưa data qua nhiều bước) lấy data từ application, database, file hoặc **API** (cách hai hệ thống trao đổi với nhau) rồi đưa về nền tảng data.
+**Data Pipeline** (luồng xử lý đưa data qua nhiều bước) lấy data từ application, **Database** (cơ sở dữ liệu), file hoặc **API** (cách hai hệ thống trao đổi với nhau) rồi đưa về nền tảng data.
 
 Ví dụ, một pipeline có thể sao chép các đơn hàng mới từ MySQL sau mỗi năm phút:
 
@@ -134,19 +134,25 @@ Khi đọc một job description, đừng chỉ nhìn chức danh. Hãy xem mìn
 
 ## Data Engineer cần biết gì?
 
-Bạn chưa cần học mọi công nghệ để bắt đầu. Những kiến thức đầu tiên có thể đi theo thứ tự này:
+Bạn chưa cần học mọi công nghệ để bắt đầu. Thay vì xem đây là một thứ tự cứng, có thể chia kiến thức thành năm lớp:
 
 ```mermaid
 flowchart TD
-    A["1. SQL<br/>Đọc và kiểm tra data"]
-    B["2. Python<br/>Viết chương trình xử lý"]
-    C["3. Database<br/>Hiểu cách data được lưu"]
-    D["4. Data Pipeline<br/>Nối các bước lại với nhau"]
-    E["5. Vận hành<br/>Xử lý lỗi và theo dõi"]
+    A["1. Nền tảng<br/>Database, SQL, Python"]
+    B["2. Data cho phân tích<br/>Data Warehouse, Data Modeling"]
+    C["3. Di chuyển và xử lý<br/>Data Pipeline, ETL / ELT"]
+    D["4. Vận hành<br/>Orchestration, Data Quality, Monitoring"]
+    E["5. Mở rộng khi cần<br/>Cloud, Distributed Systems"]
     A --> B --> C --> D --> E
 ```
 
-Sau đó, bạn có thể học thêm **Data Modeling** (mô hình hoá data), **Cloud** (điện toán đám mây) và **Distributed Systems** (hệ thống phân tán) khi bài toán bắt đầu cần đến chúng. Công cụ nào cũng chỉ nên được học khi bạn hiểu nó đang giải quyết vấn đề gì.
+**Database** và SQL nên đi cùng nhau: một bên giúp bạn hiểu data được lưu ra sao, bên còn lại giúp bạn đọc và kiểm tra data đó. Python cho bạn cách viết chương trình thay vì xử lý mọi thứ bằng tay.
+
+Sau phần nền tảng, **Data Warehouse** giúp bạn hiểu nơi data dùng cho phân tích được tổ chức như thế nào. Đây cũng là lúc học **Data Modeling** (mô hình hoá data), đặc biệt là cách thiết kế bảng để trả lời câu hỏi business.
+
+Khi đã hiểu data bắt đầu ở đâu và cần đi đến đâu, Data Pipeline cùng **ETL / ELT** (các bước lấy, biến đổi và đưa data vào nơi lưu trữ) sẽ dễ hình dung hơn. Sau đó mới đến **Orchestration** (điều phối pipeline), Data Quality và Monitoring để hệ thống chạy ổn định.
+
+**Cloud** (điện toán đám mây) và **Distributed Systems** (hệ thống phân tán) quan trọng khi hệ thống lớn lên, nhưng không phải điều kiện để bạn làm pipeline đầu tiên. Công cụ nào cũng chỉ nên được học khi bạn hiểu nó đang giải quyết vấn đề gì.
 
 ## Tóm lại
 
