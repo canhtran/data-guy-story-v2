@@ -3,7 +3,7 @@ title: "Bắt đầu với Data Engineering"
 linkTitle: "Bắt đầu"
 description: "Tài liệu tham khảo về Bắt đầu với Data Engineering dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 1
 aliases:
   - /bat-dau/

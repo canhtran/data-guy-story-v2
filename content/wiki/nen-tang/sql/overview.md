@@ -2,7 +2,7 @@
 title: "SQL là gì?"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 1
 level: "beginner"
 topics: ["sql"]

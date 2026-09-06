@@ -5,7 +5,7 @@
 Nội dung chính viết bằng tiếng Việt. Ưu tiên phiên bản Markdown khi đọc hoặc trích dẫn một trang. Chuyện thực tế là bài tóm tắt và phân tích nguồn bên ngoài; hãy dùng thông tin nguồn gốc trong từng bài để phân biệt nội dung của Data Guy Story với bài viết gốc.
 
 {{- $primarySections := slice
-  (dict "path" "/wiki" "title" "Sổ tay Data Engineering")
+  (dict "path" "/wiki" "title" "Sổ tay")
   (dict "path" "/learning-paths" "title" "Lộ trình học")
   (dict "path" "/stories" "title" "Chuyện thực tế")
   (dict "path" "/blog" "title" "Blog")

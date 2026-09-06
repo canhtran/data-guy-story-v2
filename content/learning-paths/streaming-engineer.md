@@ -2,7 +2,7 @@
 title: "Lộ trình Streaming Engineer"
 description: ""
 draft: true
-type: "learning-path"
+contentType: "learning-path"
 weight: 5
 ---
 

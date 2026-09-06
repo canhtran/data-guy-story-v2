@@ -2,7 +2,7 @@
 title: "Áp lực ngược trong Flink"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 10
 level: "beginner"
 topics: ["flink"]

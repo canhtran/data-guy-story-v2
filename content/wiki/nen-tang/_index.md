@@ -2,7 +2,7 @@
 title: "Nền tảng"
 description: "Nền tảng dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 2
 aliases:
   - /nen-tang/

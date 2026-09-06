@@ -2,7 +2,7 @@
 title: "Khả năng chịu lỗi"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 6
 level: "beginner"
 topics: ["distributed-systems"]

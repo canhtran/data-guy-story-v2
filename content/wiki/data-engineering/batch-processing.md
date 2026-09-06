@@ -2,7 +2,7 @@
 title: "Xử lý dữ liệu theo lô"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 2
 level: "beginner"
 topics: ["data-engineering"]

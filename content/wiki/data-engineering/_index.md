@@ -2,7 +2,7 @@
 title: "Data Engineering"
 description: "Tài liệu tham khảo về Data Engineering dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 3
 aliases:
   - /data-engineering/

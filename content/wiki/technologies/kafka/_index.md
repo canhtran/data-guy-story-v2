@@ -2,7 +2,7 @@
 title: "Apache Kafka"
 description: "Tài liệu tham khảo về Apache Kafka dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 7
 ---
 

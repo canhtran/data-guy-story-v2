@@ -2,7 +2,7 @@
 title: "Giao dịch trong Kafka"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 9
 level: "beginner"
 topics: ["kafka"]

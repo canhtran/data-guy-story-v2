@@ -1,11 +1,13 @@
 ---
-title: "Sổ tay Data Engineering"
+title: "Sổ tay"
 description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 1
 sidebar:
   open: true
+cascade:
+  type: docs
 ---
 
 Chào bạn,

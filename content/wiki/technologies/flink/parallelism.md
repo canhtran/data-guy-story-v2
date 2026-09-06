@@ -2,7 +2,7 @@
 title: "Mức độ song song trong Flink"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 4
 level: "beginner"
 topics: ["flink"]

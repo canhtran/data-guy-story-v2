@@ -2,7 +2,7 @@
 title: "Sao chép dữ liệu trong Kafka"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 6
 level: "beginner"
 topics: ["kafka"]

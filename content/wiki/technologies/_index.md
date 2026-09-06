@@ -2,7 +2,7 @@
 title: "Công nghệ"
 description: "Công nghệ dành cho Data Engineer."
 draft: true
-type: "hub"
+contentType: "hub"
 weight: 4
 aliases:
   - /technologies/

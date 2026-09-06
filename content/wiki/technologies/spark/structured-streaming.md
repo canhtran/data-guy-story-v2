@@ -2,7 +2,7 @@
 title: "Structured Streaming trong Spark"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 9
 level: "beginner"
 topics: ["spark"]

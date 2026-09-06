@@ -2,7 +2,7 @@
 title: "Kiến trúc Lakehouse"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 7
 level: "beginner"
 topics: ["data-engineering"]

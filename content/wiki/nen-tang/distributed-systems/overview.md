@@ -2,7 +2,7 @@
 title: "Hệ thống phân tán là gì?"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 1
 level: "beginner"
 topics: ["distributed-systems"]

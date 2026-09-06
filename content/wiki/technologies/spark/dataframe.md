@@ -2,7 +2,7 @@
 title: "DataFrame trong Spark"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 4
 level: "beginner"
 topics: ["spark"]

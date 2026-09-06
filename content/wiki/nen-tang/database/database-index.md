@@ -2,7 +2,7 @@
 title: "Chỉ mục trong cơ sở dữ liệu"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 3
 level: "beginner"
 topics: ["database"]

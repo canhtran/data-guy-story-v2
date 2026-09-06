@@ -2,7 +2,7 @@
 title: "Nền tảng Data Engineer"
 description: ""
 draft: true
-type: "learning-path"
+contentType: "learning-path"
 weight: 1
 ---
 

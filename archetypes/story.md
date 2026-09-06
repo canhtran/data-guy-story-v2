@@ -3,7 +3,9 @@ title: "{{ replace .File.ContentBaseName `-` ` ` | title }}"
 description: ""
 date: {{ .Date }}
 draft: true
-type: story
+contentType: story
+sidebar:
+  exclude: true
 
 original_title: ""
 source_url: ""

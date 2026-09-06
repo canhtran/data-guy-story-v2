@@ -2,7 +2,7 @@
 title: "Học Spark từ đầu"
 description: ""
 draft: true
-type: "learning-path"
+contentType: "learning-path"
 weight: 4
 ---
 

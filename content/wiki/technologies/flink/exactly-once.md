@@ -2,7 +2,7 @@
 title: "Xử lý đúng một lần trong Flink"
 description: ""
 draft: true
-type: "concept"
+contentType: "concept"
 weight: 11
 level: "beginner"
 topics: ["flink"]

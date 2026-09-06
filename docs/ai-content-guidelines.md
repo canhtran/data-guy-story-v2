@@ -26,3 +26,5 @@ Create curated stories with `hugo new --kind story stories/<category>/<slug>.md`
 - `topics` and `technologies`
 
 Clearly distinguish facts reported by the original engineering team from Data Guy Story’s interpretation. Link the original article visibly, paraphrase rather than reproduce it, and record meaningful secondary sources. The page description should state the company, system, and engineering problem so humans and assistants can identify the article without relying on its title alone.
+
+Story articles are excluded from the Hextra sidebar. The sidebar shows only the four category hubs; each category page automatically lists its published stories through the `story-list` shortcode.
