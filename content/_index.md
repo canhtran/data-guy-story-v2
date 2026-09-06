@@ -5,51 +5,41 @@ toc: false
 ---
 <br>
 
-Gửi bạn,
+Chào bạn,
 
-Nếu bạn đang đọc những dòng này, có lẽ bạn cũng có chút tò mò, hoặc trăn trở, hoặc niềm đam mê nào đó với dữ liệu – giống như mình đã từng. Vậy thì… chào mừng bạn đến với câu chuyện của mình.
+Mình là Cảnh, một Data Engineer đang làm việc tại Singapore.
 
-**Data Guy Story** không phải là một trang web khô khan, cũng chẳng phải nơi mình khoe mình giỏi giang. Nó đơn giản là nhật ký của một người làm Data Engineer – từ những ngày loay hoay với SQL, đêm vật lộn với pipeline chạy lỗi, cho đến khi bắt đầu nhìn thấy hệ thống dữ liệu vận hành trơn tru.
+**Data Guy Story** là nơi mình hệ thống lại những gì đã học và trải qua trong quá trình làm nghề: từ SQL, data modeling và pipeline cho đến Kafka, Flink, Spark và kiến trúc dữ liệu thực tế.
 
-Trang web này được xây dựng như một quyển sổ tay, nơi mình ghi lại:
+Mục tiêu của trang này khá đơn giản: giải thích Data Engineering bằng tiếng Việt, rõ ràng và đủ thực tế để bạn có thể dùng trong công việc.
 
-📘 **Nền tảng – Những thứ cần biết trước tiên**
+## Bạn có thể bắt đầu ở đâu?
 
-Những thứ mà bất cứ ai muốn bước chân vào Data Engineer đều cần nắm vững: ETL/ELT, data warehouse, modeling, và những câu chuyện “tại sao mình phải học cái này trước cái kia”.
+📚 **Sổ tay – Học và tra cứu kiến thức**
 
-🚀 **Nâng cao – Khi bạn muốn đi xa hơn** 
+Các khái niệm được viết thành từng bài độc lập, từ nền tảng đến công nghệ. Bạn có thể đọc theo chủ đề hoặc quay lại tra cứu khi gặp một khái niệm chưa rõ.
 
-Khi bạn đã quen với đường chạy, mình chia sẻ cách tối ưu Spark, xử lý real-time với Kafka, quản lý workflow bằng Airflow, hay thiết kế data lakehouse. Mình không lý thuyết suông – tất cả đều đúc kết từ những dự án thực tế, có mồ hôi và có cả… lỗi.
+🗺️ **Lộ trình học – Biết nên học gì tiếp theo**
 
-🏭 **Chuyện thực tế – Bài học từ các “ông lớn”**
+Nếu chưa biết nên học gì trước, các lộ trình sẽ sắp xếp bài trong Sổ tay theo thứ tự phù hợp: nền tảng Data Engineer, Kafka, Flink, Spark và Streaming Engineering.
 
-Mình thích đọc và kể lại những cách làm hay ho từ Uber, Netflix, Airbnb,… Họ xử lý hàng tỷ sự kiện ra sao, tối ưu thế nào, và quan trọng là mình học được gì từ họ để áp dụng vào công việc hằng ngày. Không phải lý thuyết xa vời – toàn chuyện có thật, có số liệu, có bài học rõ ràng.
+🏭 **Chuyện thực tế – Học từ các engineering team**
 
-✍️ **Blog - Chuyện của mình, chuyện của nghề**
+Những bài tóm tắt và phân tích từ engineering blog của các công ty công nghệ: họ đã xây hệ thống ra sao, gặp vấn đề gì và có bài học nào đáng mang về áp dụng. Mỗi bài đều dẫn nguồn gốc rõ ràng.
 
-Những sai lầm “ngớ ngẩn” mình từng mắc, những bài học mà mình đã trải qua. Không chỉ của mình, mà còn câu chuyện đi làm hằng ngày của bạn bè, đồng nghiệp. Những người thật, việc thật, để bạn thấy rằng trên hành trình data này, mình chẳng bao giờ cô đơn.
+✍️ **Blog – Chuyện làm nghề**
 
----
+Góc nhìn cá nhân về công việc, cách học, những lần làm sai và những điều mình rút ra sau các dự án thực tế.
 
-Và nếu bạn muốn nghe câu chuyện bằng giọng nói thay vì đọc, mình cũng có một kênh YouTube nhỏ – nơi mình kể lại những điều tương tự, nhưng sống động hơn Hãy ghé thăm khi bạn rảnh và đừng quên subcribe nhé.
+Bạn không cần đọc theo thứ tự. Hãy chọn một chủ đề đang cần, một lộ trình muốn theo, hoặc một câu chuyện khiến bạn tò mò.
 
-**Bạn đừng ngại nếu mới bắt đầu.**
-Mình cũng từng chẳng biết gì về partition, về checkpoint, thậm chí từng nghĩ “Data Engineer chỉ là kẻ chép dữ liệu từ A sang B”. Sai lầm ấy đã dạy mình rất nhiều. Và ở đây, mình viết lại tất cả những bài học ấy – bằng ngôn ngữ của một người đã từng “chật vật” trước khi “chững chạc”.
+Hy vọng bạn tìm được ở đây một điều hữu ích cho hành trình làm việc với dữ liệu.
 
-**Bạn cũng đừng lo nếu đã đi xa.**
-Những chủ đề nâng cao, những so sánh giữa các công nghệ, những kiến trúc dữ liệu quy mô lớn – mình đều cố gắng kể một cách trung thực, không phô trương, chỉ có “người đi trước nói lại cho người đi sau”.
-
-Cuối cùng, mình muốn nói rằng:
-Trang web này không có thu phí, không quảng cáo, cũng không cần bạn phải giỏi toán hay code xịn. Chỉ cần bạn có một chút tò mò và sẵn sàng dừng lại đọc – thế là đủ để mình thấy vui rồi.
-
-Hãy tự nhiên dạo quanh, đọc bài bạn thích, bỏ qua bài chưa cần. Và nếu một ngày bạn tìm thấy điều gì hữu ích – hoặc chỉ đơn giản là cảm thấy bớt cô đơn trên hành trình học data – thì đó chính là lý do “Data Guy Story” tồn tại.
-
-Cảm ơn bạn vì đã đọc đến dòng cuối cùng của bức thư này.
-
-**Hành trình vui vẻ với dữ liệu nhé !**
+**Chúc bạn học vui và làm data bớt cực!**
 
 {{< cards >}}
-  {{< card link="docs" title="Chuyện Data" icon="book-open" >}}
-  {{< card link="about" title="Youtube" icon="youtube" >}}
+  {{< card link="wiki" title="Sổ tay" icon="book-open" >}}
+  {{< card link="learning-paths" title="Lộ trình học" icon="map" >}}
+  {{< card link="stories" title="Chuyện thực tế" icon="newspaper" >}}
+  {{< card link="blog" title="Blog" icon="pencil" >}}
 {{< /cards >}}
-

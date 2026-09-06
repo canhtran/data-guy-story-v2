@@ -1,5 +1,9 @@
 # Hugo configuration file
+baseURL: "https://dataguystory.com/"
 title: Data Guy Story
+languageCode: vi-VN
+defaultContentLanguage: vi
+enableRobotsTXT: true
 
 # import hextra as module
 module:
@@ -18,36 +22,41 @@ markup:
 
 outputs:
   home: [html, llms]
-  page: [html]
-  section: [html, rss]
+  page: [html, markdown]
+  section: [html, rss, markdown]
 
 menu:
   main:
     - name: Sổ tay
-      pageRef: /docs
+      pageRef: /wiki
       weight: 1
+    - name: Lộ trình học
+      pageRef: /learning-paths
+      weight: 2
+    - name: Chuyện thực tế
+      pageRef: /stories
+      weight: 3
     - name: Blog
       pageRef: /blog
-      weight: 2
-    - name: Về tui
-      pageRef: /about
-      weight: 3
-    - name: Search
       weight: 4
+    - name: Search
+      weight: 5
       params:
         type: search
     - name: Youtube
-      weight: 5
+      weight: 6
       url: "https://www.youtube.com/@DataGuyStory"
       params:
         icon: youtube
     - name: Facebook
-      weight: 6
+      weight: 7
       url: "https://www.facebook.com/DataGuyStory"
       params:
         icon: facebook
 
 params:
+  description: "Sổ tay Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và những câu chuyện kỹ thuật thực tế."
+
   navbar:
     displayTitle: true
     displayLogo: true

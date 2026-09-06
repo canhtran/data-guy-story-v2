@@ -1,0 +1,4 @@
+{{- with .OutputFormats.Get "markdown" }}
+  <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" />
+{{- end }}
+<link rel="describedby" href="{{ "llms.txt" | absURL }}" type="text/plain" />
