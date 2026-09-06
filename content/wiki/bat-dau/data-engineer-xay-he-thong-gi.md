@@ -127,44 +127,6 @@ Các phần phía trên chỉ hữu ích khi chúng tiếp tục hoạt động.
 
 Phân quyền, bảo mật, lịch sử thay đổi và chi phí thường ít xuất hiện trong demo. Khi hệ thống đi vào production, chúng trở thành một phần của công việc.
 
-## Khi công ty lớn lên: Data Mesh
-
-Ở một công ty nhỏ, một data team trung tâm có thể quản lý tất cả pipeline và table. Khi công ty có nhiều mảng kinh doanh, cách này dễ trở thành điểm nghẽn. Team trung tâm phải hiểu đơn hàng, thanh toán, giao hàng và nhiều domain khác cùng lúc.
-
-**Data Mesh** (cách tổ chức data theo nhiều domain có quyền sở hữu rõ ràng) là một hướng tiếp cận cho vấn đề này. Thay vì giao toàn bộ data cho một team trung tâm, team hiểu rõ một domain sẽ chịu trách nhiệm cho data của domain đó.
-
-```mermaid
-flowchart TD
-    A["Platform và tiêu chuẩn chung<br/>Giúp các domain làm việc nhất quán"]
-    B["Domain team<br/>Hiểu và sở hữu data của mình"]
-    C["Data Product<br/>Sản phẩm data có chất lượng rõ ràng"]
-    D["Các team khác<br/>Tìm và sử dụng data"]
-    A --> B --> C --> D
-```
-
-Trong ứng dụng giao đồ ăn, trách nhiệm có thể được chia như sau:
-
-| Domain | Data Product | Team chịu trách nhiệm |
-| --- | --- | --- |
-| Order | Đơn hàng và lịch sử trạng thái | Order team |
-| Payment | Giao dịch và kết quả đối soát | Payment team |
-| Delivery | Chuyến giao hàng và thời gian giao | Delivery team |
-
-**Data Product** (sản phẩm data) có người chịu trách nhiệm, tài liệu hướng dẫn, quy tắc chất lượng và cách truy cập rõ ràng. Các team khác có thể sử dụng nó mà không cần đoán từng field có nghĩa gì.
-
-Data Mesh dựa trên bốn nguyên tắc:
-
-| Nguyên tắc | Hiểu đơn giản |
-| --- | --- |
-| Domain ownership (sở hữu theo domain) | Team hiểu domain chịu trách nhiệm cho data của domain đó |
-| Data as a product (data như một sản phẩm) | Data được chăm sóc như một sản phẩm có người sử dụng |
-| Self-serve data platform (nền tảng data tự phục vụ) | Platform team cung cấp công cụ chung để các domain tự làm việc |
-| Federated governance (quản trị liên kết) | Các domain có quyền tự chủ nhưng vẫn tuân theo tiêu chuẩn chung |
-
-Data Mesh không phải một phần mềm có thể cài đặt và cũng không mặc nhiên phù hợp với mọi công ty lớn. Nó đòi hỏi thay đổi cả kiến trúc, trách nhiệm của các team và cách quản trị data. Nếu công ty chỉ có vài nguồn data và một team trung tâm vẫn phục vụ tốt, Data Mesh có thể tạo thêm nhiều việc hơn giá trị.
-
-Khái niệm này được Zhamak Dehghani trình bày chi tiết trong [Data Mesh Principles and Logical Architecture](https://martinfowler.com/articles/data-mesh-principles.html).
-
 ## Streaming có phải lúc nào cũng cần không?
 
 **Streaming** (xử lý data liên tục khi data xuất hiện) phù hợp khi kết quả cần được cập nhật trong vài giây, chẳng hạn vị trí tài xế trên bản đồ. Report doanh thu cuối ngày có thể chỉ cần pipeline chạy theo lịch.
