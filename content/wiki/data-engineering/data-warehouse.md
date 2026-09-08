@@ -1,5 +1,5 @@
 ---
-title: "Data Warehouse là gì?"
+title: "Vì sao cần Data Warehouse?"
 description: "Vì sao data phân tích thường được đưa ra khỏi database của application và tổ chức lại trong Data Warehouse?"
 draft: false
 contentType: "concept"

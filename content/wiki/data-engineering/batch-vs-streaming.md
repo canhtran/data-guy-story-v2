@@ -1,5 +1,5 @@
 ---
-title: "Batch và Streaming khác nhau thế nào?"
+title: "Batch hay Streaming?"
 description: "So sánh hai cách xử lý data theo ranh giới, độ trễ và chi phí vận hành trước khi chọn."
 draft: false
 contentType: "concept"

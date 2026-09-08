@@ -1,5 +1,5 @@
 ---
-title: "Data Lake là gì?"
+title: "Lưu raw data ở quy mô lớn với Data Lake"
 description: "Hiểu cách lưu lượng lớn raw data và nhiều định dạng trên object storage cùng những trách nhiệm đi kèm."
 draft: false
 contentType: "concept"

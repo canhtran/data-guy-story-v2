@@ -1,5 +1,5 @@
 ---
-title: "Stream Processing là gì?"
+title: "Stream Processing: xử lý data liên tục"
 description: "Hiểu event liên tục, state, event time và những điều xảy ra khi data đến trễ hoặc sai thứ tự."
 draft: false
 contentType: "concept"

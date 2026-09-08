@@ -46,13 +46,13 @@ This level targets beginners and career switchers. Completing it should give the
 
 | Weight | Article | File | Reader outcome |
 | ---: | --- | --- | --- |
-| 1 | Data Pipeline là gì? | `data-pipeline.md` | Identify the source, processing steps, destination, consumer and failure points of a pipeline. |
-| 2 | Data Ingestion là gì? | `data-ingestion.md` | Understand how data leaves a Source System and enters the data platform. |
-| 3 | Data Warehouse là gì? | `data-warehouse.md` | Understand why analytical data needs storage separate from an application Database. |
+| 1 | Một Data Pipeline hoạt động ra sao? | `data-pipeline.md` | Identify the source, processing steps, destination, consumer and failure points of a pipeline. |
+| 2 | Data Ingestion: đưa data ra khỏi Source System | `data-ingestion.md` | Understand how data leaves a Source System and enters the data platform. |
+| 3 | Vì sao cần Data Warehouse? | `data-warehouse.md` | Understand why analytical data needs storage separate from an application Database. |
 | 4 | ETL và ELT khác nhau thế nào? | `etl-elt.md` | Understand where transformation happens and why the destination affects the choice. |
-| 5 | Batch Processing là gì? | `batch-processing.md` | Understand scheduled processing and bounded input. |
-| 6 | Data Orchestration là gì? | `orchestration.md` | Understand schedules, dependencies, execution order and failure handling. |
-| 7 | Data Quality là gì? | `data-quality.md` | Decide whether pipeline output is complete, valid and trustworthy enough to use. |
+| 5 | Xử lý data theo từng Batch | `batch-processing.md` | Understand scheduled processing and bounded input. |
+| 6 | Data Orchestration khi nhiều job phụ thuộc nhau | `orchestration.md` | Understand schedules, dependencies, execution order and failure handling. |
+| 7 | Data Quality: làm sao biết data đủ tin cậy? | `data-quality.md` | Decide whether pipeline output is complete, valid and trustworthy enough to use. |
 
 The conceptual flow is:
 
@@ -73,15 +73,15 @@ This level targets Junior Data Engineers who can build a pipeline and are beginn
 
 | Weight | Article | File | Reader outcome |
 | ---: | --- | --- | --- |
-| 8 | Idempotency là gì? | `idempotency.md` | Understand why rerunning work must not create unintended duplicate results. |
+| 8 | Idempotency: chạy lại pipeline mà không tạo duplicate | `idempotency.md` | Understand why rerunning work must not create unintended duplicate results. |
 | 9 | Retry hoạt động như thế nào? | `retry.md` | Distinguish retryable failures and understand why unlimited retry is unsafe. |
-| 10 | Backfill là gì? | `backfill.md` | Process missing or historical data safely. |
-| 11 | Data Observability là gì? | `data-observability.md` | Detect late, missing, broken or unusual data and pipeline behavior. |
-| 12 | Metadata là gì? | `metadata.md` | Understand information that describes tables, fields, owners and update times. |
-| 13 | Data Lineage là gì? | `data-lineage.md` | Trace data from its source through transformations to downstream consumers. |
-| 14 | Data Catalog là gì? | `data-catalog.md` | Discover available data and understand how it should be used. |
-| 15 | Data Contract là gì? | `data-contract.md` | Understand agreements between data producers and consumers. |
-| 16 | Schema Evolution là gì? | `schema-evolution.md` | Change fields and structures without silently breaking consumers. |
+| 10 | Sửa lại data trong quá khứ với Backfill | `backfill.md` | Process missing or historical data safely. |
+| 11 | Data Observability: theo dõi sức khoẻ của pipeline | `data-observability.md` | Detect late, missing, broken or unusual data and pipeline behavior. |
+| 12 | Metadata: data để hiểu data | `metadata.md` | Understand information that describes tables, fields, owners and update times. |
+| 13 | Data Lineage: data đã đi qua đâu? | `data-lineage.md` | Trace data from its source through transformations to downstream consumers. |
+| 14 | Tìm đúng data với Data Catalog | `data-catalog.md` | Discover available data and understand how it should be used. |
+| 15 | Data Contract giữa producer và consumer | `data-contract.md` | Understand agreements between data producers and consumers. |
+| 16 | Schema Evolution mà không làm hỏng downstream | `schema-evolution.md` | Change fields and structures without silently breaking consumers. |
 
 The dependency order matters:
 
@@ -97,13 +97,13 @@ This level targets readers who understand regular Batch Pipelines and need diffe
 
 | Weight | Article | File | Reader outcome |
 | ---: | --- | --- | --- |
-| 17 | Batch và Streaming khác nhau thế nào? | `batch-vs-streaming.md` | Compare bounded and unbounded processing before choosing a model. |
-| 18 | Stream Processing là gì? | `stream-processing.md` | Understand continuous processing, events, latency, state and ordering. |
-| 19 | Change Data Capture — CDC là gì? | `change-data-capture.md` | Capture Database changes without repeatedly reading the entire table. |
-| 20 | Data Lake là gì? | `data-lake.md` | Understand why organizations retain large volumes of raw and varied data. |
-| 21 | Lakehouse là gì? | `lakehouse.md` | Understand the problems addressed when analytical workloads run on a Data Lake. |
-| 22 | File Format: CSV, JSON và Parquet | `file-formats.md` | Understand how physical format affects size, speed and compatibility. |
-| 23 | Table Format: Iceberg, Delta Lake và Hudi | `table-formats.md` | Understand how tables on object storage gain transactions, schema evolution and snapshots. |
+| 17 | Batch hay Streaming? | `batch-vs-streaming.md` | Compare bounded and unbounded processing before choosing a model. |
+| 18 | Stream Processing: xử lý data liên tục | `stream-processing.md` | Understand continuous processing, events, latency, state and ordering. |
+| 19 | Theo dõi thay đổi trong Database với CDC | `change-data-capture.md` | Capture Database changes without repeatedly reading the entire table. |
+| 20 | Lưu raw data ở quy mô lớn với Data Lake | `data-lake.md` | Understand why organizations retain large volumes of raw and varied data. |
+| 21 | Khi Data Lake cần cách quản lý như Warehouse | `lakehouse.md` | Understand the problems addressed when analytical workloads run on a Data Lake. |
+| 22 | File Format: chọn giữa CSV, JSON và Parquet | `file-formats.md` | Understand how physical format affects size, speed and compatibility. |
+| 23 | Table Format: chọn giữa Iceberg, Delta Lake và Hudi | `table-formats.md` | Understand how tables on object storage gain transactions, schema evolution and snapshots. |
 
 Keep the Batch-versus-Streaming comparison separate from the detailed Batch and Stream Processing articles. The comparison helps the reader choose a direction; the detailed articles explain how each model works.
 
@@ -131,14 +131,14 @@ Reuse these existing files, updating titles, descriptions, weights and frontmatt
 | Existing file | Planned article |
 | --- | --- |
 | `etl-elt.md` | ETL và ELT khác nhau thế nào? |
-| `batch-processing.md` | Batch Processing là gì? |
-| `stream-processing.md` | Stream Processing là gì? |
-| `change-data-capture.md` | Change Data Capture — CDC là gì? |
-| `data-warehouse.md` | Data Warehouse là gì? |
-| `data-lake.md` | Data Lake là gì? |
-| `lakehouse.md` | Lakehouse là gì? |
-| `data-quality.md` | Data Quality là gì? |
-| `orchestration.md` | Data Orchestration là gì? |
+| `batch-processing.md` | Xử lý data theo từng Batch |
+| `stream-processing.md` | Stream Processing: xử lý data liên tục |
+| `change-data-capture.md` | Theo dõi thay đổi trong Database với CDC |
+| `data-warehouse.md` | Vì sao cần Data Warehouse? |
+| `data-lake.md` | Lưu raw data ở quy mô lớn với Data Lake |
+| `lakehouse.md` | Khi Data Lake cần cách quản lý như Warehouse |
+| `data-quality.md` | Data Quality: làm sao biết data đủ tin cậy? |
+| `orchestration.md` | Data Orchestration khi nhiều job phụ thuộc nhau |
 | `metadata-lineage.md` | Replace with separate `metadata.md` and `data-lineage.md` articles. |
 
 Create new files only when work begins on their articles. Do not add another large set of empty placeholders.

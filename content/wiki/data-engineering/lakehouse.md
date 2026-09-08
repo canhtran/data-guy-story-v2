@@ -1,5 +1,5 @@
 ---
-title: "Lakehouse là gì?"
+title: "Khi Data Lake cần cách quản lý như Warehouse"
 description: "Hiểu vì sao table format và compute engine được kết hợp để chạy workload kiểu warehouse trên Data Lake."
 draft: false
 contentType: "concept"

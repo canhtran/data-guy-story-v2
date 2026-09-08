@@ -1,5 +1,5 @@
 ---
-title: "Data Orchestration là gì?"
+title: "Data Orchestration khi nhiều job phụ thuộc nhau"
 description: "Cách sắp lịch, dependency và trạng thái cho nhiều data job phụ thuộc nhau."
 draft: false
 contentType: "concept"

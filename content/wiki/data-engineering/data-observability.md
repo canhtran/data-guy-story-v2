@@ -1,5 +1,5 @@
 ---
-title: "Data Observability là gì?"
+title: "Data Observability: theo dõi sức khoẻ của pipeline"
 description: "Theo dõi pipeline và data để phát hiện output trễ, thiếu hoặc bất thường trong production."
 draft: false
 contentType: "concept"

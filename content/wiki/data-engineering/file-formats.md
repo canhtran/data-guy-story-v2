@@ -1,5 +1,5 @@
 ---
-title: "File Format: CSV, JSON và Parquet"
+title: "File Format: chọn giữa CSV, JSON và Parquet"
 description: "Cách định dạng file ảnh hưởng đến kích thước, kiểu dữ liệu, tốc độ đọc và khả năng trao đổi."
 draft: false
 contentType: "concept"

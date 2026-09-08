@@ -1,5 +1,5 @@
 ---
-title: "Data Pipeline là gì?"
+title: "Một Data Pipeline hoạt động ra sao?"
 description: "Nhìn một Data Pipeline qua input, các bước xử lý, output và cách nó thất bại."
 draft: false
 contentType: "concept"

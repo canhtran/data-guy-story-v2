@@ -1,5 +1,5 @@
 ---
-title: "Metadata là gì?"
+title: "Metadata: data để hiểu data"
 description: "Hiểu data mô tả dataset, từ schema kỹ thuật đến owner và ý nghĩa business."
 draft: false
 contentType: "concept"

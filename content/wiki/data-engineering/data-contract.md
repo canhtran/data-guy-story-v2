@@ -1,5 +1,5 @@
 ---
-title: "Data Contract là gì?"
+title: "Data Contract giữa producer và consumer"
 description: "Thống nhất cấu trúc, ý nghĩa và cách thay đổi data giữa producer với consumer."
 draft: false
 contentType: "concept"

@@ -1,5 +1,5 @@
 ---
-title: "Idempotency là gì?"
+title: "Idempotency: chạy lại pipeline mà không tạo duplicate"
 description: "Vì sao cùng một input chạy lại nhiều lần vẫn phải tạo ra cùng một kết quả."
 draft: false
 contentType: "concept"

@@ -1,5 +1,5 @@
 ---
-title: "Batch Processing là gì?"
+title: "Xử lý data theo từng Batch"
 description: "Cách một pipeline gom data thành từng lô hữu hạn và xử lý theo lịch."
 draft: false
 contentType: "concept"

@@ -1,5 +1,5 @@
 ---
-title: "Data Lineage là gì?"
+title: "Data Lineage: data đã đi qua đâu?"
 description: "Theo dấu data từ Source System qua các bước biến đổi đến dashboard và người sử dụng."
 draft: false
 contentType: "concept"

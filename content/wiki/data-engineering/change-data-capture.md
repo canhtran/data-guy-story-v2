@@ -1,5 +1,5 @@
 ---
-title: "Change Data Capture — CDC là gì?"
+title: "Theo dõi thay đổi trong Database với CDC"
 description: "Đọc các thay đổi Insert, Update và Delete từ database mà không quét lại toàn bộ bảng."
 draft: false
 contentType: "concept"

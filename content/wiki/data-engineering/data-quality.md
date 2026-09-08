@@ -1,5 +1,5 @@
 ---
-title: "Data Quality là gì?"
+title: "Data Quality: làm sao biết data đủ tin cậy?"
 description: "Biến câu nói ‘data có vẻ đúng’ thành những kiểm tra cụ thể trước khi người khác sử dụng."
 draft: false
 contentType: "concept"

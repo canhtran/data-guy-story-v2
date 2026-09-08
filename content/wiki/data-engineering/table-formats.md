@@ -1,5 +1,5 @@
 ---
-title: "Table Format: Iceberg, Delta Lake và Hudi"
+title: "Table Format: chọn giữa Iceberg, Delta Lake và Hudi"
 description: "Phân biệt table format với file format và hiểu các khả năng quản lý table trên object storage."
 draft: false
 contentType: "concept"

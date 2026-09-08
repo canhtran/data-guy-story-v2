@@ -1,5 +1,5 @@
 ---
-title: "Data Catalog là gì?"
+title: "Tìm đúng data với Data Catalog"
 description: "Cách giúp người dùng tìm đúng dataset, hiểu nó và biết có nên sử dụng hay không."
 draft: false
 contentType: "concept"

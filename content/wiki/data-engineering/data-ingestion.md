@@ -1,5 +1,5 @@
 ---
-title: "Data Ingestion là gì?"
+title: "Data Ingestion: đưa data ra khỏi Source System"
 description: "Cách đưa data từ Source System vào nền tảng data mà không làm ảnh hưởng hệ thống đang vận hành."
 draft: false
 contentType: "concept"

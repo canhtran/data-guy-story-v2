@@ -1,5 +1,5 @@
 ---
-title: "Schema Evolution là gì?"
+title: "Schema Evolution mà không làm hỏng downstream"
 description: "Thay đổi field và cấu trúc data mà không âm thầm làm hỏng consumer hiện tại."
 draft: false
 contentType: "concept"
