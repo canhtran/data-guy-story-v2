@@ -6,7 +6,9 @@
 {{- $navRoot := cond (eq site.Home.Type "docs") site.Home $context.FirstSection -}}
 {{/* Site override of Hextra v0.12.1: scope Wiki desktop navigation to current topic. */}}
 {{- $wiki := site.GetPage "/wiki" -}}
-{{- $scopedWiki := and $wiki ($wiki.IsAncestor $context) -}}
+{{/* IsAncestor is false for the Wiki landing page itself, so include it explicitly:
+     it should get the same scoped sidebar as every other Wiki page. */}}
+{{- $scopedWiki := and $wiki (or ($wiki.IsAncestor $context) (eq $context $wiki)) -}}
 {{- if $scopedWiki -}}
   {{- if $context.IsSection -}}
     {{- $navRoot = $context -}}
@@ -51,7 +53,9 @@
     {{- else -}}
       {{ if $scopedWiki }}
         <div class="dgs-sidebar-heading hx:max-md:hidden">
+          {{- if ne $navRoot $wiki }}
           <a href="{{ $wiki.RelPermalink }}">← Wiki</a>
+          {{- end }}
           <a class="dgs-sidebar-topic" href="{{ $navRoot.RelPermalink }}">{{ $navRoot.Title }}</a>
         </div>
       {{ end }}
