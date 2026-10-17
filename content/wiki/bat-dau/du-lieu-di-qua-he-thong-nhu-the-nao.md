@@ -12,7 +12,7 @@ aliases:
   - "/docs/foundation/vong-doi-cua-data/"
 ---
 
-Giả sử bạn vừa đặt một phần cơm trên ứng dụng giao đồ ăn. Bạn bấm **Đặt món**, ứng dụng báo thành công, rồi khoảng ba mươi phút sau tài xế xuất hiện trước cửa.
+Giả sử bạn vừa đặt một phần cơm trên ứng dụng giao đồ ăn. Bạn bấm Đặt món, ứng dụng báo thành công, rồi khoảng ba mươi phút sau tài xế xuất hiện trước cửa.
 
 Với bạn, giao dịch đó đã kết thúc. Với hệ thống data, nó chỉ vừa bắt đầu.
 
@@ -31,17 +31,17 @@ flowchart TD
 
 ## Data Generation
 
-**Data Generation** (quá trình data được tạo ra) bắt đầu khi đơn hàng được đặt. Hệ thống có thể ghi lại mã đơn, nhà hàng, món ăn, giá tiền, phương thức thanh toán và thời gian tạo đơn. Trong lúc giao hàng, nó tiếp tục nhận vị trí tài xế và các lần thay đổi trạng thái.
+Data Generation (quá trình data được tạo ra) bắt đầu khi đơn hàng được đặt. Hệ thống có thể ghi lại mã đơn, nhà hàng, món ăn, giá tiền, phương thức thanh toán và thời gian tạo đơn. Trong lúc giao hàng, nó tiếp tục nhận vị trí tài xế và các lần thay đổi trạng thái.
 
 Data này không nhất thiết nằm cùng một chỗ. Đơn hàng có thể nằm trong một database như MySQL. Kết quả thanh toán nằm trong hệ thống thanh toán, còn trạng thái giao hàng nằm trong hệ thống của tài xế.
 
-Đây là các **Source System** (hệ thống nguồn). Chúng được xây để ứng dụng hoạt động, chứ không phải để trả lời mọi câu hỏi phân tích của công ty.
+Đây là các Source System (hệ thống nguồn). Chúng được xây để ứng dụng hoạt động, chứ không phải để trả lời mọi câu hỏi phân tích của công ty.
 
 Khi bạn đặt món, application có thể thêm một row vào bảng `orders` trong MySQL:
 
 | order_id | restaurant_id | status | total_amount | created_at |
 | --- | --- | --- | ---: | --- |
-| ORD-1042 | RES-18 | created | 120,000 | 2026-09-06 12:02:10 |
+| ORD-1042 | RES-18 | created | 120,000 | 2026-09-06 12:02:10+08:00 |
 
 Khi nhà hàng nhận đơn hoặc tài xế giao hàng thành công, row này có thể được cập nhật sang trạng thái mới. Đây là data phục vụ hoạt động của application. Nó chưa được chuẩn bị để trả lời những câu hỏi như “Hôm nay có bao nhiêu đơn giao trễ?”.
 
@@ -49,7 +49,7 @@ Khi nhà hàng nhận đơn hoặc tài xế giao hàng thành công, row này c
 
 Đội vận hành muốn biết hôm nay có bao nhiêu đơn giao trễ. Đội tài chính cần đối soát thanh toán. Nhà hàng muốn xem món nào bán chạy. Nếu tất cả cùng truy vấn thẳng vào database của ứng dụng, họ có thể làm chậm hệ thống đang phục vụ khách hàng.
 
-Vì vậy, data được sao chép từ các Source System về một nơi dành cho việc xử lý và phân tích. Quá trình này được gọi là **Data Ingestion** (thu thập và đưa data vào hệ thống).
+Vì vậy, data được sao chép từ các Source System về một nơi dành cho việc xử lý và phân tích. Quá trình này được gọi là Data Ingestion (thu thập và đưa data vào hệ thống).
 
 Cùng một đơn hàng có thể đi vào nền tảng data qua nhiều đường:
 
@@ -59,11 +59,17 @@ Cùng một đơn hàng có thể đi vào nền tảng data qua nhiều đườ
 | Hệ thống thanh toán | Kết quả thanh toán | Mỗi 15 phút |
 | Hệ thống giao hàng | Trạng thái giao hàng | Mỗi 5 phút |
 
-Sau Data Ingestion, mỗi nguồn vẫn cần giữ `order_id`. Nhờ đó, pipeline biết giao dịch thanh toán và chuyến giao hàng nào thuộc về `ORD-1042`.
+Nhưng làm sao biết một thanh toán thuộc đơn nào? Có nguồn giữ sẵn `order_id`, có nguồn chỉ trả về mã riêng như `payment_ref`. Trong trường hợp thứ hai, mình cần nhờ Backend cung cấp bảng ánh xạ:
+
+| payment_ref | order_id |
+| --- | --- |
+| PAY-501 | ORD-1042 |
+
+Nhờ bảng này, pipeline biết `PAY-501` thuộc về `ORD-1042`. Nó nối qua `payment_ref` trước rồi mới tìm đến `orders`. Trong ví dụ, mỗi mã thanh toán thuộc một đơn, dù một đơn có thể có nhiều lần thanh toán. Nếu chưa tìm được mã tương ứng, giao dịch cần được giữ lại để kiểm tra.
 
 ## Data Storage
 
-**Data Storage** (lưu trữ data) cho data một nơi để sống lâu hơn Source System. Tuỳ nhu cầu, nó có thể được lưu trong **Data Warehouse** (kho dữ liệu), **Data Lake** (hồ dữ liệu) hoặc **Lakehouse** (kiến trúc kết hợp Data Warehouse và Data Lake).
+Data Storage (lưu trữ data) cho data một nơi để sống lâu hơn Source System. Tuỳ nhu cầu, nó có thể được lưu trong Data Warehouse (kho dữ liệu), Data Lake (hồ dữ liệu) hoặc Lakehouse (kiến trúc kết hợp Data Warehouse và Data Lake).
 
 Ở thời điểm này, data chưa chắc đã dễ dùng. Tên nhà hàng có thể nằm trong một bảng, thông tin đơn hàng nằm ở bảng khác, còn data thanh toán dùng một mã định danh khác hoàn toàn.
 
@@ -79,7 +85,7 @@ Không phải hệ thống nào cũng gọi ba lớp này bằng cùng một cá
 
 ## Data Processing and Transformation
 
-Trong bước này, **Data Processing** (xử lý data) và **Data Transformation** (biến đổi data) được dùng để kiểm tra, làm sạch và kết hợp data. Ví dụ, một pipeline có thể:
+Trong bước này, Data Processing (xử lý data) và Data Transformation (biến đổi data) được dùng để kiểm tra, làm sạch và kết hợp data. Ví dụ, một pipeline có thể:
 
 1. Loại những lần cập nhật bị gửi trùng.
 2. Chuẩn hoá tất cả thời gian về cùng múi giờ.
@@ -89,13 +95,13 @@ Trong bước này, **Data Processing** (xử lý data) và **Data Transformatio
 
 Nếu bước này sai, dashboard phía sau có thể vẫn trông rất đẹp nhưng con số không còn đáng tin.
 
-Ví dụ, pipeline nhận được ba row sau:
+Mình thử với ba row dưới đây. Các số tiền đều là VND, còn report dùng giờ Singapore, tức UTC+08:00:
 
 | order_id | status | updated_at | delivery_fee |
 | --- | --- | --- | ---: |
-| ORD-1042 | delivered | 12:32:18 +08:00 | 18,000 |
-| ORD-1042 | delivered | 12:32:18 +08:00 | 18,000 |
-| ORD-1043 | delivered | 04:41:02 UTC | 22,000 |
+| ORD-1042 | delivered | 2026-09-06 12:32:18+08:00 | 18,000 |
+| ORD-1042 | delivered | 2026-09-06 12:32:18+08:00 | 18,000 |
+| ORD-1043 | delivered | 2026-09-06 04:41:02Z | 22,000 |
 
 Hai row đầu là cùng một lần cập nhật bị sao chép hai lần. Row cuối dùng UTC thay vì giờ Singapore. Sau khi loại trùng và chuẩn hoá timezone, pipeline mới tính được:
 
@@ -105,9 +111,13 @@ Hai row đầu là cùng một lần cập nhật bị sao chép hai lần. Row 
 
 Nếu bỏ qua bước loại trùng, dashboard sẽ báo ba đơn và `58,000` tiền giao hàng dù thực tế chỉ có hai đơn.
 
+Múi giờ còn có thể làm một đơn chuyển sang ngày báo cáo khác. Giả sử có thêm `ORD-1044`, giao lúc `2026-09-06 16:05:00Z`, với phí 10,000 VND. Nhìn phần ngày, mình dễ xếp đơn này vào ngày 6. Nhưng đổi sang giờ Singapore thì đã là 00:05 ngày 7.
+
+Vì vậy, ngày 6 vẫn có hai đơn và 40,000 VND tiền giao hàng. Ngày 7 mới có thêm một đơn và 10,000 VND. Cột `delivery_date` ở đây là ngày giao theo giờ địa phương. Trong ví dụ, mỗi đơn có một lần giao thành công; hai bản sao giống nhau của `ORD-1042` được loại trước khi đếm.
+
 ## Data Serving
 
-**Data Serving** (cung cấp data cho người dùng hoặc hệ thống khác) bắt đầu khi data đã ở dạng ổn định. Data Analyst có thể dùng nó để làm dashboard, Data Scientist có thể xây mô hình dự đoán thời gian giao hàng, còn một dịch vụ nội bộ có thể dùng nó để cảnh báo nhà hàng đang quá tải.
+Data Serving (cung cấp data cho người dùng hoặc hệ thống khác) bắt đầu khi data đã ở dạng ổn định. Data Analyst có thể dùng nó để làm dashboard, Data Scientist có thể xây mô hình dự đoán thời gian giao hàng, còn một dịch vụ nội bộ có thể dùng nó để cảnh báo nhà hàng đang quá tải.
 
 Cùng một data ban đầu có thể phục vụ nhiều nhu cầu. Data Engineer không quyết định thay tất cả những người dùng đó, nhưng cần hiểu họ cần gì để thiết kế data phù hợp.
 
@@ -124,17 +134,17 @@ Data Serving vì vậy không chỉ có dashboard. Đầu ra cũng có thể là
 
 ## Data Retention and Deletion
 
-Theo thời gian, một phần data sẽ ít được truy cập hơn. **Data Retention** (lưu giữ data) quy định data cần được giữ trong bao lâu. Công ty có thể chuyển data cũ sang nơi lưu trữ rẻ hơn hoặc thực hiện **Data Deletion** (xoá data) theo quy định về quyền riêng tư.
+Theo thời gian, một phần data sẽ ít được truy cập hơn. Data Retention (lưu giữ data) quy định data cần được giữ trong bao lâu. Công ty có thể chuyển data cũ sang nơi lưu trữ rẻ hơn hoặc thực hiện Data Deletion (xoá data) theo quy định về quyền riêng tư.
 
-Ngoài ra còn có **Metadata** (siêu dữ liệu): data đến từ đâu, ai sở hữu, pipeline nào đã thay đổi nó và dashboard nào đang sử dụng nó. Khi hệ thống lớn lên, những thông tin này giúp mọi người lần ngược được một con số thay vì đoán.
+Ngoài ra còn có Metadata (siêu dữ liệu): data đến từ đâu, ai sở hữu, pipeline nào đã thay đổi nó và dashboard nào đang sử dụng nó. Khi hệ thống lớn lên, những thông tin này giúp mọi người lần ngược được một con số thay vì đoán.
 
-Ví dụ, công ty có thể áp dụng các quy tắc khác nhau cho từng loại data:
+Chẳng hạn, một công ty có thể đặt thời hạn như bảng dưới. Đây là những mốc giả định; thời hạn thật còn phụ thuộc nhu cầu và quy định áp dụng cho công ty đó:
 
 | Data | Retention | Sau thời hạn đó |
 | --- | --- | --- |
 | Vị trí chi tiết của tài xế | 30 ngày | Xoá |
 | Lịch sử trạng thái đơn hàng | 1 năm | Chuyển sang storage rẻ hơn |
-| Data tài chính cần đối soát | 7 năm | Archive theo quy định |
+| Data tài chính cần đối soát | 7 năm | Lưu trữ dài hạn theo chính sách giả định |
 
 Metadata của bảng đơn hàng cũng có thể ghi rõ team nào chịu trách nhiệm, pipeline nào tạo ra bảng và dashboard nào đang sử dụng nó. Khi pipeline thay đổi, team biết cần kiểm tra những đầu ra nào.
 
@@ -142,6 +152,8 @@ Metadata của bảng đơn hàng cũng có thể ghi rõ team nào chịu trác
 
 Một data flow thường đi qua các bước:
 
-**Source System → Data Ingestion → Data Storage → Data Transformation → Data Serving → Data Retention / Data Deletion**
+Source System → Data Ingestion → Data Storage → Data Transformation → Data Serving → Data Retention / Data Deletion
 
 Ngoài đời, đường đi hiếm khi thẳng và gọn như sơ đồ này. Pipeline có thể chạy lỗi, data đến muộn, schema thay đổi hoặc người dùng cần một cách tính mới. Phần lớn công việc Data Engineering nằm ở việc xử lý những tình huống đó.
+
+Từ đường đi này, mình thử ghép thành [một hệ thống nhỏ mà Data Engineer có thể xây]({{< relref "/wiki/bat-dau/data-engineer-xay-he-thong-gi.md" >}}).

@@ -1,0 +1,3 @@
+Giúp mình chuẩn bị môi trường cục bộ cho buổi học trong nguồn. Hỏi hệ điều hành, kiến trúc máy, terminal đang dùng và công cụ đã có. Chọn kiểm tra không thay đổi hệ thống trước. Mỗi lượt: giải thích một thao tác, đưa một lệnh, nói kết quả cần quan sát rồi chờ mình trả lời.
+
+Dùng hướng dẫn cài đặt chính thức được dẫn trong nguồn nếu thiếu công cụ. Phân biệt hướng dẫn đã chạy thử trong nguồn với bước cài đặt chưa được thử trên máy mình. Không tự yêu cầu cloud, gói trả phí hoặc quyền quản trị khi chưa cần. Không xóa dữ liệu hay ghi đè thư mục có sẵn để sửa lỗi. Khi checkpoint đạt, ghi phiên bản và bằng chứng vào nhật ký.

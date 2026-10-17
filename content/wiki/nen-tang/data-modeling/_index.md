@@ -1,12 +1,12 @@
 ---
 title: "Mô hình hóa dữ liệu"
 description: "Tài liệu tham khảo về Mô hình hóa dữ liệu dành cho Data Engineer."
-draft: true
+draft: false
 contentType: "hub"
 weight: 4
 ---
 
-Tra cứu các bài trong Sổ tay về Mô hình hóa dữ liệu.
+Bắt đầu bằng câu hỏi báo cáo và ý nghĩa của từng dòng. Sau đó mới chọn fact, dimension và cách giữ lịch sử.
 
 ## Bài viết
 
@@ -16,6 +16,6 @@ Tra cứu các bài trong Sổ tay về Mô hình hóa dữ liệu.
 - [Mô hình bông tuyết]({{< relref "/wiki/nen-tang/data-modeling/snowflake-schema.md" >}})
 - [Dimension thay đổi chậm (SCD)]({{< relref "/wiki/nen-tang/data-modeling/slowly-changing-dimension.md" >}})
 
-## Lộ trình học
+## Thực hành tiếp
 
-- [Nền tảng Data Engineer]({{< relref "/learning-paths/data-engineer-foundation.md" >}})
+[Data Engineering thực chiến]({{< relref "/learning-paths/data-engineering-thuc-chien/_index.md" >}}) dự kiến dùng các khái niệm này để xây kho dữ liệu nhiều nguồn.

@@ -1,0 +1,8 @@
+Hãy kiểm tra checkpoint của mình theo trang nguồn. Trước tiên nhắc lại đầu vào, grain, metric và tiêu chí đạt. Xem code và đầu ra mình gửi; không coi lời mô tả “đã chạy được” là đủ.
+
+Hỏi một câu để mình giải thích kết quả và một ca biên để kiểm tra: dữ liệu rỗng, đơn hủy, khóa trùng hoặc chạy lại. Đánh dấu từng tiêu chí là “có bằng chứng”, “chưa đủ bằng chứng” hoặc “cần sửa”, kèm lý do. Không tự chứng nhận hoàn thành cả khóa.
+
+Checkpoint:
+Code/SQL:
+Đầu ra thực tế:
+Giải thích của mình:

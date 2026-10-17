@@ -1,0 +1,27 @@
+{{ define "main" }}
+<div class="hx:mx-auto hx:flex hextra-max-page-width">
+  {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" false) }}
+  <main id="content" class="dgs-blog-shell dgs-blog-article">
+    <a class="dgs-blog-back" href="{{ .CurrentSection.RelPermalink }}">← Blog</a>
+    <article>
+      <header class="dgs-blog-header">
+        <h1>{{ .Title }}</h1>
+        <div class="dgs-blog-meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>
+          {{ range .Params.authors }}<span>{{ if reflect.IsMap . }}{{ .name }}{{ else }}{{ . }}{{ end }}</span>{{ end }}
+          {{ range .GetTerms "tags" }}<a class="dgs-blog-tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+        </div>
+      </header>
+      <div class="content">{{ .Content }}</div>
+      {{ partial "components/comments.html" . }}
+    </article>
+    {{ $others := where .CurrentSection.RegularPages "RelPermalink" "ne" .RelPermalink }}
+    {{ with first 3 $others.ByDate.Reverse }}
+    <nav class="dgs-blog-next" aria-label="Đọc tiếp trong Blog">
+      <h2>Đọc tiếp</h2>
+      {{ range . }}<a href="{{ .RelPermalink }}"><span>{{ .Title }}</span><span aria-hidden="true">→</span></a>{{ end }}
+    </nav>
+    {{ end }}
+  </main>
+</div>
+{{ end }}

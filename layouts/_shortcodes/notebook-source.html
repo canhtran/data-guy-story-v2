@@ -1,0 +1,77 @@
+{{- $slug := .Get "path" -}}
+{{- $config := index hugo.Data.notebooklm.paths $slug -}}
+{{- $path := site.GetPage (printf "/learning-paths/%s" $slug) -}}
+{{- if not (and $config $path) -}}{{ errorf "Missing NotebookLM path: %s" $slug }}{{- end -}}
+{{ $publicURL := printf "%slearning-paths/%s/hoc-cung-ai/" hugo.Data.notebooklm.public_base_url $slug }}
+<div class="dgs-notebook-welcome">
+  <span class="dgs-eyebrow">HỌC CÙNG AI · NGUỒN {{ hugo.Data.notebooklm.version }}</span>
+  <p class="dgs-lead">Mở notebook của bạn, thêm link bên dưới, rồi dán prompt mentor. Mình đã gom bài đọc và hướng dẫn vào trang này để bạn có thể bắt đầu từng bước.</p>
+  <ol class="dgs-notebook-steps"><li><strong>Thêm nguồn</strong><span>Sao chép link, chọn Add sources → Website trong NotebookLM.</span></li><li><strong>Gặp mentor</strong><span>Dán prompt “Bắt đầu học” vào chat và trả lời về môi trường của bạn.</span></li><li><strong>Làm rồi kiểm tra</strong><span>Tự chạy trên máy, gửi kết quả, lưu nhật ký sau mỗi buổi.</span></li></ol>
+  <div class="dgs-copy-box"><code id="notebook-public-url">{{ $publicURL }}</code><button type="button" class="dgs-button" data-notebook-copy="notebook-public-url">Sao chép link nguồn</button><span role="status" aria-live="polite"></span></div>
+  <p class="dgs-notebook-note">Link cần được xuất bản trên website công khai trước khi Google đọc được. Localhost không dùng được. <a href="{{ (site.GetPage "/learning-paths/hoc-cung-notebooklm").RelPermalink }}">Hướng dẫn nhập nguồn</a>.</p>
+</div>
+<nav class="dgs-notebook-nav" aria-label="Các phần của trang nguồn"><a href="#mentor">Prompt mentor</a><a href="#lo-trinh">Lộ trình & bài thực hành</a><a href="#wiki">Bài đọc</a><a href="#nhat-ky">Lưu tiến độ</a></nav>
+<h2 id="mentor">Chọn prompt cho việc bạn đang làm</h2>
+<p>Thêm trang nguồn vào notebook trước, rồi sao chép prompt và dán vào <strong>chat</strong>. Bắt đầu với prompt đầu tiên; các prompt còn lại dùng khi cần. Bạn có thể đọc và chọn văn bản để sao chép thủ công.</p>
+{{ $prompts := slice
+  (dict "id" "start" "title" "1. Bắt đầu học" "note" "Gặp mentor, xác định điểm bắt đầu và học từng bước.")
+  (dict "id" "setup" "title" "2. Cài đặt môi trường" "note" "Kiểm tra công cụ đã có và cài theo hệ điều hành của bạn.")
+  (dict "id" "debug" "title" "3. Gỡ lỗi khi bị kẹt" "note" "Gửi lệnh và thông báo lỗi; kiểm tra từng giả thuyết.")
+  (dict "id" "review" "title" "4. Kiểm tra kết quả" "note" "Đối chiếu checkpoint bằng code, đầu ra và giải thích của bạn.")
+  (dict "id" "project" "title" "5. Làm dự án cuối khóa" "note" "Chọn tình huống, viết brief và kiểm chứng sản phẩm tự làm.")
+  (dict "id" "resume" "title" "6. Tiếp tục buổi trước" "note" "Dán nhật ký để bắt đầu lại đúng chỗ.")
+}}
+{{ range $prompts }}
+<details class="dgs-prompt-card" {{ if eq .id "start" }}open{{ end }}>
+  <summary>{{ .title }}</summary><p>{{ .note }}</p>
+  <div class="dgs-copy-box"><button type="button" class="dgs-button" data-notebook-copy="prompt-{{ .id }}">Sao chép prompt</button><span role="status" aria-live="polite"></span></div>
+  <pre class="dgs-mentor-prompt"><code id="prompt-{{ .id }}">{{ (resources.Get (printf "text/learning-%s.txt" .id)).Content }}</code></pre>
+</details>
+{{ end }}
+<h2 id="lo-trinh">Lộ trình và nội dung thực hành</h2>
+<p><strong>{{ $path.Title }}</strong> · <a href="{{ $path.RelPermalink }}">Xem mục tiêu và dự án của lộ trình</a>. Nội dung học miễn phí. Công cụ dữ liệu chạy trên máy bạn; AI trong trình duyệt có thể dùng dịch vụ online và có giới hạn lượt sử dụng.</p>
+{{ if eq $slug "nhap-mon-data-engineering" }}
+  {{ .Page.RenderString (dict "display" "block") (resources.Get "learning/intro-session.md").Content }}
+{{ else }}
+<h3 id="bai-thu">Bài thử</h3><p>{{ $config.question }}</p>
+<details><summary>Đối chiếu sau khi tự thử</summary><p>{{ $config.check }}</p></details>
+<p>Gói nguồn hiện hỗ trợ đọc và bài tập thiết kế. Lab cài đặt toàn bộ stack của lộ trình đang được biên soạn. Mentor cần hỏi hệ điều hành và công cụ đã có, rồi đối chiếu hướng dẫn chính thức trước khi đề xuất thao tác.</p>
+{{ end }}
+<h2 id="wiki">Các bài Wiki dùng trong buổi học</h2>
+{{ range $index, $ref := $config.references }}
+  {{ with site.GetPage $ref }}
+    {{ if .Draft }}{{ errorf "NotebookLM source must not include a draft: %s" $ref }}{{ end }}
+    <section class="dgs-notebook-reading" aria-labelledby="reading-{{ $index }}">
+      <h3 id="reading-{{ $index }}">{{ .Title }}</h3>
+      <p><strong>Nguồn gốc:</strong> <a href="{{ .RelPermalink }}">{{ .Title }}</a>. Nội dung dưới đây là bản sao bài Wiki tại lúc website được build.</p>
+      {{ $content := .Content }}
+      {{ $origin := .RelPermalink }}
+      {{/* Rebase relative links from the original article to this source page. */}}
+      {{ range findRE `href="[^"]+"` $content }}
+        {{ $attribute := . }}
+        {{ $href := replaceRE `^href="(.*)"$` "$1" $attribute }}
+        {{ if not (or (hasPrefix $href "/") (hasPrefix $href "#") (in $href ":")) }}
+          {{ $content = replace $content $attribute (printf `href="%s"` (path.Clean (printf "%s%s" $origin $href))) }}
+        {{ end }}
+      {{ end }}
+      {{/* Wiki headings may repeat across articles: give each excerpt its own IDs. */}}
+      {{ $content = replaceRE `id="([^"]+)"` (printf `id="reading-%d-${1}"` $index) $content }}
+      {{ $content = replaceRE `href="#([^"]+)"` (printf `href="#reading-%d-${1}"` $index) $content }}
+      {{ $content | safeHTML }}
+    </section>
+  {{ else }}{{ errorf "Missing NotebookLM reference: %s" $ref }}{{ end }}
+{{ end }}
+<h2 id="nhat-ky">Nhật ký mang sang buổi sau</h2>
+<p>Cuối buổi, nhờ mentor điền mẫu này bằng kết quả thật. Lưu trong ghi chú của bạn; buổi sau dán vào prompt “Tiếp tục buổi trước”. Không lưu mật khẩu hoặc token.</p>
+<div class="dgs-copy-box"><button type="button" class="dgs-button" data-notebook-copy="learning-journal">Sao chép mẫu nhật ký</button><span role="status" aria-live="polite"></span></div>
+<pre class="dgs-mentor-prompt"><code id="learning-journal">Lộ trình / phiên bản nguồn:
+Ngày học / thời gian:
+Hệ điều hành / phiên bản công cụ đã kiểm tra:
+Checkpoint đang làm:
+Lệnh và đầu ra thực tế:
+Điều mình giải thích được:
+Ca kiểm tra bổ sung:
+Lỗi còn kẹt:
+Bước tiếp theo:</code></pre>
+{{ $script := resources.Get "js/notebook-copy.js" | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>

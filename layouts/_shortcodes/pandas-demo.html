@@ -1,0 +1,11 @@
+{{ $lesson := resources.Get "learning/pandas-cafe-demo.md" }}
+{{ $download := resources.Copy "downloads/pandas-cafe-demo.md" $lesson }}
+{{ $mentor := resources.Get "text/pandas-demo-mentor.txt" }}
+<p><a class="dgs-button" href="{{ $download.RelPermalink }}" download>Tải nguồn Markdown để nhập NotebookLM</a></p>
+<p>URL sau khi xuất bản: <code>https://dataguystory.com/learning-paths/pandas-cafe-demo/</code></p>
+<h2>Prompt mentor — sao chép sau khi nhập nguồn</h2>
+<div class="dgs-copy-box"><button type="button" class="dgs-button" data-notebook-copy="pandas-demo-mentor">Sao chép prompt mentor</button><span role="status" aria-live="polite"></span></div>
+<pre class="dgs-mentor-prompt"><code id="pandas-demo-mentor">{{ $mentor.Content }}</code></pre>
+{{ .Page.RenderString (dict "display" "block") $lesson.Content }}
+{{ $script := resources.Get "js/notebook-copy.js" | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>

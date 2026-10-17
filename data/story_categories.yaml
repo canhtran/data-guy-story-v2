@@ -1,0 +1,16 @@
+- title: Kiến trúc hệ thống
+  question: Vì sao họ chọn cách thiết kế này?
+  description: Bối cảnh, giới hạn và những đánh đổi phía sau một kiến trúc dữ liệu.
+  page: /stories/architecture
+- title: Sự cố production
+  question: Điều gì đã hỏng, và họ phục hồi ra sao?
+  description: Triệu chứng, nguyên nhân, cách xử lý và thay đổi sau sự cố.
+  page: /stories/incidents
+- title: Chuyển đổi hệ thống
+  question: Chuyển từ hệ thống cũ sang mới thế nào?
+  description: Di chuyển dữ liệu, chạy song song, kiểm chứng và kế hoạch quay lại.
+  page: /stories/migrations
+- title: Mở rộng hệ thống
+  question: Điều gì thay đổi khi dữ liệu lớn lên?
+  description: Hiệu năng, chi phí và vận hành khi nhu cầu tăng.
+  page: /stories/scaling

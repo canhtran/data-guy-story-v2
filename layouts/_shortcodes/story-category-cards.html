@@ -1,0 +1,21 @@
+<div class="dgs-story-grid">
+  {{ range hugo.Data.story_categories }}
+    {{ $item := . }}
+    {{ $page := site.GetPage $item.page }}
+    {{ if and $page (gt (len $page.RegularPages) 0) }}
+      <a class="dgs-story-card" href="{{ $page.RelPermalink }}">
+        <strong>{{ $item.title }}</strong>
+        <span class="dgs-story-question">{{ $item.question }}</span>
+        <span>{{ $item.description }}</span>
+        <span class="dgs-route-link">Đọc các câu chuyện →</span>
+      </a>
+    {{ else }}
+      <div class="dgs-story-card">
+        <strong>{{ $item.title }}</strong>
+        <span class="dgs-story-question">{{ $item.question }}</span>
+        <span>{{ $item.description }}</span>
+        <span class="dgs-status">Đang chuẩn bị</span>
+      </div>
+    {{ end }}
+  {{ end }}
+</div>

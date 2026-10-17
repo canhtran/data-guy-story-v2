@@ -1,12 +1,12 @@
 ---
 title: "SQL"
 description: "Tài liệu tham khảo về SQL dành cho Data Engineer."
-draft: true
+draft: false
 contentType: "hub"
 weight: 3
 ---
 
-Tra cứu các bài trong Sổ tay về SQL.
+Bắt đầu từ một bảng đơn hàng nhỏ: lọc đúng dòng, nối bảng mà không cộng trùng, rồi đọc kế hoạch truy vấn. Các bài dùng chung dữ liệu giả lập để bạn chạy thử trên máy mình.
 
 ## Bài viết
 
@@ -18,4 +18,4 @@ Tra cứu các bài trong Sổ tay về SQL.
 
 ## Lộ trình học
 
-- [Nền tảng Data Engineer]({{< relref "/learning-paths/data-engineer-foundation.md" >}})
+Bạn có thể xem [Nhập môn Data Engineering]({{< relref "/learning-paths/nhap-mon-data-engineering/_index.md" >}}) để biết SQL nằm ở đâu trong một dự án pipeline.

@@ -1,0 +1,22 @@
+{{- $stories := where .RegularPagesRecursive "Params.contenttype" "story" -}}
+{{- $stories = $stories.ByDate.Reverse -}}
+{{- $paginator := .Paginate $stories (site.Params.stories.list.pagerSize | default 10) -}}
+{{- if $stories -}}
+  {{- if eq .RelPermalink (.Site.GetPage "/stories").RelPermalink }}<h2>Câu chuyện mới</h2>{{ end -}}
+  <div class="dgs-story-list">
+    {{- range $paginator.Pages }}
+      <article class="dgs-story-entry">
+        <div class="dgs-story-meta">
+          {{ with .Params.source_publisher }}<span>Nguồn: {{ . }}</span>{{ end }}
+          {{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>{{ end }}
+        </div>
+        <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>
+        {{ with .Description }}<p>{{ . }}</p>{{ end }}
+        <a class="dgs-route-link" href="{{ .RelPermalink }}">Đọc câu chuyện <span aria-hidden="true">→</span></a>
+      </article>
+    {{- end }}
+  </div>
+  {{ if gt $paginator.TotalPages 1 }}{{ partial "components/blog-pager.html" $paginator }}{{ end }}
+{{- else }}
+  <div class="dgs-story-empty"><strong>Những câu chuyện đầu tiên đang được chuẩn bị.</strong><p>Chưa có bài nào được xuất bản. Bạn có thể xem các chủ đề dự kiến bên dưới hoặc ghé Wiki trong lúc chờ.</p></div>
+{{- end }}

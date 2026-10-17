@@ -1,0 +1,70 @@
+public_base_url: https://dataguystory.com/
+version: "0.2"
+paths:
+  nhap-mon-data-engineering:
+    references:
+      - /wiki/bat-dau/data-engineer-la-gi
+      - /wiki/bat-dau/du-lieu-di-qua-he-thong-nhu-the-nao
+      - /wiki/nen-tang/python/overview
+      - /wiki/nen-tang/python/files-and-json
+      - /wiki/nen-tang/python/errors-and-logging
+      - /wiki/nen-tang/sql/overview
+      - /wiki/nen-tang/sql/join
+      - /wiki/nen-tang/sql/cte
+      - /wiki/nen-tang/database/overview
+      - /wiki/data-engineering/data-quality
+      - /wiki/data-engineering/idempotency
+    question: "Một ngày có ba đơn: hoàn tất 40000 đồng, hủy 50000 đồng, hoàn tất 60000 đồng. Nếu chỉ tính đơn hoàn tất, doanh thu và số đơn là bao nhiêu?"
+    check: "100000 đồng, 2 đơn. Đây là dữ liệu giả lập tính bằng tay; chưa phải lab PostgreSQL của toàn khóa."
+  data-engineering-thuc-chien:
+    references:
+      - /wiki/nen-tang/data-modeling/overview
+      - /wiki/nen-tang/data-modeling/fact-and-dimension
+      - /wiki/nen-tang/data-modeling/star-schema
+      - /wiki/nen-tang/data-modeling/slowly-changing-dimension
+      - /wiki/data-engineering/data-warehouse
+      - /wiki/data-engineering/change-data-capture
+      - /wiki/data-engineering/backfill
+      - /wiki/data-engineering/orchestration
+    question: "Một đơn 100000 đồng có hai lần thử thanh toán: một thất bại, một thành công. JOIN hai bảng rồi cộng tiền đơn sẽ ra bao nhiêu? Bạn sẽ giữ grain của báo cáo thế nào?"
+    check: "JOIN trực tiếp cả hai lần thử làm tổng thành 200000 đồng. Tổng đơn đúng là 100000 đồng. Cần định nghĩa báo cáo và tránh nhân dòng, chẳng hạn kiểm tra tồn tại thanh toán thành công khi chỉ cần biết đã thu tiền. Chưa có lab dbt/Airflow trong trang này."
+  spark-lakehouse:
+    references:
+      - /wiki/technologies/spark/overview
+      - /wiki/technologies/spark/dataframe
+      - /wiki/technologies/spark/structured-streaming
+      - /wiki/nen-tang/distributed-systems/overview
+      - /wiki/nen-tang/distributed-systems/partitioning
+      - /wiki/data-engineering/data-lake
+      - /wiki/data-engineering/lakehouse
+      - /wiki/data-engineering/file-formats
+      - /wiki/data-engineering/table-formats
+      - /wiki/data-engineering/schema-evolution
+      - /wiki/data-engineering/idempotency
+    question: "Bạn đọc một thư mục có 100 file Parquet. Writer thay thế 20 file trong lúc bạn đang đọc. Chỉ dùng tên thư mục đã đủ để đảm bảo báo cáo đọc một phiên bản nhất quán chưa? Hãy giải thích snapshot sẽ giúp ở đâu."
+    check: "Chỉ có thư mục không xác định một snapshot nguyên tử. Table format có thể chỉ rõ tập file của một snapshot được commit; còn cần engine, catalog và cơ chế commit tương thích. Chưa có lab Spark/Iceberg trong trang này."
+  streaming-engineering:
+    references:
+      - /wiki/technologies/kafka/overview
+      - /wiki/technologies/flink/overview
+      - /wiki/technologies/flink/watermark
+      - /wiki/data-engineering/batch-vs-streaming
+      - /wiki/data-engineering/stream-processing
+      - /wiki/data-engineering/idempotency
+      - /wiki/nen-tang/distributed-systems/consistency
+      - /wiki/nen-tang/distributed-systems/fault-tolerance
+      - /wiki/data-engineering/data-contract
+      - /wiki/data-engineering/data-observability
+    question: "Sự kiện giao hàng xảy ra lúc 10:02 nhưng tới hệ thống lúc 10:08. Bạn muốn báo cáo theo thời điểm giao hàng. Cần dùng thời gian nào, và báo cáo 10:00–10:05 có thể cần sửa lại không?"
+    check: "Phân nhóm theo event time 10:02. Cần chính sách dữ liệu đến muộn và cập nhật kết quả; không thể chọn một watermark hợp lý nếu chưa có yêu cầu độ trễ và phân bố đến muộn. Chưa có lab Kafka/Flink trong trang này."
+  data-platform-engineering:
+    references:
+      - /wiki/data-engineering/data-contract
+      - /wiki/data-engineering/metadata
+      - /wiki/data-engineering/data-catalog
+      - /wiki/data-engineering/data-lineage
+      - /wiki/data-engineering/orchestration
+      - /wiki/data-engineering/data-observability
+      - /wiki/nen-tang/distributed-systems/fault-tolerance
+    question: "Hai team chạy job trên cùng máy. Team A cần đọc bảng của mình nhưng không được sửa dữ liệu Team B. Việc có hai thư mục riêng đã đủ chưa? Hãy liệt kê những ranh giới cần kiểm tra."
+    check: "Thư mục riêng không tự đảm bảo quyền database, quyền file, secret hay giới hạn tài nguyên. Cần quyền được thực thi và thử cả truy cập được phép lẫn bị từ chối. Chưa có lab platform hoặc cấu hình phân quyền hoàn chỉnh trong trang này."

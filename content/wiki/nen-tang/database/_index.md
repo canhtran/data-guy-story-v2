@@ -1,12 +1,12 @@
 ---
 title: "Cơ sở dữ liệu"
 description: "Tài liệu tham khảo về Cơ sở dữ liệu dành cho Data Engineer."
-draft: true
+draft: false
 contentType: "hub"
 weight: 2
 ---
 
-Tra cứu các bài trong Sổ tay về Cơ sở dữ liệu.
+Một database giúp mình lưu dữ liệu, đặt ràng buộc và quản lý những thay đổi xảy ra cùng lúc. Nhóm bài này đi từ các bảng quen thuộc đến index, transaction và isolation.
 
 ## Bài viết
 
@@ -19,4 +19,4 @@ Tra cứu các bài trong Sổ tay về Cơ sở dữ liệu.
 
 ## Lộ trình học
 
-- [Nền tảng Data Engineer]({{< relref "/learning-paths/data-engineer-foundation.md" >}})
+Xem [Data Engineering thực chiến]({{< relref "/learning-paths/data-engineering-thuc-chien/_index.md" >}}) để biết database và warehouse sẽ được dùng thế nào trong dự án.

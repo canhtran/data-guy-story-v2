@@ -1,0 +1,12 @@
+{{- $slug := .Get "path" -}}
+{{- with site.GetPage (printf "/learning-paths/%s/hoc-cung-ai" $slug) -}}
+{{- $url := printf "%slearning-paths/%s/hoc-cung-ai/" hugo.Data.notebooklm.public_base_url $slug -}}
+<aside class="dgs-notebook-card" aria-label="Học cùng NotebookLM">
+  <span class="dgs-eyebrow">HỌC CÙNG NOTEBOOKLM · MIỄN PHÍ</span>
+  <h3>Mang lộ trình vào notebook của bạn</h3>
+  <p>Một trang nguồn gồm lộ trình, các bài Wiki, bài thử và prompt mentor. Bạn thêm link vào NotebookLM rồi bắt đầu trò chuyện; không cần tải gói tài liệu.</p>
+  <a class="dgs-button" href="{{ .RelPermalink }}">Mở trang nguồn và prompt →</a>
+  <p class="dgs-notebook-url">Link để thêm vào notebook: <code>{{ $url }}</code></p>
+  <p class="dgs-notebook-note">Bản dùng thử, chưa có bộ lab đầy đủ. NotebookLM chỉ đọc được link khi trang đã được xuất bản công khai; link localhost không dùng được.</p>
+</aside>
+{{- else -}}{{ errorf "Missing NotebookLM source page for %s" $slug }}{{- end -}}
