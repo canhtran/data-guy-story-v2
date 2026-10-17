@@ -10,11 +10,11 @@ prerequisites: ["data-engineer-la-gi", "du-lieu-di-qua-he-thong-nhu-the-nao"]
 related: ["hoc-data-engineering-tu-dau"]
 ---
 
-AI có thể viết một câu SQL trong vài giây, giải thích error message và tạo sẵn một **Data Pipeline** (luồng xử lý data). Vậy người mới còn cần học những kiến thức nền tảng không?
+AI có thể viết một câu SQL trong vài giây, giải thích error message và tạo sẵn một Data Pipeline (luồng xử lý data). Vậy người mới còn cần học những kiến thức nền tảng không?
 
 Câu trả lời của mình là có.
 
-**AI** (trí tuệ nhân tạo) là một assistant rất hữu ích. Nó giúp mình đi nhanh hơn, nhưng không chịu trách nhiệm khi report sai doanh thu, pipeline tạo data trùng hay thông tin khách hàng bị đưa nhầm cho người không nên xem.
+AI (trí tuệ nhân tạo) là một assistant rất hữu ích. Nó giúp mình đi nhanh hơn, nhưng không chịu trách nhiệm khi report sai doanh thu, pipeline tạo data trùng hay thông tin khách hàng bị đưa nhầm cho người không nên xem.
 
 Điểm khó là câu trả lời sai của AI thường trông khá hợp lý. Code có thể chạy thành công, câu giải thích có vẻ tự tin và dashboard vẫn hiện ra một con số. Nếu không hiểu phần nền tảng, mình không có cách nào biết nên tin phần nào.
 
@@ -30,7 +30,7 @@ flowchart TD
 
 ## Code chạy được vẫn có thể cho kết quả sai
 
-Giả sử bảng `orders` có một đơn hàng:
+Giả sử mình cần tính doanh thu từ bảng `orders`. Để ví dụ gọn, các đơn trong bảng đều đã đủ điều kiện ghi nhận doanh thu, và số tiền tính bằng VND. Ban đầu chỉ có một đơn:
 
 | order_id | total_amount |
 | --- | ---: |
@@ -53,11 +53,34 @@ JOIN order_items i ON o.order_id = i.order_id;
 
 Kết quả là `240,000`, trong khi doanh thu thật chỉ có `120,000`. Vì một order nối với hai item, `total_amount` đã bị tính hai lần.
 
-AI không thể tự biết `total_amount` đang ở cấp order hay item nếu mình không nói rõ. Kiến thức về **Grain** (mỗi row đại diện cho điều gì) và SQL JOIN giúp mình phát hiện vấn đề này.
+AI không thể tự biết `total_amount` đang ở cấp order hay item nếu mình không nói rõ. Kiến thức về Grain (mỗi row đại diện cho điều gì) và SQL JOIN giúp mình phát hiện vấn đề này.
+
+Với yêu cầu này, số tiền đã nằm sẵn ở cấp đơn. Mình chỉ cần cộng trực tiếp từ `orders`:
+
+```sql
+SELECT SUM(total_amount) AS revenue
+FROM orders;
+```
+
+Bây giờ thêm hai đơn nữa: `ORD-1043` cũng có giá 120,000 VND, với một item; `ORD-1044` có giá 50,000 VND nhưng chưa có item. Tổng ba đơn là 290,000 VND.
+
+Nếu yêu cầu đổi thành “chỉ tính những đơn có item”, mình mới cần nhìn sang `order_items`. Dùng `EXISTS` giúp kiểm tra đơn có item hay không, mà vẫn giữ mỗi đơn một lần:
+
+```sql
+SELECT SUM(o.total_amount) AS revenue
+FROM orders o
+WHERE EXISTS (
+    SELECT 1 FROM order_items i WHERE i.order_id = o.order_id
+);
+```
+
+Kết quả lúc này là 240,000 VND, gồm `ORD-1042` và `ORD-1043`.
+
+Một cách sửa dễ nghĩ đến là thêm `DISTINCT` vào `SUM`. Nhưng hai đơn khác nhau hoàn toàn có thể cùng giá tiền. `SUM(DISTINCT total_amount)` sẽ gộp cả hai giá trị 120,000 thành một: tính trên bảng `orders` chỉ còn 170,000, còn tính sau INNER JOIN chỉ còn 120,000. Query hết cộng lặp một số tiền, nhưng lại bỏ mất một đơn thật.
 
 ## Pipeline chạy lại có thể làm data bị trùng
 
-AI có thể viết một chương trình đọc file đơn hàng rồi `INSERT` tất cả row vào **Database** (cơ sở dữ liệu). Lần đầu chương trình chạy đúng:
+AI có thể viết một chương trình đọc file đơn hàng rồi `INSERT` tất cả row vào Database (cơ sở dữ liệu). Lần đầu chương trình chạy đúng:
 
 | Lần chạy | Số order trong file | Số row trong bảng sau khi chạy |
 | --- | ---: | ---: |
@@ -69,7 +92,7 @@ Pipeline bị lỗi ở bước sau nên bạn chạy lại. Nếu code không x
 | --- | ---: | ---: |
 | Lần 2 | 1,000 | 2,000 |
 
-Để review đoạn code đó, mình cần hiểu **Idempotency** (khả năng chạy lại mà không tạo thêm kết quả ngoài ý muốn), **Primary Key** (khoá chính giúp nhận diện mỗi row) và cách cập nhật data đã tồn tại. Prompt tốt hơn có thể yêu cầu AI thiết kế pipeline an toàn khi chạy lại, nhưng mình vẫn cần test để xác nhận.
+Để review đoạn code đó, mình cần hiểu Idempotency (khả năng chạy lại mà không tạo thêm kết quả ngoài ý muốn), Primary Key (khoá chính giúp nhận diện mỗi row) và cách cập nhật data đã tồn tại. Prompt tốt hơn có thể yêu cầu AI thiết kế pipeline an toàn khi chạy lại, nhưng mình vẫn cần test để xác nhận.
 
 ## AI không biết hết context của công ty
 
@@ -97,7 +120,7 @@ Nếu hỏi cách xây pipeline “có thể scale”, AI có thể đề xuất
 | Nếu trễ một giờ thì sao? | Biết mức độ tin cậy thật sự cần thiết |
 | Team có thể vận hành công nghệ nào? | Tránh xây hệ thống không ai bảo trì được |
 
-Kiến thức về Database, **Data Warehouse** (kho dữ liệu) và **Distributed Systems** (hệ thống phân tán) giúp mình đánh giá đề xuất của AI thay vì chọn kiến trúc chỉ vì nó nghe hiện đại.
+Kiến thức về Database, Data Warehouse (kho dữ liệu) và Distributed Systems (hệ thống phân tán) giúp mình đánh giá đề xuất của AI thay vì chọn kiến trúc chỉ vì nó nghe hiện đại.
 
 ## AI giúp Data Engineer làm gì tốt hơn?
 
@@ -116,25 +139,13 @@ AI làm tốt phần tạo bản nháp và mở rộng lựa chọn. Data Engine
 
 ## Một cách làm việc thực tế với AI
 
-### 1. Nói rõ bài toán
+Thay vì chỉ hỏi “viết giúp tôi một pipeline tốt”, hãy đưa cấu trúc table, vài row mẫu và kết quả mình cần. Với lỗi JOIN ở trên, những mã đơn và số tiền giả lập đã đủ để mô tả vấn đề. Không cần đưa thêm tên, số điện thoại hay thông tin thanh toán thật của khách hàng.
 
-Cho AI biết cấu trúc table, một vài row mẫu, kết quả mong muốn và giới hạn của hệ thống. Đừng chỉ hỏi “viết giúp tôi một pipeline tốt”.
+Khi nhận được code, mình có thể hỏi lại những giả định phía sau: mỗi `order_id` có duy nhất không, thời gian dùng múi giờ nào, chạy lần hai sẽ ra sao? Những câu trả lời này giúp mình biết cần kiểm tra chỗ nào trước.
 
-### 2. Yêu cầu AI nói ra giả định
+Rồi chạy thử với vài row có thể tính bằng tay. Ba đơn ở trên phải ra 290,000 VND nếu tính tất cả, hoặc 240,000 VND nếu chỉ tính đơn có item. Sau đó mới thêm các trường hợp như data trùng, field bị thiếu hay lỗi giữa chừng.
 
-Ví dụ: mỗi `order_id` có duy nhất không, timezone nào đang được dùng, pipeline có cần chạy lại hay không. Giả định càng rõ, mình càng dễ kiểm tra.
-
-### 3. Bắt đầu bằng ví dụ nhỏ
-
-Dùng vài row mà mình có thể tự tính bằng tay. Với ví dụ doanh thu ở trên, mình biết đáp án phải là `120,000` trước khi chạy query.
-
-### 4. Kiểm tra trường hợp không đẹp
-
-Thử data trùng, field bị thiếu, giá trị bằng `NULL`, pipeline lỗi giữa chừng hoặc Source System đổi cấu trúc. Production hiếm khi chỉ có data đẹp như ví dụ.
-
-### 5. Đọc phần mình chuẩn bị sử dụng
-
-Nếu không giải thích được đoạn code đang làm gì, mình chưa nên đưa nó vào production. Có thể tiếp tục hỏi AI từng phần, đọc tài liệu gốc hoặc nhờ đồng đội review.
+Nếu vẫn chưa giải thích được một đoạn code đang làm gì, mình cần đọc thêm hoặc nhờ người khác review trước khi sử dụng. AI có thể tiếp tục giúp giải thích từng phần, nhưng việc chấp nhận kết quả vẫn là quyết định của mình.
 
 ## Nên học gì khi đã có AI?
 
@@ -142,10 +153,10 @@ AI làm thay đổi cách học, nhưng chưa làm các kiến thức nền tả
 
 - SQL để kiểm tra logic và kết quả.
 - Database để hiểu data được lưu, thay đổi và truy vấn ra sao.
-- Data Warehouse và **Data Modeling** (mô hình hoá data) để biết đầu ra nên được tổ chức thế nào.
+- Data Warehouse và Data Modeling (mô hình hoá data) để biết đầu ra nên được tổ chức thế nào.
 - Data Pipeline để hiểu data di chuyển và có thể hỏng ở đâu.
-- **Data Quality** (chất lượng data) để xác định thế nào là data đủ tin cậy.
-- **Monitoring** (theo dõi hệ thống) để biết hệ thống đang hoạt động hay chỉ trông có vẻ đang hoạt động.
+- Data Quality (chất lượng data) để xác định thế nào là data đủ tin cậy.
+- Monitoring (theo dõi hệ thống) để biết hệ thống đang hoạt động hay chỉ trông có vẻ đang hoạt động.
 
 Bạn không cần nhớ mọi cú pháp. AI rất giỏi hỗ trợ phần đó. Phần đáng học sâu là những nguyên tắc giúp mình đặt câu hỏi đúng và nhận ra một kết quả sai.
 
@@ -154,3 +165,5 @@ Bạn không cần nhớ mọi cú pháp. AI rất giỏi hỗ trợ phần đó
 AI có thể là một assistant rất nhanh, nhưng tốc độ không thay thế được khả năng đánh giá. Kiến thức nền tảng giúp Data Engineer cung cấp context tốt hơn, kiểm tra câu trả lời và chịu trách nhiệm cho kết quả cuối cùng.
 
 Mục tiêu không phải làm mọi thứ mà không dùng AI. Mục tiêu là dùng AI mà vẫn biết mình đang làm gì.
+
+Nếu đang cân nhắc nên dành thời gian học phần nào trước, bạn có thể đọc tiếp [Học Data Engineering từ đâu?]({{< relref "/wiki/bat-dau/hoc-data-engineering-tu-dau.md" >}}).

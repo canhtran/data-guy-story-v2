@@ -6,7 +6,7 @@ contentType: "learning-path"
 weight: 5
 ---
 
-Lộ trình gợi ý thứ tự đọc các bài trong Sổ tay; nội dung chi tiết nằm trong từng bài được liên kết.
+Lộ trình gợi ý thứ tự đọc các bài trong Wiki; nội dung chi tiết nằm trong từng bài được liên kết.
 
 ## Phù hợp với ai?
 

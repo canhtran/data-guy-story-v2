@@ -27,11 +27,11 @@ outputs:
 
 menu:
   main:
-    - name: Sổ tay
-      pageRef: /wiki
-      weight: 1
     - name: Lộ trình học
       pageRef: /learning-paths
+      weight: 1
+    - name: Wiki
+      pageRef: /wiki
       weight: 2
     - name: Chuyện thực tế
       pageRef: /stories
@@ -55,7 +55,7 @@ menu:
         icon: facebook
 
 params:
-  description: "Sổ tay Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và những câu chuyện kỹ thuật thực tế."
+  description: "Wiki Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và những câu chuyện kỹ thuật thực tế."
 
   navbar:
     displayTitle: true
@@ -70,6 +70,10 @@ params:
   blog:
     list:
       displayTags: true
+      pagerSize: 10
+
+  stories:
+    list:
       pagerSize: 10
 
   footer:

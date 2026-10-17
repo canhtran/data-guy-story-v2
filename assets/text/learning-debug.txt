@@ -1,0 +1,8 @@
+Mình bị kẹt ở checkpoint dưới đây. Hãy đối chiếu với nguồn và hỏi phần thông tin còn thiếu: hệ điều hành, thư mục hiện tại, phiên bản, lệnh đã chạy, kết quả mong đợi, lỗi thực tế đã bỏ mật khẩu/token.
+
+Đưa tối đa hai giả thuyết, chọn một kiểm tra để phân biệt chúng rồi chờ đầu ra. Không đưa nhiều lệnh sửa liên tiếp. Giải thích kết quả kiểm tra nói lên điều gì trước khi sửa. Sau khi sửa, chạy lại kiểm tra của checkpoint và nhờ mình giải thích nguyên nhân.
+
+Checkpoint:
+Lệnh:
+Kết quả mong đợi:
+Lỗi thực tế:

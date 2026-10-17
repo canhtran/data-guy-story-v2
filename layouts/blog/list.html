@@ -1,0 +1,27 @@
+{{ define "main" }}
+<div class="hx:mx-auto hx:flex hextra-max-page-width">
+  {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" false) }}
+  <main id="content" class="dgs-blog-shell">
+    <header class="dgs-blog-header">
+      <span class="dgs-eyebrow">CHUYỆN HỌC VÀ LÀM NGHỀ</span>
+      <h1>{{ .Title }}</h1>
+      <div class="content">{{ .Content }}</div>
+    </header>
+    {{ $paginator := .Paginate .RegularPages.ByDate.Reverse (site.Params.blog.list.pagerSize | default 10) }}
+    <div class="dgs-blog-list">
+      {{ range $paginator.Pages }}
+      <article class="dgs-blog-entry">
+        <div class="dgs-blog-meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>
+          {{ range .GetTerms "tags" }}<a class="dgs-blog-tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+        </div>
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <p>{{ partial "utils/page-description" . | plainify | truncate 240 }}</p>
+        <a class="dgs-route-link" href="{{ .RelPermalink }}" aria-label="Đọc bài {{ .Title }}">Đọc bài <span aria-hidden="true">→</span></a>
+      </article>
+      {{ end }}
+    </div>
+    {{ if gt $paginator.TotalPages 1 }}{{ partial "components/blog-pager.html" $paginator }}{{ end }}
+  </main>
+</div>
+{{ end }}

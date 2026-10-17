@@ -1,41 +1,39 @@
 ---
 title: "Apache Flink"
 description: "Tài liệu tham khảo về Apache Flink dành cho Data Engineer."
-draft: true
+draft: false
 contentType: "hub"
 weight: 8
 ---
 
-Tài liệu tham khảo về Apache Flink dành cho Data Engineer.
-
-TODO: Bổ sung giới thiệu ngắn về công nghệ và phạm vi của hub.
+Flink xử lý luồng dữ liệu có trạng thái. Các bài dưới đây đi từ execution graph tới event time và phục hồi. Nội dung đối chiếu Flink 1.20.3 với ví dụ kiểm tra bằng tay. Hướng dẫn cài local, connector và lab phục hồi thực tế còn đang biên soạn; chưa coi đây là bộ lab đã kiểm thử.
 
 ## Bắt đầu
 
 - [Flink là gì?]({{< relref "/wiki/technologies/flink/overview.md" >}})
 
-## Core Concepts
+## Khái niệm chính
 
 - [Kiến trúc Flink]({{< relref "/wiki/technologies/flink/architecture.md" >}})
 - [Job, Operator, Task và Subtask]({{< relref "/wiki/technologies/flink/job-operator-task-subtask.md" >}})
 - [Mức độ song song trong Flink]({{< relref "/wiki/technologies/flink/parallelism.md" >}})
 - [Trạng thái trong Flink]({{< relref "/wiki/technologies/flink/state.md" >}})
 
-## Time & Streaming
+## Thời gian và luồng dữ liệu
 
 - [Thời gian sự kiện trong Flink]({{< relref "/wiki/technologies/flink/event-time.md" >}})
 - [Watermark trong Flink]({{< relref "/wiki/technologies/flink/watermark.md" >}})
 
-## Fault Tolerance
+## Phục hồi khi lỗi
 
 - [Checkpoint trong Flink]({{< relref "/wiki/technologies/flink/checkpoint.md" >}})
 - [Savepoint trong Flink]({{< relref "/wiki/technologies/flink/savepoint.md" >}})
 - [Xử lý đúng một lần trong Flink]({{< relref "/wiki/technologies/flink/exactly-once.md" >}})
 
-## Production
+## Vận hành
 
 - [Áp lực ngược trong Flink]({{< relref "/wiki/technologies/flink/backpressure.md" >}})
 
-## Learning Path
+## Lộ trình liên quan
 
-- [Học Flink từ đầu]({{< relref "/learning-paths/flink.md" >}})
+- [Streaming Engineering — lộ trình đang lên kế hoạch]({{< relref "/learning-paths/streaming-engineering/_index.md" >}})

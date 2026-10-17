@@ -12,11 +12,11 @@ aliases:
   - "/docs/foundation/data-engineer-la-gi/"
 ---
 
-**Data Engineer** (kỹ sư dữ liệu) là người xây dựng và vận hành hệ thống đưa data từ nơi nó được tạo ra đến nơi nó có thể được sử dụng.
+Data Engineer (kỹ sư dữ liệu) là người xây dựng và vận hành hệ thống đưa data từ nơi nó được tạo ra đến nơi nó có thể được sử dụng.
 
 Nghe vẫn hơi chung chung, nên mình thử bắt đầu bằng một đơn hàng.
 
-Bạn đặt một phần cơm trên ứng dụng. Đơn hàng được lưu trong MySQL, kết quả thanh toán nằm ở một hệ thống khác, còn thông tin giao hàng lại nằm ở hệ thống của tài xế. Đây là các **Source System** (hệ thống nguồn). Công ty muốn biết hôm nay có bao nhiêu đơn, doanh thu là bao nhiêu và nhà hàng nào thường giao trễ.
+Bạn đặt một phần cơm trên ứng dụng. Đơn hàng được lưu trong MySQL, kết quả thanh toán nằm ở một hệ thống khác, còn thông tin giao hàng lại nằm ở hệ thống của tài xế. Đây là các Source System (hệ thống nguồn). Công ty muốn biết hôm nay có bao nhiêu đơn, doanh thu là bao nhiêu và nhà hàng nào thường giao trễ.
 
 Data đã có, nhưng đang nằm rải rác. Data Engineer lo phần ở giữa:
 
@@ -37,19 +37,15 @@ Phạm vi công việc khác nhau ở mỗi công ty, nhưng thường có năm 
 
 ### Xây Data Pipeline
 
-**Data Pipeline** (luồng xử lý đưa data qua nhiều bước) lấy data từ application, **Database** (cơ sở dữ liệu), file hoặc **API** (cách hai hệ thống trao đổi với nhau) rồi đưa về nền tảng data.
+Data Pipeline (luồng xử lý đưa data qua nhiều bước) lấy data từ application, Database (cơ sở dữ liệu), file hoặc API (cách hai hệ thống trao đổi với nhau) rồi đưa về nền tảng data.
 
-Ví dụ, một pipeline có thể sao chép các đơn hàng mới từ MySQL sau mỗi năm phút:
-
-| Source | Pipeline làm gì? | Kết quả |
-| --- | --- | --- |
-| Bảng `orders` trong MySQL | Lấy các row mới hoặc vừa thay đổi | Đơn hàng xuất hiện trong nền tảng data |
+Ví dụ, cứ mỗi năm phút, chương trình đọc các đơn mới hoặc vừa thay đổi trong bảng `orders` của MySQL rồi sao chép sang nền tảng data.
 
 Pipeline cần chạy nhiều lần mà không bỏ sót hoặc tạo thêm đơn hàng giả.
 
 ### Tổ chức Data Storage
 
-**Data Storage** (nơi lưu trữ data) có thể là **Data Warehouse** (kho dữ liệu), **Data Lake** (hồ dữ liệu) hoặc một database dành cho phân tích. Data Engineer chọn cách chia bảng, định dạng và thời gian lưu giữ để data có thể được tìm thấy và sử dụng lại.
+Data Storage (nơi lưu trữ data) có thể là Data Warehouse (kho dữ liệu), Data Lake (hồ dữ liệu) hoặc một database dành cho phân tích. Data Engineer chọn cách chia bảng, định dạng và thời gian lưu giữ để data có thể được tìm thấy và sử dụng lại.
 
 Trong ví dụ đặt đồ ăn, data có thể được tách thành:
 
@@ -62,16 +58,29 @@ Trong ví dụ đặt đồ ăn, data có thể được tách thành:
 
 ### Làm Data Transformation
 
-**Data Transformation** (biến đổi data) biến các row rời rạc thành data dễ sử dụng hơn. Pipeline có thể chuẩn hoá thời gian, loại row trùng rồi ghép bốn bảng trên bằng `order_id`.
+Data Transformation (biến đổi data) biến các row rời rạc thành data dễ sử dụng hơn. Chẳng hạn, để biết đơn hàng thuộc nhà hàng nào, mình lấy `restaurant_id` trong `orders` để tìm sang `restaurants`. Còn thanh toán và giao hàng được nối về đơn bằng `order_id`.
 
-Đầu vào nằm trong nhiều bảng:
+Trước khi ghép, có một câu cần hỏi: mỗi row trong bảng đại diện cho điều gì? Đó là grain của bảng. Với bốn bảng đang xét:
 
-| Bảng | Field | Giá trị của ORD-1042 |
+| Bảng | Grain trong ví dụ | Khoá nối |
 | --- | --- | --- |
-| `orders` | `order_id` | ORD-1042 |
-| `payments` | `payment_status` | paid |
-| `restaurants` | `restaurant_name` | Cơm Nhà |
-| `deliveries` | `delivered_at` | 12:32 |
+| `orders` | Một row mỗi đơn | `order_id` duy nhất; có `restaurant_id` |
+| `payments` | Một row mỗi lần thanh toán | `payment_id` duy nhất; `order_id` trỏ về đơn |
+| `restaurants` | Một row mỗi nhà hàng | `restaurant_id` duy nhất |
+| `deliveries` | Một row mỗi chuyến giao | `delivery_id` duy nhất; `order_id` trỏ về đơn |
+
+```mermaid
+flowchart LR
+    P["payments.order_id"] --> O["orders.order_id"]
+    D["deliveries.order_id"] --> O
+    R["orders.restaurant_id"] --> S["restaurants.restaurant_id"]
+```
+
+Một đơn có thể được thanh toán lại sau lần đầu thất bại. Nếu ghép thẳng tất cả lần thanh toán vào đơn hàng, số tiền của đơn có thể xuất hiện nhiều lần. Vì vậy, mình cần xử lý các lần thanh toán và chuyến giao về cấp đơn trước khi làm report.
+
+Để dễ theo dõi, ở đây đơn `ORD-1042` chỉ có một thanh toán thành công và một chuyến giao. Đơn trị giá 120,000 VND, đặt lúc 12:02:10 và giao lúc 12:32:18 ngày 06/09/2026, theo giờ Singapore. Làm tròn đến phút thì mất 30 phút.
+
+Mã `RES-18` dẫn tới nhà hàng Cơm Nhà, payment cho biết đơn đã trả tiền, còn bảng giao hàng ghi nhận lúc hoàn tất. Giả sử ứng dụng hẹn giao trước 12:40, đơn này được tính là đúng giờ.
 
 Đầu ra có thể là một bảng đã tính sẵn:
 
@@ -83,7 +92,7 @@ Data Analyst không cần tự ghép lại các hệ thống mỗi lần làm re
 
 ### Giữ Data Quality
 
-**Data Quality** (chất lượng data) trả lời câu hỏi: data này có đủ đúng để sử dụng không?
+Data Quality (chất lượng data) trả lời câu hỏi: data này có đủ đúng để sử dụng không?
 
 Data Engineer có thể thêm các kiểm tra đơn giản:
 
@@ -98,7 +107,7 @@ Một dashboard đẹp không có nhiều ý nghĩa nếu số liệu phía sau 
 
 ### Vận hành và theo dõi
 
-Đưa pipeline lên chạy chưa phải là xong. **Monitoring** (theo dõi hệ thống) giúp team biết pipeline có chạy đúng giờ, có lỗi và data có đến đủ hay không.
+Đưa pipeline lên chạy chưa phải là xong. Monitoring (theo dõi hệ thống) giúp team biết pipeline có chạy đúng giờ, có lỗi và data có đến đủ hay không.
 
 Ví dụ, pipeline đơn hàng thường hoàn tất lúc 7 giờ sáng nhưng hôm nay đến 8 giờ vẫn chưa xong. Data Engineer cần tìm nguyên nhân, sửa lỗi, chạy bù phần data còn thiếu rồi kiểm tra report đã trở lại bình thường chưa.
 
@@ -124,9 +133,9 @@ Ba vai trò cùng làm việc với data nhưng thường chịu trách nhiệm 
 
 | Vai trò | Câu hỏi chính | Ví dụ đầu ra |
 | --- | --- | --- |
-| **Data Engineer** | Làm sao để data đầy đủ, đúng và đến đúng lúc? | Pipeline và bảng đơn hàng đã được làm sạch |
-| **Data Analyst** (chuyên viên phân tích dữ liệu) | Data cho biết điều gì đang xảy ra? | Report (báo cáo) về tỷ lệ giao trễ theo nhà hàng |
-| **Data Scientist** (nhà khoa học dữ liệu) | Có thể dự đoán điều gì sẽ xảy ra? | Model (mô hình) dự đoán thời gian giao hàng |
+| Data Engineer | Làm sao để data đầy đủ, đúng và đến đúng lúc? | Pipeline và bảng đơn hàng đã được làm sạch |
+| Data Analyst (chuyên viên phân tích dữ liệu) | Data cho biết điều gì đang xảy ra? | Report (báo cáo) về tỷ lệ giao trễ theo nhà hàng |
+| Data Scientist (nhà khoa học dữ liệu) | Có thể dự đoán điều gì sẽ xảy ra? | Model (mô hình) dự đoán thời gian giao hàng |
 
 Đây chỉ là cách phân chia để dễ hình dung. Ở công ty nhỏ, một người có thể vừa xây pipeline vừa làm report. Ở công ty lớn, trách nhiệm thường được chia rõ hơn.
 
@@ -146,45 +155,18 @@ flowchart TD
     A --> B --> C --> D --> E
 ```
 
-**Database** và SQL nên đi cùng nhau: một bên giúp bạn hiểu data được lưu ra sao, bên còn lại giúp bạn đọc và kiểm tra data đó. Python cho bạn cách viết chương trình thay vì xử lý mọi thứ bằng tay.
+Database và SQL nên đi cùng nhau: một bên giúp bạn hiểu data được lưu ra sao, bên còn lại giúp bạn đọc và kiểm tra data đó. Python cho bạn cách viết chương trình thay vì xử lý mọi thứ bằng tay.
 
-Sau phần nền tảng, **Data Warehouse** giúp bạn hiểu nơi data dùng cho phân tích được tổ chức như thế nào. Đây cũng là lúc học **Data Modeling** (mô hình hoá data), đặc biệt là cách thiết kế bảng để trả lời câu hỏi business.
+Sau phần nền tảng, Data Warehouse giúp bạn hiểu nơi data dùng cho phân tích được tổ chức như thế nào. Đây cũng là lúc học Data Modeling (mô hình hoá data), đặc biệt là cách thiết kế bảng để trả lời câu hỏi business.
 
-Khi đã hiểu data bắt đầu ở đâu và cần đi đến đâu, Data Pipeline cùng **ETL / ELT** (các bước lấy, biến đổi và đưa data vào nơi lưu trữ) sẽ dễ hình dung hơn. Sau đó mới đến **Orchestration** (điều phối pipeline), Data Quality và Monitoring để hệ thống chạy ổn định.
+Khi đã hiểu data bắt đầu ở đâu và cần đi đến đâu, Data Pipeline cùng ETL / ELT (các bước lấy, biến đổi và đưa data vào nơi lưu trữ) sẽ dễ hình dung hơn. Sau đó mới đến Orchestration (điều phối pipeline), Data Quality và Monitoring để hệ thống chạy ổn định.
 
-**Cloud** (điện toán đám mây) và **Distributed Systems** (hệ thống phân tán) quan trọng khi hệ thống lớn lên, nhưng không phải điều kiện để bạn làm pipeline đầu tiên. Công cụ nào cũng chỉ nên được học khi bạn hiểu nó đang giải quyết vấn đề gì.
+Cloud (điện toán đám mây) và Distributed Systems (hệ thống phân tán) quan trọng khi hệ thống lớn lên, nhưng không phải điều kiện để bạn làm pipeline đầu tiên. Công cụ nào cũng chỉ nên được học khi bạn hiểu nó đang giải quyết vấn đề gì.
 
-## Đọc thêm: Data Engineer trong Data Mesh
-
-Phần này là kiến thức mở rộng. Người mới chưa cần hiểu Data Mesh để bắt đầu học Data Engineering.
-
-Ở một công ty nhỏ, một data team trung tâm có thể quản lý tất cả pipeline và table. Khi công ty có nhiều mảng kinh doanh, team này dễ trở thành điểm nghẽn vì phải hiểu data của nhiều **Domain** (mảng nghiệp vụ) như đơn hàng, thanh toán và giao hàng cùng lúc.
-
-**Data Mesh** (cách tổ chức data theo nhiều domain có quyền sở hữu rõ ràng) chia trách nhiệm đó cho các team gần với data nhất:
-
-```mermaid
-flowchart TD
-    A["Platform và tiêu chuẩn chung<br/>Giúp các domain làm việc nhất quán"]
-    B["Domain team<br/>Hiểu và sở hữu data của mình"]
-    C["Data Product<br/>Sản phẩm data có chất lượng rõ ràng"]
-    D["Các team khác<br/>Tìm và sử dụng data"]
-    A --> B --> C --> D
-```
-
-Ví dụ, Order team chịu trách nhiệm cho data đơn hàng, Payment team chịu trách nhiệm cho giao dịch, còn Delivery team chịu trách nhiệm cho data giao hàng. Mỗi team cung cấp một **Data Product** (sản phẩm data) có owner (team chịu trách nhiệm), tài liệu, quy tắc chất lượng và cách truy cập rõ ràng.
-
-Vai trò của Data Engineer vì thế cũng thay đổi:
-
-| Mô hình | Data Engineer thường làm gì? |
-| --- | --- |
-| Data team trung tâm | Xây pipeline và table cho nhiều mảng business |
-| Domain team trong Data Mesh | Xây và vận hành Data Product của một domain |
-| Platform team trong Data Mesh | Xây công cụ chung để các domain tự tạo và chia sẻ Data Product |
-
-Data Mesh còn yêu cầu tiêu chuẩn chung về bảo mật, chất lượng và khả năng kết hợp data giữa các domain. Nó không phải một phần mềm có thể cài đặt, cũng không mặc nhiên phù hợp với mọi công ty lớn. Nếu một team trung tâm vẫn phục vụ tốt, Data Mesh có thể tạo thêm nhiều việc hơn giá trị.
-
-Khái niệm này được Zhamak Dehghani trình bày chi tiết trong [Data Mesh Principles and Logical Architecture](https://martinfowler.com/articles/data-mesh-principles.html).
+Nếu tò mò về cách chia công việc khi công ty có nhiều data team, bạn có thể đọc thêm [Data Engineer trong Data Mesh]({{< relref "/wiki/bat-dau/data-engineer-trong-data-mesh.md" >}}). Phần này có thể để sau.
 
 ## Tóm lại
 
 Data Engineer giúp biến data đang nằm rải rác thành data mà người khác có thể tìm thấy, hiểu và tin tưởng sử dụng. Họ xây pipeline, tổ chức nơi lưu trữ, biến đổi data, kiểm tra chất lượng và giữ cho hệ thống tiếp tục chạy khi có sự cố.
+
+Để nhìn rõ phần việc đó, mình sẽ theo một đơn hàng trong bài [Data đi qua một hệ thống như thế nào?]({{< relref "/wiki/bat-dau/du-lieu-di-qua-he-thong-nhu-the-nao.md" >}}).

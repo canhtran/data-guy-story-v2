@@ -30,7 +30,7 @@ flowchart TD
 
 ## Business team đặt đúng câu hỏi
 
-**Business team** (team hiểu hoạt động kinh doanh) có thể là đội vận hành, tài chính, marketing hoặc sản phẩm. Trong ví dụ này, đội vận hành biết một đơn bị huỷ có nhiều nguyên nhân:
+Business team (team hiểu hoạt động kinh doanh) có thể là đội vận hành, tài chính, marketing hoặc sản phẩm. Trong ví dụ này, đội vận hành biết một đơn bị huỷ có nhiều nguyên nhân:
 
 | cancellation_reason | Ý nghĩa |
 | --- | --- |
@@ -41,19 +41,19 @@ flowchart TD
 
 Nếu chỉ hỏi “Tại sao đơn bị huỷ nhiều?”, mỗi người có thể hiểu theo một cách. Một câu hỏi rõ hơn là:
 
-> Trong bảy ngày vừa rồi, **Cancellation Rate** (tỷ lệ đơn bị huỷ) tăng ở khu vực nào và nguyên nhân nào đóng góp nhiều nhất?
+> Trong bảy ngày vừa rồi, Cancellation Rate (tỷ lệ đơn bị huỷ) tăng ở khu vực nào và nguyên nhân nào đóng góp nhiều nhất?
 
 Cancellation Rate cũng cần được định nghĩa: số đơn bị huỷ chia cho tất cả đơn đã tạo, hay chỉ chia cho những đơn nhà hàng đã nhận? Business team và Data Analyst phải thống nhất điều này trước khi tính.
 
 ## Backend Engineer giải thích data ở nguồn
 
-**Backend Engineer** (kỹ sư xây phần xử lý phía sau application) biết trạng thái đơn hàng được ghi vào MySQL lúc nào và application cho phép chuyển trạng thái ra sao.
+Backend Engineer (kỹ sư xây phần xử lý phía sau application) biết trạng thái đơn hàng được ghi vào MySQL lúc nào và application cho phép chuyển trạng thái ra sao.
 
 Một row trong bảng `orders` có thể trông như sau:
 
 | order_id | area | status | cancellation_reason | updated_at |
 | --- | --- | --- | --- | --- |
-| ORD-1042 | Tampines | cancelled | no_driver_found | 2026-09-06 12:20 |
+| CANCEL-2001 | Tampines | cancelled | no_driver_found | 2026-09-06 12:20:00+08:00 |
 
 Data Engineer cần hỏi Backend Engineer những điều không thể nhìn ra chỉ từ tên field:
 
@@ -62,11 +62,11 @@ Data Engineer cần hỏi Backend Engineer những điều không thể nhìn ra
 - `updated_at` dùng timezone nào?
 - Team sẽ báo cho ai nếu đổi tên hoặc xoá một field?
 
-Những thống nhất về cấu trúc, ý nghĩa và cách thay đổi data thường được gọi là **Data Contract** (cam kết giữa bên tạo và bên sử dụng data). Với người mới, chỉ cần hiểu rằng hai team phải thống nhất trước khi âm thầm thay đổi data của nhau.
+Những thống nhất về cấu trúc, ý nghĩa và cách thay đổi data thường được gọi là Data Contract (cam kết giữa bên tạo và bên sử dụng data). Với người mới, chỉ cần hiểu rằng hai team phải thống nhất trước khi âm thầm thay đổi data của nhau.
 
 ## Data Engineer chuẩn bị data đáng tin
 
-**Data Engineer** (kỹ sư dữ liệu) đưa bảng đơn hàng về **Data Warehouse** (kho dữ liệu), kiểm tra data rồi tạo một bảng phù hợp cho việc phân tích.
+Data Engineer (kỹ sư dữ liệu) đưa bảng đơn hàng về Data Warehouse (kho dữ liệu), kiểm tra data rồi tạo một bảng phù hợp cho việc phân tích.
 
 Ví dụ, Source System chứa từng đơn hàng, còn bảng đầu ra tổng hợp theo ngày, khu vực và nguyên nhân:
 
@@ -74,6 +74,12 @@ Ví dụ, Source System chứa từng đơn hàng, còn bảng đầu ra tổng 
 | --- | --- | --- | ---: | ---: |
 | 2026-09-06 | Tampines | no_driver_found | 1,240 | 96 |
 | 2026-09-06 | Tampines | restaurant_rejected | 1,240 | 31 |
+
+Có một chỗ dễ nhầm trong bảng này: hai số `1,240` là cùng một tổng đơn của Tampines ngày 6, được lặp lại ở mỗi nguyên nhân. Nếu cộng chúng, mình sẽ vô tình nhân đôi mẫu số.
+
+Riêng nguyên nhân không tìm được tài xế chiếm `96 / 1,240 × 100 ≈ 7.74%`. Nếu hai dòng trên là toàn bộ đơn huỷ, và mỗi đơn chỉ có một nguyên nhân, tỷ lệ huỷ chung là `(96 + 31) / 1,240 × 100 ≈ 10.24%`.
+
+Khi gộp nhiều ngày hoặc khu vực, mình cũng cần lấy tổng đơn đúng một lần cho mỗi cặp ngày/khu vực. Ở đây, ngày được tính từ lúc tạo đơn theo giờ Singapore. Bảng nguồn có một row mỗi đơn, còn bảng tổng hợp có một row mỗi ngày, khu vực và nguyên nhân; vì vậy cách kiểm tra trùng ở hai bảng sẽ khác nhau.
 
 Trước khi giao bảng cho Analyst, Data Engineer có thể kiểm tra:
 
@@ -86,11 +92,23 @@ Trước khi giao bảng cho Analyst, Data Engineer có thể kiểm tra:
 
 Nếu pipeline mới chạy được một nửa, Data Engineer cần báo rõ data chưa sẵn sàng thay vì để dashboard hiển thị một con số sai.
 
+## Ghi lại điều đã thống nhất
+
+Sau buổi trao đổi, một ghi chú ngắn sẽ giúp mọi người không phải nhớ xem hôm trước đã thống nhất gì. Với report này, yêu cầu có thể viết như sau:
+
+> Mình cần bảng tỷ lệ huỷ theo khu vực và nguyên nhân trước 8 giờ sáng ngày 7/9, giờ Singapore. Lấy các đơn tạo trong ngày 6/9, từ 00:00 đến trước 00:00 ngày 7/9, và dùng trạng thái ghi nhận đến 7 giờ sáng ngày 7/9.
+>
+> Tỷ lệ huỷ là số đơn có trạng thái `cancelled` chia cho tất cả đơn đã tạo, bỏ đơn test. Mỗi đơn huỷ chỉ tính một nguyên nhân. Nhờ giữ riêng bảng tổng đơn theo ngày và khu vực để tránh cộng lặp mẫu số.
+>
+> Trước khi bàn giao, cần đối chiếu số đơn với nguồn, kiểm tra không trùng mã đơn và không thiếu nguyên nhân huỷ. Với mẫu Tampines, 96 và 31 đơn huỷ trên 1,240 đơn phải ra khoảng 10.24%. Nếu nguồn chưa về đủ đến mốc chốt, báo Analyst trước giờ giao report.
+
+Operations xác nhận định nghĩa, DE chuẩn bị bảng cùng kết quả kiểm tra, rồi Analyst đối chiếu cách tính. Ghi rõ như vậy giúp cả ba bên biết khi nào có thể dùng report.
+
 ## Data Analyst biến data thành câu trả lời
 
-**Data Analyst** (chuyên viên phân tích data) dùng bảng đã chuẩn bị để tính cancellation rate, so sánh với tuần trước và tìm nơi thay đổi lớn nhất.
+Data Analyst (chuyên viên phân tích data) dùng bảng đã chuẩn bị để tính cancellation rate, so sánh với tuần trước và tìm nơi thay đổi lớn nhất.
 
-Kết quả có thể là:
+Để hình dung bước so sánh, mình dùng một bộ số liệu tuần riêng dưới đây. Hai dòng của ngày 6 phía trên chưa đủ để tính ra các tỷ lệ này:
 
 | Khu vực | Tuần trước | Tuần này | Thay đổi lớn nhất |
 | --- | ---: | ---: | --- |
@@ -148,3 +166,5 @@ Một cách phân chia thực tế cho ví dụ đơn hàng là:
 Một data team làm việc tốt khi câu hỏi business rõ ràng, data ở nguồn được giải thích, pipeline tạo ra đầu ra đáng tin và kết quả dẫn đến hành động có thể đo lại.
 
 Mỗi team nhìn một phần khác nhau của vấn đề. Việc quan trọng không phải là đẩy task từ người này sang người khác, mà là giữ nguyên ý nghĩa của câu hỏi và data trong suốt đường đi.
+
+Khi đã hiểu phần việc của con người, mình thử xem [AI giúp được gì và vì sao vẫn cần kiến thức nền tảng]({{< relref "/wiki/bat-dau/ai-va-kien-thuc-nen-tang.md" >}}).

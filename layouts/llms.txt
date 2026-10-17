@@ -5,7 +5,7 @@
 Nội dung chính viết bằng tiếng Việt. Ưu tiên phiên bản Markdown khi đọc hoặc trích dẫn một trang. Chuyện thực tế là bài tóm tắt và phân tích nguồn bên ngoài; hãy dùng thông tin nguồn gốc trong từng bài để phân biệt nội dung của Data Guy Story với bài viết gốc.
 
 {{- $primarySections := slice
-  (dict "path" "/wiki" "title" "Sổ tay")
+  (dict "path" "/wiki" "title" "Wiki")
   (dict "path" "/learning-paths" "title" "Lộ trình học")
   (dict "path" "/stories" "title" "Chuyện thực tế")
   (dict "path" "/blog" "title" "Blog")
@@ -24,7 +24,7 @@ Nội dung chính viết bằng tiếng Việt. Ưu tiên phiên bản Markdown 
 {{- with site.GetPage "/docs" }}
 ## Optional
 
-Tài liệu cũ đang chờ rà soát và chuyển vào Sổ tay mới.
+Tài liệu cũ đang chờ rà soát và chuyển vào Wiki mới.
 
   {{- template "ai-section-tree" (dict "context" . "level" 0) }}
 {{- end }}

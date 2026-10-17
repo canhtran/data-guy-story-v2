@@ -1,0 +1,30 @@
+- title: Nhập môn Data Engineering
+  audience: Bắt đầu ở đây nếu bạn còn mới với SQL, Python hoặc chưa từng làm pipeline.
+  outcome: Làm một pipeline đọc dữ liệu từ file và tạo báo cáo; hiểu từng bước mình đã làm.
+  status: Đang biên soạn
+  page: /learning-paths/nhap-mon-data-engineering
+  project: Bản tin quán cà phê mỗi sáng
+- title: Data Engineering thực chiến
+  audience: Bạn đã làm được pipeline nhỏ và muốn thử gom dữ liệu từ nhiều nguồn.
+  outcome: Xây kho dữ liệu, kiểm tra số liệu và xử lý khi một lần chạy bị lỗi.
+  status: Lên kế hoạch
+  page: /learning-paths/data-engineering-thuc-chien
+  project: Nguồn số liệu đáng tin cho chuỗi cà phê
+- title: "Data Engineering nâng cao: Spark & Lakehouse"
+  audience: Bạn muốn học Spark và hiểu cách lưu dữ liệu với Iceberg.
+  outcome: Dựng lakehouse trên máy mình, tìm nguyên nhân job chạy chậm và thử chạy lại dữ liệu.
+  status: Lên kế hoạch
+  page: /learning-paths/spark-lakehouse
+  project: Phân tích bán lẻ nhiều kênh
+- title: Streaming Engineering
+  audience: Bạn muốn thử xử lý dữ liệu liên tục với Kafka và Flink.
+  outcome: Làm pipeline xử lý sự kiện, thử dữ liệu đến muộn và xem điều gì xảy ra khi job dừng.
+  status: Lên kế hoạch
+  page: /learning-paths/streaming-engineering
+  project: Theo dõi giao hàng theo thời gian sự kiện
+- title: Data Platform Engineering
+  audience: Bạn muốn xây công cụ để các data team cùng sử dụng.
+  outcome: Dựng nền tảng trên máy mình để hai team có workspace riêng, quyền truy cập và cách chạy job.
+  status: Lên kế hoạch
+  page: /learning-paths/data-platform-engineering
+  project: Nền tảng tự phục vụ cho hai team

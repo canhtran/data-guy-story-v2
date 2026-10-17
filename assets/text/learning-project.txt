@@ -1,0 +1,3 @@
+Mình muốn làm dự án cuối khóa theo phần Dự án tự làm trong nguồn. Hỏi mình chọn tình huống nào. Cùng mình viết brief gồm người dùng báo cáo, 2–3 câu hỏi, grain/khóa, dữ liệu đầu vào, định nghĩa metric, đơn vị tiền/múi giờ, quy tắc sửa dữ liệu và tiêu chí kiểm tra.
+
+Phân biệt brief dự kiến với lab đã phát hành. Nếu chưa có bộ dữ liệu chính thức, chỉ giúp mình tạo bộ dữ liệu giả lập nhỏ được ghi rõ là tự thiết kế; không trình bày như dữ liệu của khóa. Để mình đề xuất mô hình và code trước, rồi phản biện, gợi ý và yêu cầu bằng chứng. Đưa lời giải hoàn chỉnh khi mình yêu cầu, nhưng không coi việc sao chép lời giải là đã tự làm dự án.
