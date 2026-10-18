@@ -1,0 +1,256 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Data Guy Story – Cơ sở dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/</link><description>Recent content in Cơ sở dữ liệu on Data Guy Story</description><generator>Hugo -- gohugo.io</generator><language>vi-VN</language><atom:link href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/index.xml" rel="self" type="application/rss+xml"/><item><title>Cơ sở dữ liệu là gì?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/overview/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/overview/</guid><description>
+&lt;p&gt;Một file CSV có thể lưu danh sách đơn hàng. Nhưng nếu hai người cùng sửa, một người nhập mã khách không tồn tại, rồi máy tắt giữa lúc ghi file, mình cần xử lý rất nhiều thứ. Hệ quản trị cơ sở dữ liệu giúp quản lý việc đọc, ghi, ràng buộc và phục hồi thay vì để từng ứng dụng tự làm hết.&lt;/p&gt;
+&lt;p&gt;“Database” là nơi tổ chức dữ liệu; “DBMS” là phần mềm quản lý nó. Trong cách nói hằng ngày hai từ thường được dùng gần nhau. Bài này tập trung database quan hệ, nơi dữ liệu được tổ chức thành bảng có cột và quan hệ giữa các bảng.&lt;/p&gt;
+&lt;h2&gt;Bảng cần nói rõ mỗi dòng là gì&lt;span class="hx:absolute hx:-mt-20" id="bảng-cần-nói-rõ-mỗi-dòng-là-gì"&gt;&lt;/span&gt;
+&lt;a href="#b%e1%ba%a3ng-c%e1%ba%a7n-n%c3%b3i-r%c3%b5-m%e1%bb%97i-d%c3%b2ng-l%c3%a0-g%c3%ac" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Với &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview/"&gt;dữ liệu café của nhóm SQL&lt;/a&gt;, một dòng &lt;code&gt;orders&lt;/code&gt; là một đơn; &lt;code&gt;order_id&lt;/code&gt; nhận diện đơn đó. Một dòng &lt;code&gt;payments&lt;/code&gt; là một lần thử thanh toán, nên một đơn có thể có nhiều dòng payment.&lt;/p&gt;
+&lt;p&gt;Schema mô tả cấu trúc và quy tắc: tên cột, kiểu dữ liệu, khóa và ràng buộc. Các ví dụ có &lt;code&gt;PRIMARY KEY&lt;/code&gt;, &lt;code&gt;NOT NULL&lt;/code&gt;, &lt;code&gt;CHECK&lt;/code&gt; và khóa ngoại. Khóa ngoại giúp tránh việc một payment tham chiếu tới đơn không tồn tại; nó không tự đảm bảo đơn đã thanh toán đủ tiền.&lt;/p&gt;
+&lt;h2&gt;Thử một dữ liệu sai&lt;span class="hx:absolute hx:-mt-20" id="thử-một-dữ-liệu-sai"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%ad-m%e1%bb%99t-d%e1%bb%af-li%e1%bb%87u-sai" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Mở database &lt;code&gt;cafe.db&lt;/code&gt; bằng SQLite theo bài SQL, bật kiểm tra khóa ngoại cho &lt;strong&gt;kết nối hiện tại&lt;/strong&gt; rồi chạy:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;PRAGMA&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foreign_keys&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;INSERT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;INTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;payments&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;VALUES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;99&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;999&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;success&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Bạn cần nhận lỗi &lt;code&gt;FOREIGN KEY constraint failed&lt;/code&gt;; mã đơn 999 chưa tồn tại. Chạy &lt;code&gt;SELECT COUNT(*) FROM payments;&lt;/code&gt;: vẫn có &lt;strong&gt;4&lt;/strong&gt; lần thử, vì dòng lỗi không được thêm. Trong SQLite, đừng giả định mọi kết nối đều đã bật kiểm tra khóa ngoại. PostgreSQL thực thi các khóa ngoại đã khai báo mà không dùng PRAGMA này.&lt;/p&gt;
+&lt;h2&gt;Database không tự hiểu nghiệp vụ&lt;span class="hx:absolute hx:-mt-20" id="database-không-tự-hiểu-nghiệp-vụ"&gt;&lt;/span&gt;
+&lt;a href="#database-kh%c3%b4ng-t%e1%bb%b1-hi%e1%bb%83u-nghi%e1%bb%87p-v%e1%bb%a5" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;CHECK (amount_vnd &amp;gt;= 0)&lt;/code&gt; có thể chặn số tiền âm, nhưng không biết 40000 là giá đúng hay bạn quên nhập một chữ số. &lt;code&gt;NOT NULL&lt;/code&gt; chặn giá trị thiếu, nhưng không chặn chuỗi rỗng. &lt;code&gt;UNIQUE&lt;/code&gt; có thể bảo vệ một khóa, nhưng bạn vẫn phải chọn khóa phù hợp với điều đang nhận diện.&lt;/p&gt;
+&lt;p&gt;Dữ liệu có thể hợp lệ về schema mà vẫn sai đối với báo cáo. Vì thế cần kiểm tra nghiệp vụ và &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-quality/"&gt;data quality&lt;/a&gt; bên cạnh ràng buộc database.&lt;/p&gt;
+&lt;h2&gt;Khi nào file vẫn đủ dùng?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-file-vẫn-đủ-dùng"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-file-v%e1%ba%abn-%c4%91%e1%bb%a7-d%c3%b9ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Một bộ dữ liệu nhỏ, ít thay đổi và không có nhiều người ghi có thể dùng file rất tốt. Khi cần cập nhật đồng thời, truy vấn linh hoạt hoặc nhiều quy tắc nhất quán, database thường hợp lý hơn. Nó cũng mang thêm việc quản lý quyền, backup, dung lượng và vận hành; không phải cứ thêm database là hệ thống tốt hơn.&lt;/p&gt;
+&lt;p&gt;Đọc tiếp &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/"&gt;transaction&lt;/a&gt; để hiểu cách gom nhiều thay đổi. Tham khảo: &lt;a href="https://www.postgresql.org/docs/18/tutorial-concepts.html"target="_blank" rel="noopener"&gt;PostgreSQL concepts&lt;/a&gt;, &lt;a href="https://www.postgresql.org/docs/18/ddl-constraints.html"target="_blank" rel="noopener"&gt;constraints&lt;/a&gt;, &lt;a href="https://www.sqlite.org/foreignkeys.html"target="_blank" rel="noopener"&gt;SQLite foreign keys&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>OLTP và OLAP</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/oltp-vs-olap/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/oltp-vs-olap/</guid><description>
+&lt;p&gt;Lúc khách đặt cà phê, ứng dụng cần ghi một đơn thật nhanh. Cuối tháng, người quản lý cần cộng doanh thu của tất cả cửa hàng, so với tháng trước và phân tích từng sản phẩm. Cùng là dữ liệu bán hàng, nhưng hai công việc đòi hỏi cách phục vụ khác nhau.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OLTP&lt;/strong&gt; — online transaction processing — phục vụ các giao dịch của ứng dụng. &lt;strong&gt;OLAP&lt;/strong&gt; — online analytical processing — phục vụ việc phân tích. Đây là cách phân loại workload, không phải hai loại sản phẩm hoàn toàn tách biệt.&lt;/p&gt;
+&lt;h2&gt;Nhìn từ câu hỏi&lt;span class="hx:absolute hx:-mt-20" id="nhìn-từ-câu-hỏi"&gt;&lt;/span&gt;
+&lt;a href="#nh%c3%acn-t%e1%bb%ab-c%c3%a2u-h%e1%bb%8fi" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Đặt một đơn&lt;/th&gt;
+&lt;th&gt;Báo cáo doanh thu quý&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Dữ liệu cần đụng tới&lt;/td&gt;
+&lt;td&gt;Một số dòng liên quan&lt;/td&gt;
+&lt;td&gt;Rất nhiều dòng trong kỳ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Việc chính&lt;/td&gt;
+&lt;td&gt;Đọc và ghi giao dịch&lt;/td&gt;
+&lt;td&gt;Lọc, JOIN, tổng hợp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Quan tâm&lt;/td&gt;
+&lt;td&gt;Phản hồi nhanh, cập nhật đúng&lt;/td&gt;
+&lt;td&gt;Số liệu đúng, truy vấn lớn hiệu quả&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Người dùng&lt;/td&gt;
+&lt;td&gt;Ứng dụng và khách hàng&lt;/td&gt;
+&lt;td&gt;Người phân tích, quản lý, mô hình ML&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Đừng hiểu OLTP chỉ ghi và OLAP chỉ đọc. Ứng dụng giao dịch đọc rất nhiều; hệ phân tích vẫn cần ingest, sửa dữ liệu và cập nhật bảng.&lt;/p&gt;
+&lt;h2&gt;Thử trên cùng một database nhỏ&lt;span class="hx:absolute hx:-mt-20" id="thử-trên-cùng-một-database-nhỏ"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%ad-tr%c3%aan-c%c3%b9ng-m%e1%bb%99t-database-nh%e1%bb%8f" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dùng SQLite và &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview/"&gt;cafe-v1&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;101&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;business_date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SUM&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;amount_vnd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;revenue_vnd&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;paid&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;business_date&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ORDER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;business_date&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Câu đầu tìm đúng một đơn: &lt;strong&gt;101, paid&lt;/strong&gt;. Câu sau tạo hai dòng báo cáo: &lt;strong&gt;2026-09-01, 100000&lt;/strong&gt; và &lt;strong&gt;2026-09-02, 50000&lt;/strong&gt;. Với bốn dòng, cả hai đều nhanh. Khác biệt trở nên rõ khi có hàng triệu đơn và nhiều người dùng cùng lúc.&lt;/p&gt;
+&lt;h2&gt;Vì sao thường tách hệ phân tích?&lt;span class="hx:absolute hx:-mt-20" id="vì-sao-thường-tách-hệ-phân-tích"&gt;&lt;/span&gt;
+&lt;a href="#v%c3%ac-sao-th%c6%b0%e1%bb%9dng-t%c3%a1ch-h%e1%bb%87-ph%c3%a2n-t%c3%adch" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Một báo cáo quét lịch sử dài có thể tranh CPU, bộ nhớ và I/O với ứng dụng đang nhận đơn. Hệ phân tích riêng giúp tổ chức dữ liệu theo nhu cầu đọc, giữ lịch sử và gom nhiều nguồn. Đổi lại, dữ liệu phải được chuyển qua pipeline và có độ trễ; con số trên báo cáo có thể chưa phản ánh giao dịch vừa xảy ra.&lt;/p&gt;
+&lt;p&gt;Replica đọc có thể giảm tải một phần, nhưng không tự giải quyết việc mô hình hóa dữ liệu hay hợp nhất nguồn. Một warehouse cũng không tự biến mọi truy vấn thành nhanh. Cần kiểm tra workload thật và độ mới mà người dùng chấp nhận.&lt;/p&gt;
+&lt;p&gt;Nếu mới có một ứng dụng nhỏ, chạy báo cáo đơn giản ngay trên database có thể đủ. Khi báo cáo ảnh hưởng ứng dụng hoặc cần lịch sử nhiều nguồn, mới có lý do rõ ràng để tách.&lt;/p&gt;
+&lt;p&gt;Đọc thêm &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-warehouse/"&gt;data warehouse&lt;/a&gt; và &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/query-optimization/"&gt;tối ưu SQL&lt;/a&gt;. Cú pháp ví dụ: &lt;a href="https://www.sqlite.org/lang_select.html"target="_blank" rel="noopener"&gt;SQLite SELECT&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Chỉ mục trong cơ sở dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/database-index/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/database-index/</guid><description>
+&lt;p&gt;Trong cuốn sách, mục lục giúp mình tìm một phần mà không lật từ trang đầu. Index trong database cũng là một cấu trúc tra cứu, nhưng phải được cập nhật cùng dữ liệu và chỉ hữu ích với một số cách tìm kiếm.&lt;/p&gt;
+&lt;p&gt;Đừng coi index là bản sao toàn bộ bảng được sắp xếp đẹp hơn. Nó giữ khóa tra cứu và thông tin để tìm dữ liệu; chi tiết phụ thuộc loại index và engine.&lt;/p&gt;
+&lt;h2&gt;Thử tìm đơn theo khách&lt;span class="hx:absolute hx:-mt-20" id="thử-tìm-đơn-theo-khách"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%ad-t%c3%acm-%c4%91%c6%a1n-theo-kh%c3%a1ch" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dùng SQLite 3.25 trở lên và &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview/"&gt;cafe-v1&lt;/a&gt;, chưa tạo index cho khách:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;EXPLAIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;QUERY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PLAN&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;customer_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;CREATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;INDEX&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IF&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;EXISTS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders_customer_idx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;customer_id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;EXPLAIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;QUERY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PLAN&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;customer_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Trong môi trường SQLite 3.53.4 dùng để kiểm tra, kế hoạch đầu có &lt;code&gt;SCAN orders&lt;/code&gt;; kế hoạch sau dùng &lt;code&gt;orders_customer_idx&lt;/code&gt;. Nếu đã chạy ví dụ tối ưu SQL, index tồn tại rồi nên cả hai có thể cùng dùng index. &lt;code&gt;IF NOT EXISTS&lt;/code&gt; giúp không lỗi khi chạy lại lệnh tạo.&lt;/p&gt;
+&lt;p&gt;Trên bốn dòng, thay đổi này chỉ minh họa cơ chế, không chứng minh lợi ích tốc độ. Optimizer có thể chọn scan khi nhiều dòng phù hợp hoặc bảng rất nhỏ.&lt;/p&gt;
+&lt;h2&gt;Chọn cột theo truy vấn&lt;span class="hx:absolute hx:-mt-20" id="chọn-cột-theo-truy-vấn"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%bb%8dn-c%e1%bb%99t-theo-truy-v%e1%ba%a5n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Giả sử thường tìm đơn của một khách trong một khoảng ngày. Index &lt;code&gt;(customer_id, business_date)&lt;/code&gt; có thể phù hợp hơn index ngày đơn lẻ. Nếu thường tìm mọi đơn của một ngày, thứ tự đó chưa chắc là lựa chọn tốt nhất. B-tree thường hữu ích với tìm bằng và khoảng; không nên áp dụng trực giác đó cho mọi loại index.&lt;/p&gt;
+&lt;p&gt;Một index có đủ các cột truy vấn cần có thể giảm việc đọc bảng, nhưng khả năng thực hiện phụ thuộc engine. Trong PostgreSQL còn có điều kiện về khả năng nhìn thấy dòng khi dùng index-only scan; không phải thêm cột là mọi lần đọc bảng đều biến mất.&lt;/p&gt;
+&lt;h2&gt;Chi phí nằm ở lúc ghi&lt;span class="hx:absolute hx:-mt-20" id="chi-phí-nằm-ở-lúc-ghi"&gt;&lt;/span&gt;
+&lt;a href="#chi-ph%c3%ad-n%e1%ba%b1m-%e1%bb%9f-l%c3%bac-ghi" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Mỗi đơn mới cần cập nhật các index liên quan. Nhiều index có thể làm ingest chậm hơn, tăng dung lượng và thời gian bảo trì. Index không sửa được JOIN sai, dữ liệu trùng hoặc báo cáo tính sai đơn vị.&lt;/p&gt;
+&lt;p&gt;Trước khi thêm, ghi lại truy vấn cần cải thiện, đọc kế hoạch, đo với dữ liệu đại diện và kiểm tra chi phí ghi. Trước khi bỏ, kiểm tra index có phục vụ constraint hoặc truy vấn khác không.&lt;/p&gt;
+&lt;p&gt;Đọc tiếp &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/query-optimization/"&gt;tối ưu SQL&lt;/a&gt;. Tham khảo: &lt;a href="https://www.postgresql.org/docs/18/indexes.html"target="_blank" rel="noopener"&gt;PostgreSQL indexes&lt;/a&gt;, &lt;a href="https://www.sqlite.org/eqp.html"target="_blank" rel="noopener"&gt;SQLite EXPLAIN QUERY PLAN&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Giao dịch trong cơ sở dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/</guid><description>
+&lt;p&gt;Khách thanh toán xong, ứng dụng cần cập nhật trạng thái đơn và thêm bản ghi thanh toán. Nếu bước đầu thành công mà bước sau lỗi, database có thể nói đơn đã trả tiền nhưng không có thanh toán tương ứng.&lt;/p&gt;
+&lt;p&gt;Transaction gom các thay đổi vào một đơn vị: commit nếu chấp nhận toàn bộ, rollback nếu bỏ chúng. Nó không tự đảm bảo code chọn đúng đơn hay số tiền; các câu lệnh trong transaction vẫn cần đúng nghiệp vụ.&lt;/p&gt;
+&lt;h2&gt;Thử rollback rồi commit&lt;span class="hx:absolute hx:-mt-20" id="thử-rollback-rồi-commit"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%ad-rollback-r%e1%bb%93i-commit" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dùng SQLite 3.25 trở lên và một bản mới của &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview/"&gt;cafe-v1&lt;/a&gt;. Đơn 104 hiện đang hủy; trong ví dụ giả lập, mình thử đổi trạng thái nhưng chưa chấp nhận thay đổi:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;BEGIN&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;UPDATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;paid&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ROLLBACK&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Hai kết quả lần lượt là &lt;strong&gt;paid&lt;/strong&gt; trong transaction và &lt;strong&gt;cancelled&lt;/strong&gt; sau rollback. Kết nối của bạn thấy thay đổi chưa commit của chính nó.&lt;/p&gt;
+&lt;p&gt;Bây giờ thử chấp nhận cả hai thay đổi:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;BEGIN&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;UPDATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;paid&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;INSERT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;INTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;payments&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;VALUES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;success&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COMMIT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;COUNT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;payments&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;104&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Kết quả là &lt;strong&gt;paid&lt;/strong&gt; và &lt;strong&gt;1&lt;/strong&gt; payment. Chỉ chạy phần này một lần trên dữ liệu mới. Lần hai sẽ lỗi khóa payment 5; cần rollback transaction đang mở trước khi thử lại với database khác.&lt;/p&gt;
+&lt;h2&gt;Lỗi một câu lệnh có tự rollback hết không?&lt;span class="hx:absolute hx:-mt-20" id="lỗi-một-câu-lệnh-có-tự-rollback-hết-không"&gt;&lt;/span&gt;
+&lt;a href="#l%e1%bb%97i-m%e1%bb%99t-c%c3%a2u-l%e1%bb%87nh-c%c3%b3-t%e1%bb%b1-rollback-h%e1%ba%bft-kh%c3%b4ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Không nên giả định như vậy. SQLite thường hủy câu lệnh bị lỗi, còn transaction có thể vẫn mở; loại lỗi và chế độ conflict có thể làm hành vi khác. PostgreSQL đánh dấu transaction lỗi và yêu cầu rollback hoặc xử lý qua savepoint. Ứng dụng cần xử lý ngoại lệ và quyết định rollback rõ ràng, không tiếp tục commit như thể mọi bước đều đã thành công.&lt;/p&gt;
+&lt;h2&gt;Ranh giới chỉ bao gồm những gì tham gia&lt;span class="hx:absolute hx:-mt-20" id="ranh-giới-chỉ-bao-gồm-những-gì-tham-gia"&gt;&lt;/span&gt;
+&lt;a href="#ranh-gi%e1%bb%9bi-ch%e1%bb%89-bao-g%e1%bb%93m-nh%e1%bb%afng-g%c3%ac-tham-gia" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Database transaction không tự rollback email đã gửi, file đã ghi hoặc API thanh toán bên ngoài. Nếu transaction database bị rollback sau khi API nhận tiền, bạn cần cơ chế phối hợp khác: mã yêu cầu để tránh xử lý trùng, ghi sự kiện trong cùng transaction rồi gửi sau, hoặc quy trình bù trừ.&lt;/p&gt;
+&lt;p&gt;Giữ transaction đủ ngắn để tránh giữ tài nguyên lâu. Đừng mở transaction rồi chờ người dùng trả lời hoặc một API chậm nếu không có lý do rõ ràng.&lt;/p&gt;
+&lt;p&gt;Đọc tiếp &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/acid/"&gt;ACID&lt;/a&gt; và &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level/"&gt;isolation&lt;/a&gt;. Tham khảo: &lt;a href="https://www.sqlite.org/lang_transaction.html"target="_blank" rel="noopener"&gt;SQLite transactions&lt;/a&gt;, &lt;a href="https://www.postgresql.org/docs/18/tutorial-transactions.html"target="_blank" rel="noopener"&gt;PostgreSQL transactions&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Các mức cô lập giao dịch</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level/</guid><description>
+&lt;p&gt;Kho còn một túi cà phê. Hai giao dịch cùng đọc “còn 1”, cả hai đều quyết định bán, rồi ghi lại “còn 0”. Từng câu UPDATE có thể chạy được nhưng hệ thống đã bán hai túi. Khi nhiều giao dịch cùng làm việc, mình cần hiểu chúng thấy dữ liệu nào và database bảo vệ xung đột đến đâu.&lt;/p&gt;
+&lt;p&gt;Isolation là mức cô lập giữa các transaction. Bài này giải thích bằng lịch chạy; không phải hướng dẫn chạy bốn mức isolation trên SQLite, vì SQLite không cung cấp chúng giống PostgreSQL.&lt;/p&gt;
+&lt;h2&gt;Những hiện tượng cần nhận ra&lt;span class="hx:absolute hx:-mt-20" id="những-hiện-tượng-cần-nhận-ra"&gt;&lt;/span&gt;
+&lt;a href="#nh%e1%bb%afng-hi%e1%bb%87n-t%c6%b0%e1%bb%a3ng-c%e1%ba%a7n-nh%e1%ba%adn-ra" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Dirty read:&lt;/strong&gt; đọc thay đổi của giao dịch chưa commit, rồi thay đổi đó bị rollback.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Non-repeatable read:&lt;/strong&gt; đọc lại cùng một dòng và nhận giá trị khác do giao dịch khác đã commit.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Phantom:&lt;/strong&gt; chạy lại điều kiện tìm kiếm và thấy tập dòng phù hợp thay đổi.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Serialization anomaly:&lt;/strong&gt; kết quả của các giao dịch đồng thời không tương đương bất kỳ thứ tự chạy lần lượt nào.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Các mức theo chuẩn SQL đặt giới hạn cho các hiện tượng. Engine có thể bảo vệ nhiều hơn mức tối thiểu của chuẩn, nên cần đọc tài liệu cụ thể.&lt;/p&gt;
+&lt;h2&gt;Ví dụ theo PostgreSQL 18&lt;span class="hx:absolute hx:-mt-20" id="ví-dụ-theo-postgresql-18"&gt;&lt;/span&gt;
+&lt;a href="#v%c3%ad-d%e1%bb%a5-theo-postgresql-18" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Giả sử dòng tồn kho bắt đầu là 1:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Bước&lt;/th&gt;
+&lt;th&gt;Kết nối A&lt;/th&gt;
+&lt;th&gt;Kết nối B&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;BEGIN, đọc tồn kho: 1&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;Cập nhật thành 0, COMMIT&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;Đọc lại tồn kho&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Ở &lt;strong&gt;Read Committed&lt;/strong&gt;, truy vấn mới của A có thể thấy 0: mỗi câu lệnh lấy snapshot mới. Ở &lt;strong&gt;Repeatable Read&lt;/strong&gt;, nếu snapshot đã được thiết lập từ lần đọc đầu, A vẫn đọc 1 từ snapshot của mình. Điều này không có nghĩa A có thể cập nhật an toàn mà không gặp xung đột.&lt;/p&gt;
+&lt;p&gt;PostgreSQL dùng Read Committed mặc định; Read Uncommitted hoạt động như Read Committed. Repeatable Read của PostgreSQL cũng ngăn phantom, nhưng vẫn có thể có serialization anomaly. Serializable thêm bảo vệ để các giao dịch commit tương đương một thứ tự nối tiếp, và có thể hủy một giao dịch khi phát hiện xung đột. Ứng dụng cần retry toàn bộ transaction, không chỉ câu SQL cuối.&lt;/p&gt;
+&lt;h2&gt;Đừng chỉ “đọc rồi ghi”&lt;span class="hx:absolute hx:-mt-20" id="đừng-chỉ-đọc-rồi-ghi"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91%e1%bb%abng-ch%e1%bb%89-%c4%91%e1%bb%8dc-r%e1%bb%93i-ghi" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Với bán tồn kho, có thể dùng một cập nhật có điều kiện: &lt;code&gt;UPDATE ... SET stock = stock - 1 WHERE stock &amp;gt; 0&lt;/code&gt;, rồi kiểm tra số dòng cập nhật. Cách cụ thể còn phụ thuộc schema, engine và yêu cầu của giao dịch. Khóa dòng hoặc isolation mạnh hơn là những công cụ khác; chúng có thể làm giao dịch chờ nhau hoặc cần retry.&lt;/p&gt;
+&lt;p&gt;Bài tập: nếu B rollback thay vì commit ở bước 2, A có nên đọc được giá trị 0 do B tạo ra không? Với các mức của PostgreSQL ở trên, câu trả lời là không. Thử phân biệt điều này với việc A đọc lại một giá trị đã được B commit.&lt;/p&gt;
+&lt;h2&gt;SQLite có giới hạn riêng&lt;span class="hx:absolute hx:-mt-20" id="sqlite-có-giới-hạn-riêng"&gt;&lt;/span&gt;
+&lt;a href="#sqlite-c%c3%b3-gi%e1%bb%9bi-h%e1%ba%a1n-ri%c3%aang" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SQLite thường chỉ có một writer tại một thời điểm; chế độ WAL cho reader nhìn snapshot trong khi writer hoạt động. Cố nâng một snapshot đọc cũ thành giao dịch ghi có thể thất bại. Không suy ra hành vi của PostgreSQL từ một bài thử SQLite.&lt;/p&gt;
+&lt;p&gt;Tham khảo: &lt;a href="https://www.postgresql.org/docs/18/transaction-iso.html"target="_blank" rel="noopener"&gt;PostgreSQL transaction isolation&lt;/a&gt;, &lt;a href="https://www.sqlite.org/isolation.html"target="_blank" rel="noopener"&gt;SQLite isolation&lt;/a&gt;. Đọc trước &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/"&gt;transaction&lt;/a&gt; nếu còn mới với BEGIN, COMMIT và ROLLBACK.&lt;/p&gt;</description></item><item><title>Các thuộc tính ACID</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/acid/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/acid/</guid><description>
+&lt;p&gt;Một transaction có thể chứa nhiều câu SQL. ACID là bốn thuộc tính thường dùng để mô tả những gì hệ quản trị bảo vệ khi transaction chạy và dữ liệu được lưu. Nhưng nghe “database có ACID” chưa đủ để kết luận cả pipeline đúng.&lt;/p&gt;
+&lt;h2&gt;Đi qua một ca cụ thể&lt;span class="hx:absolute hx:-mt-20" id="đi-qua-một-ca-cụ-thể"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91i-qua-m%e1%bb%99t-ca-c%e1%bb%a5-th%e1%bb%83" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Giả sử đơn 104 được cập nhật sang &lt;code&gt;paid&lt;/code&gt;, đồng thời thêm payment tương ứng. &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/"&gt;Bài transaction&lt;/a&gt; có ví dụ SQLite chạy được.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Thuộc tính&lt;/th&gt;
+&lt;th&gt;Câu hỏi trong ca này&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Atomicity — nguyên tử&lt;/td&gt;
+&lt;td&gt;Hai thay đổi được chấp nhận cùng nhau hay chỉ một phần?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Consistency — nhất quán&lt;/td&gt;
+&lt;td&gt;Trạng thái sau giao dịch có tuân thủ các ràng buộc đã định nghĩa không?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Isolation — cô lập&lt;/td&gt;
+&lt;td&gt;Giao dịch khác nhìn thấy và tương tác với thay đổi này thế nào?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Durability — bền vững&lt;/td&gt;
+&lt;td&gt;Sau khi báo commit thành công, thay đổi có được giữ theo cam kết của hệ thống không?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Consistency ở đây gắn với ràng buộc và logic giao dịch, không phải cam kết “mọi replica luôn thấy dữ liệu mới nhất”. Hai cách dùng chữ consistency này cần phân biệt.&lt;/p&gt;
+&lt;h2&gt;Những gì ACID không biết&lt;span class="hx:absolute hx:-mt-20" id="những-gì-acid-không-biết"&gt;&lt;/span&gt;
+&lt;a href="#nh%e1%bb%afng-g%c3%ac-acid-kh%c3%b4ng-bi%e1%ba%bft" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu code cập nhật nhầm đơn 103, transaction vẫn có thể commit hoàn toàn hợp lệ. Nếu schema cho phép số tiền sai, database không biết giá bán đúng để chặn. Và nếu ghi database rồi ghi file ở hai bước tách biệt, ACID của database không tự bao trùm file đó.&lt;/p&gt;
+&lt;p&gt;Isolation có nhiều mức; không phải mọi giao dịch đều được thực thi như chạy lần lượt. Durability cũng phụ thuộc cấu hình, cách đồng bộ xuống storage và giả định về phần cứng. Tắt cơ chế đồng bộ để tăng tốc có thể thay đổi mức bảo vệ khi máy mất điện.&lt;/p&gt;
+&lt;h2&gt;Một bài kiểm tra bằng tay&lt;span class="hx:absolute hx:-mt-20" id="một-bài-kiểm-tra-bằng-tay"&gt;&lt;/span&gt;
+&lt;a href="#m%e1%bb%99t-b%c3%a0i-ki%e1%bb%83m-tra-b%e1%ba%b1ng-tay" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Bắt đầu với đơn chưa thanh toán, chạy cập nhật đơn rồi chủ động rollback trước khi thêm payment. Đơn phải trở lại trạng thái cũ. Thử thêm payment với mã đơn không tồn tại khi khóa ngoại đã bật: lệnh phải bị từ chối.&lt;/p&gt;
+&lt;p&gt;Hai kiểm tra này cho mình bằng chứng về rollback và constraint trong ca cụ thể. Chúng &lt;strong&gt;không&lt;/strong&gt; chứng minh đầy đủ tính bền vững khi mất điện hoặc mọi tình huống giao dịch đồng thời. Muốn kiểm tra các thuộc tính đó cần môi trường, cấu hình và ca lỗi phù hợp, không chỉ một truy vấn chạy thành công.&lt;/p&gt;
+&lt;h2&gt;Dùng ACID khi trao đổi thiết kế&lt;span class="hx:absolute hx:-mt-20" id="dùng-acid-khi-trao-đổi-thiết-kế"&gt;&lt;/span&gt;
+&lt;a href="#d%c3%b9ng-acid-khi-trao-%c4%91%e1%bb%95i-thi%e1%ba%bft-k%e1%ba%bf" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Hãy nói rõ transaction nằm ở đâu, dữ liệu nào được commit chung, mức isolation nào, và điều gì xảy ra nếu hệ thống báo timeout sau commit. Timeout không luôn có nghĩa giao dịch thất bại: client có thể chưa nhận được phản hồi của một commit đã thành công. Chạy lại cần &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/idempotency/"&gt;idempotency&lt;/a&gt; hoặc cách kiểm tra trạng thái.&lt;/p&gt;
+&lt;p&gt;Tham khảo: &lt;a href="https://www.sqlite.org/atomiccommit.html"target="_blank" rel="noopener"&gt;SQLite atomic commit&lt;/a&gt;, &lt;a href="https://www.postgresql.org/docs/18/tutorial-transactions.html"target="_blank" rel="noopener"&gt;PostgreSQL transactions&lt;/a&gt;. Xem tiếp &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level/"&gt;isolation&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

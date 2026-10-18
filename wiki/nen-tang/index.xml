@@ -1,0 +1,54 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Data Guy Story – Nền tảng</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/</link><description>Recent content in Nền tảng on Data Guy Story</description><generator>Hugo -- gohugo.io</generator><language>vi-VN</language><atom:link href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/index.xml" rel="self" type="application/rss+xml"/><item><title>Cơ sở dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/</guid><description>
+&lt;p&gt;Một database giúp mình lưu dữ liệu, đặt ràng buộc và quản lý những thay đổi xảy ra cùng lúc. Nhóm bài này đi từ các bảng quen thuộc đến index, transaction và isolation.&lt;/p&gt;
+&lt;h2&gt;Bài viết&lt;span class="hx:absolute hx:-mt-20" id="bài-viết"&gt;&lt;/span&gt;
+&lt;a href="#b%c3%a0i-vi%e1%ba%bft" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/overview/"&gt;Cơ sở dữ liệu là gì?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/oltp-vs-olap/"&gt;OLTP và OLAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/database-index/"&gt;Chỉ mục trong cơ sở dữ liệu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction/"&gt;Giao dịch trong cơ sở dữ liệu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level/"&gt;Các mức cô lập giao dịch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/acid/"&gt;Các thuộc tính ACID&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Lộ trình học&lt;span class="hx:absolute hx:-mt-20" id="lộ-trình-học"&gt;&lt;/span&gt;
+&lt;a href="#l%e1%bb%99-tr%c3%acnh-h%e1%bb%8dc" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Xem &lt;a href="https://canhtran.github.io/data-guy-story-v2/learning-paths/data-engineering-thuc-chien/"&gt;Data Engineering thực chiến&lt;/a&gt; để biết database và warehouse sẽ được dùng thế nào trong dự án.&lt;/p&gt;</description></item><item><title>SQL</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/</guid><description>
+&lt;p&gt;Bắt đầu từ một bảng đơn hàng nhỏ: lọc đúng dòng, nối bảng mà không cộng trùng, rồi đọc kế hoạch truy vấn. Các bài dùng chung dữ liệu giả lập để bạn chạy thử trên máy mình.&lt;/p&gt;
+&lt;h2&gt;Bài viết&lt;span class="hx:absolute hx:-mt-20" id="bài-viết"&gt;&lt;/span&gt;
+&lt;a href="#b%c3%a0i-vi%e1%ba%bft" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview/"&gt;SQL là gì?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/join/"&gt;Kết hợp dữ liệu với JOIN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/window-function/"&gt;Hàm cửa sổ trong SQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/cte/"&gt;Biểu thức bảng chung (CTE)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/query-optimization/"&gt;Tối ưu truy vấn SQL&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Lộ trình học&lt;span class="hx:absolute hx:-mt-20" id="lộ-trình-học"&gt;&lt;/span&gt;
+&lt;a href="#l%e1%bb%99-tr%c3%acnh-h%e1%bb%8dc" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Bạn có thể xem &lt;a href="https://canhtran.github.io/data-guy-story-v2/learning-paths/nhap-mon-data-engineering/"&gt;Nhập môn Data Engineering&lt;/a&gt; để biết SQL nằm ở đâu trong một dự án pipeline.&lt;/p&gt;</description></item><item><title>Mô hình hóa dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/</guid><description>
+&lt;p&gt;Bắt đầu bằng câu hỏi báo cáo và ý nghĩa của từng dòng. Sau đó mới chọn fact, dimension và cách giữ lịch sử.&lt;/p&gt;
+&lt;h2&gt;Bài viết&lt;span class="hx:absolute hx:-mt-20" id="bài-viết"&gt;&lt;/span&gt;
+&lt;a href="#b%c3%a0i-vi%e1%ba%bft" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/overview/"&gt;Mô hình hóa dữ liệu là gì?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/fact-and-dimension/"&gt;Bảng Fact và Dimension&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/star-schema/"&gt;Mô hình ngôi sao&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/snowflake-schema/"&gt;Mô hình bông tuyết&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/slowly-changing-dimension/"&gt;Dimension thay đổi chậm (SCD)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Thực hành tiếp&lt;span class="hx:absolute hx:-mt-20" id="thực-hành-tiếp"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%b1c-h%c3%a0nh-ti%e1%ba%bfp" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/learning-paths/data-engineering-thuc-chien/"&gt;Data Engineering thực chiến&lt;/a&gt; dự kiến dùng các khái niệm này để xây kho dữ liệu nhiều nguồn.&lt;/p&gt;</description></item><item><title>Hệ thống phân tán</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/</guid><description>
+&lt;p&gt;Khi nhiều tiến trình cùng làm một việc, mạng chậm và lỗi từng phần trở thành chuyện phải tính đến. Nhóm bài này dùng các tình huống nhỏ để giải thích chia dữ liệu, bản sao và phục hồi.&lt;/p&gt;
+&lt;h2&gt;Bài viết&lt;span class="hx:absolute hx:-mt-20" id="bài-viết"&gt;&lt;/span&gt;
+&lt;a href="#b%c3%a0i-vi%e1%ba%bft" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/overview/"&gt;Hệ thống phân tán là gì?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/partitioning/"&gt;Phân vùng dữ liệu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/replication/"&gt;Sao chép dữ liệu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/consistency/"&gt;Tính nhất quán dữ liệu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/cap-theorem/"&gt;Định lý CAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/fault-tolerance/"&gt;Khả năng chịu lỗi&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Học tiếp&lt;span class="hx:absolute hx:-mt-20" id="học-tiếp"&gt;&lt;/span&gt;
+&lt;a href="#h%e1%bb%8dc-ti%e1%ba%bfp" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Các khái niệm này giúp đọc kiến trúc Spark, Kafka và Flink. Các bài công nghệ đang được bổ sung; bạn cũng có thể xem &lt;a href="https://canhtran.github.io/data-guy-story-v2/learning-paths/spark-lakehouse/"&gt;lộ trình Spark &amp;amp; Lakehouse&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Python cho công việc dữ liệu</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/</guid><description>
+&lt;p&gt;Python giúp mình đọc file, kiểm tra dữ liệu và nối các bước thành một pipeline. Bắt đầu nhỏ: hiểu code đang xử lý từng dòng thế nào, rồi mới thêm database hoặc framework.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/overview/"&gt;Script Python đầu tiên&lt;/a&gt;: biến, vòng lặp, hàm và cách chạy.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/files-and-json/"&gt;Đọc CSV và JSON&lt;/a&gt;: dữ liệu chữ, kiểu dữ liệu và mã hóa.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/errors-and-logging/"&gt;Lỗi và logging&lt;/a&gt;: phân biệt dữ liệu sai với lỗi chương trình.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Các bài về module, môi trường, database và HTTP client đang được bổ sung. Ba ví dụ hiện tại dùng thư viện chuẩn và đã chạy trên Python 3.12; chưa phải một pipeline vận hành đầy đủ.&lt;/p&gt;</description></item></channel></rss>

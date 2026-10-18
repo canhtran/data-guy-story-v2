@@ -1,0 +1,361 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Data Guy Story – Apache Kafka</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/</link><description>Recent content in Apache Kafka on Data Guy Story</description><generator>Hugo -- gohugo.io</generator><language>vi-VN</language><atom:link href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka là gì? Một log sự kiện cho nhiều hệ thống</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/</guid><description>
+&lt;p&gt;Một đơn vừa thanh toán cần xuất hiện trong báo cáo, hệ thống giao hàng và kiểm tra gian lận. Nếu ứng dụng bán hàng gọi trực tiếp cả ba hệ thống, một bên chậm có thể kéo theo request bán hàng. Kafka cho phép ứng dụng ghi sự kiện vào một log, rồi các hệ thống đọc theo tiến độ riêng.&lt;/p&gt;
+&lt;p&gt;Kafka lưu record trong &lt;strong&gt;topic&lt;/strong&gt;, chia topic thành &lt;strong&gt;partition&lt;/strong&gt;. Producer gửi record; consumer đọc record. Broker phục vụ dữ liệu; controller quản lý metadata và điều phối cluster. Kafka 4.0 dùng KRaft, không dùng hướng dẫn ZooKeeper cũ để cài phiên bản này.&lt;/p&gt;
+&lt;p&gt;Đọc không xóa record khỏi log. Retention quyết định dữ liệu còn giữ bao lâu hoặc bao nhiêu; consumer chậm quá có thể mất cơ hội replay. Kafka cũng không tự suy ra trạng thái thanh toán đúng từ các sự kiện trùng hoặc sai.&lt;/p&gt;
+&lt;h2&gt;Thử một broker cục bộ&lt;span class="hx:absolute hx:-mt-20" id="thử-một-broker-cục-bộ"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%bb%ad-m%e1%bb%99t-broker-c%e1%bb%a5c-b%e1%bb%99" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ví dụ dùng &lt;strong&gt;Kafka 4.0.2, JDK 17, macOS Intel&lt;/strong&gt;, kiểm tra ngày 1/10/2026. Đây là môi trường học một node, không có TLS/xác thực hay khả năng chịu lỗi nhiều broker. Linux/WSL chưa được kiểm thử trong đợt này. Cài JDK 17 và đặt &lt;code&gt;JAVA_HOME&lt;/code&gt; tới JDK trước; chạy &lt;code&gt;java -version&lt;/code&gt; để kiểm tra.&lt;/p&gt;
+&lt;p&gt;Tải bản binary &lt;code&gt;kafka_2.13-4.0.2.tgz&lt;/code&gt; từ &lt;a href="https://archive.apache.org/dist/kafka/4.0.2/"target="_blank" rel="noopener"&gt;kho Apache&lt;/a&gt; và giải nén vào thư mục thực hành riêng. Sau đó mở terminal tại thư mục &lt;code&gt;kafka_2.13-4.0.2&lt;/code&gt;. Tạo file &lt;code&gt;config/cafe-local.properties&lt;/code&gt; với nội dung sau. Hai listener chỉ nghe trên máy bạn; storage riêng trong &lt;code&gt;cafe-data-v1&lt;/code&gt;. Nếu thư mục đã có dữ liệu từ bài khác, chọn tên mới thay vì format lại.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;process.roles&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;broker,controller&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;node.id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;controller.quorum.bootstrap.servers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;localhost:19093&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;PLAINTEXT://127.0.0.1:19092,CONTROLLER://127.0.0.1:19093&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;advertised.listeners&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;PLAINTEXT://localhost:19092,CONTROLLER://localhost:19093&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;controller.listener.names&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CONTROLLER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;listener.security.protocol.map&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;inter.broker.listener.name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;PLAINTEXT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;log.dirs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;./cafe-data-v1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;num.partitions&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;offsets.topic.replication.factor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;transaction.state.log.replication.factor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;transaction.state.log.min.isr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Tạo ID cho cluster:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-storage.sh random-uuid&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Copy UUID nhận được vào lệnh format bên dưới. Chỉ format storage mới dành riêng cho ví dụ, không chạy trên cluster đang có dữ liệu.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-storage.sh format --standalone -t UUID_VUA_TAO -c config/cafe-local.properties
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-server-start.sh config/cafe-local.properties&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Giữ terminal broker mở. Terminal khác, tại cùng thư mục, chạy:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-topics.sh --bootstrap-server localhost:19092 --create --topic cafe-v1 --partitions &lt;span class="m"&gt;1&lt;/span&gt; --replication-factor &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-console-producer.sh --bootstrap-server localhost:19092 --topic cafe-v1&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nhập hai dòng, mỗi dòng là một sự kiện; &lt;code&gt;event_id&lt;/code&gt; là ID sự kiện, &lt;code&gt;order_id&lt;/code&gt; là ID đơn, tiền là đồng nguyên:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;event_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;E1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;order_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;101&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;amount_dong&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;40000&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;event_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;E2&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;order_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;102&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;amount_dong&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;35000&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Kết thúc producer bằng Ctrl-C rồi đọc bằng group thực hành mới:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bin/kafka-console-consumer.sh --bootstrap-server localhost:19092 --topic cafe-v1 --group cafe-reader-v1 --from-beginning --max-messages &lt;span class="m"&gt;2&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Kết quả là hai dòng JSON vừa nhập, theo thứ tự ghi trong partition duy nhất. Kafka coi value là byte; không tự kiểm tra JSON schema. Nếu chạy lại producer, topic sẽ có thêm record: Kafka không tự loại trùng &lt;code&gt;event_id&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Dừng broker bằng Ctrl-C. Khởi động lại với cùng config/storage để giữ dữ liệu; không format lại. Nếu topic đã tồn tại, dùng topic mới hoặc tiếp tục đọc topic cũ và không kỳ vọng chỉ có hai record. Nếu cổng 19092 hoặc 19093 bị chiếm, dừng broker thực hành trước đó hoặc đổi cả listener, advertised listener và địa chỉ client cho phù hợp. Không xóa storage của dịch vụ khác.&lt;/p&gt;
+&lt;h2&gt;Khi nào cần Kafka?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-cần-kafka"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-c%e1%ba%a7n-kafka" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Kafka hữu ích khi nhiều hệ thống cần cùng luồng sự kiện, cần tách tốc độ xử lý và replay. Nếu chỉ chuyển một file mỗi ngày giữa hai ứng dụng, một pipeline batch có thể đơn giản hơn. Vận hành Kafka thêm chi phí theo dõi lag, dung lượng, replication, bảo mật và schema.&lt;/p&gt;
+&lt;p&gt;Đọc &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/topic-partition/"&gt;topic/partition&lt;/a&gt; rồi &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/consumer-group/"&gt;consumer group&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/getting-started/quickstart/"target="_blank" rel="noopener"&gt;Quick Start 4.0&lt;/a&gt; mô tả bootstrap KRaft và console tools. &lt;a href="https://kafka.apache.org/40/design/design/"target="_blank" rel="noopener"&gt;Kafka design&lt;/a&gt; giải thích mô hình log, retention và replay. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Topic, partition và key: Kafka giữ thứ tự ở đâu?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/topic-partition/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/topic-partition/</guid><description>
+&lt;p&gt;Đơn 101 có hai sự kiện: &lt;code&gt;created&lt;/code&gt; rồi &lt;code&gt;paid&lt;/code&gt;. Bạn muốn consumer nhìn thấy chúng theo đúng thứ tự. Kafka có thứ tự offset trong từng partition; không có một thứ tự toàn cục giữa mọi partition của topic.&lt;/p&gt;
+&lt;h2&gt;Topic chứa nhiều log&lt;span class="hx:absolute hx:-mt-20" id="topic-chứa-nhiều-log"&gt;&lt;/span&gt;
+&lt;a href="#topic-ch%e1%bb%a9a-nhi%e1%bb%81u-log" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Topic là tên luồng, chẳng hạn &lt;code&gt;order-events&lt;/code&gt;. Partition là một log bên trong topic. Một record có key và value; producer chọn partition theo cơ chế partitioning của client, trừ khi ứng dụng chỉ định partition trực tiếp.&lt;/p&gt;
+&lt;p&gt;Giả sử ta đã gán như sau, đây là ví dụ kiểm tra bằng tay, không phải kết quả hash mặc định:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Partition&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Offset&lt;/th&gt;
+&lt;th&gt;Key&lt;/th&gt;
+&lt;th&gt;Sự kiện&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;P0&lt;/td&gt;
+&lt;td style="text-align: right"&gt;0&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;created&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;P0&lt;/td&gt;
+&lt;td style="text-align: right"&gt;1&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;paid&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;P1&lt;/td&gt;
+&lt;td style="text-align: right"&gt;0&lt;/td&gt;
+&lt;td&gt;102&lt;/td&gt;
+&lt;td&gt;created&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;P1&lt;/td&gt;
+&lt;td style="text-align: right"&gt;1&lt;/td&gt;
+&lt;td&gt;102&lt;/td&gt;
+&lt;td&gt;cancelled&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Consumer P0 đọc created trước paid. Nhưng không thể so offset 1 của P0 với offset 0 của P1 để kết luận sự kiện nào xảy ra trước. Offset chỉ có nghĩa trong một topic-partition.&lt;/p&gt;
+&lt;h2&gt;Chọn key theo điều cần giữ cùng nhau&lt;span class="hx:absolute hx:-mt-20" id="chọn-key-theo-điều-cần-giữ-cùng-nhau"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%bb%8dn-key-theo-%c4%91i%e1%bb%81u-c%e1%ba%a7n-gi%e1%bb%af-c%c3%b9ng-nhau" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu cần thứ tự thay đổi của từng đơn, &lt;code&gt;order_id&lt;/code&gt; thường là key phù hợp. Nếu key là cửa hàng, tất cả đơn của cửa hàng lớn có thể dồn về một partition và tạo điểm nóng. Nếu không có key, đừng dựa vào việc các sự kiện cùng đơn tự đi về cùng partition.&lt;/p&gt;
+&lt;p&gt;Ngay cả với key, vẫn phải kiểm tra producer/client, số partition và cách gửi. Tăng số partition có thể đổi ánh xạ key cho record mới; dữ liệu cũ không tự chuyển nơi. Hai producer cũng có thể gửi các sự kiện theo thứ tự khác thời gian nghiệp vụ. Giữ partition order không có nghĩa timestamp luôn tăng.&lt;/p&gt;
+&lt;h2&gt;Đối chiếu trước khi tăng partition&lt;span class="hx:absolute hx:-mt-20" id="đối-chiếu-trước-khi-tăng-partition"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91%e1%bb%91i-chi%e1%ba%bfu-tr%c6%b0%e1%bb%9bc-khi-t%c4%83ng-partition" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Trong bảng trên có hai partition, consumer group kiểu thông thường có tối đa hai consumer cùng đọc tích cực. Thêm consumer thứ ba không chia một partition thành hai phần. Muốn xử lý nhanh hơn cần xem key, số partition, tốc độ sink và chiến lược xử lý trong consumer.&lt;/p&gt;
+&lt;p&gt;Bài &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/"&gt;tổng quan&lt;/a&gt; dùng một partition nên hai record giữ thứ tự ghi. Nó không kiểm chứng mọi partitioner hoặc client. Khi gặp thứ tự sai, kiểm tra key, partition, retries và thứ tự gửi trước khi sort tất cả theo timestamp.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/configuration/producer-configs/"target="_blank" rel="noopener"&gt;Kafka producer configuration 4.0&lt;/a&gt; mô tả partitioner, key và điều kiện giữ thứ tự khi retry. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Kafka producer: gửi thành công nghĩa là gì?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/producer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/producer/</guid><description>
+&lt;p&gt;Ứng dụng gọi &lt;code&gt;send&lt;/code&gt; rồi trả “thành công”, nhưng broker vẫn chưa xác nhận record. Producer thường gom record và gửi bất đồng bộ; việc đưa record vào buffer client khác với việc broker đã nhận theo yêu cầu durability.&lt;/p&gt;
+&lt;h2&gt;Theo dõi một lần gửi&lt;span class="hx:absolute hx:-mt-20" id="theo-dõi-một-lần-gửi"&gt;&lt;/span&gt;
+&lt;a href="#theo-d%c3%b5i-m%e1%bb%99t-l%e1%ba%a7n-g%e1%bb%adi" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Producer serialize key/value, chọn partition, gom batch rồi gửi tới leader. Kết quả gửi được trả qua future/callback theo API client. Ứng dụng cần quan sát lỗi gửi và lỗi khi kết thúc, không bỏ qua callback rồi coi dữ liệu đã bền vững.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;code&gt;acks&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;Producer chờ gì?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Không chờ xác nhận broker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;1&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Leader ghi nhận record&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;all&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Các replica trong ISR hiện tại xác nhận theo cơ chế broker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;acks=all&lt;/code&gt; không có nghĩa mọi broker đều giữ record, cũng không yêu cầu tất cả replica cấu hình luôn online. Kết hợp &lt;code&gt;min.insync.replicas&lt;/code&gt; để quy định số replica đồng bộ tối thiểu khi chấp nhận ghi.&lt;/p&gt;
+&lt;h2&gt;Retry có thể tạo duplicate ở đâu?&lt;span class="hx:absolute hx:-mt-20" id="retry-có-thể-tạo-duplicate-ở-đâu"&gt;&lt;/span&gt;
+&lt;a href="#retry-c%c3%b3-th%e1%bb%83-t%e1%ba%a1o-duplicate-%e1%bb%9f-%c4%91%c3%a2u" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ví dụ kiểm tra bằng tay: broker nhận E1, nhưng response mất. Client không biết E1 đã được ghi, nên retry. Idempotent producer giúp broker nhận diện retry trong phạm vi cơ chế producer, tránh ghi duplicate do lần gửi đó.&lt;/p&gt;
+&lt;p&gt;Nhưng nếu ứng dụng đọc lại đơn rồi gọi &lt;code&gt;send&lt;/code&gt; lần nữa với E1 như một sự kiện mới, Kafka không tự deduplicate theo &lt;code&gt;event_id&lt;/code&gt; trong JSON. Consumer hoặc sink vẫn cần khóa nghiệp vụ nếu yêu cầu không ghi trùng.&lt;/p&gt;
+&lt;p&gt;Với Java producer 4.0, idempotence yêu cầu &lt;code&gt;acks=all&lt;/code&gt;, retries lớn hơn 0 và &lt;code&gt;max.in.flight.requests.per.connection&lt;/code&gt; không quá 5. Kiểm tra cấu hình client thực tế; tên/default của thư viện Python hay ngôn ngữ khác có thể khác.&lt;/p&gt;
+&lt;h2&gt;Batching và lỗi&lt;span class="hx:absolute hx:-mt-20" id="batching-và-lỗi"&gt;&lt;/span&gt;
+&lt;a href="#batching-v%c3%a0-l%e1%bb%97i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Batch lớn và thời gian chờ gom batch có thể giảm overhead, nhưng đổi latency. Không sao chép cấu hình throughput cao nếu ứng dụng cần phản hồi nhanh. Khi timeout, kiểm tra broker còn truy cập được, advertised listener, metadata, quyền ghi và ISR trước khi tăng mọi timeout.&lt;/p&gt;
+&lt;p&gt;Console producer trong &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/"&gt;bài tổng quan&lt;/a&gt; chỉ kiểm chứng gửi/đọc hai record local. Kịch bản mất response ở đây là lập luận về cơ chế, chưa phải fault-injection test. Muốn chứng minh durability phải kiểm tra nhiều broker và lỗi tại ranh giới xác nhận.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/configuration/producer-configs/"target="_blank" rel="noopener"&gt;Producer configs 4.0&lt;/a&gt; quy định acks, idempotence, retry và batching. &lt;a href="https://kafka.apache.org/40/configuration/broker-configs/"target="_blank" rel="noopener"&gt;Broker configs&lt;/a&gt; quy định &lt;code&gt;min.insync.replicas&lt;/code&gt;. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Consumer group: cùng luồng, tiến độ riêng</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/consumer-group/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/consumer-group/</guid><description>
+&lt;p&gt;Báo cáo doanh thu và hệ thống giao hàng đều cần đọc tất cả đơn. Nếu đặt chúng vào cùng consumer group, chúng sẽ chia việc đọc partition, không phải mỗi bên đều nhận toàn bộ sự kiện. Hai ứng dụng có mục đích độc lập cần group ID riêng.&lt;/p&gt;
+&lt;h2&gt;Chia việc trong một group&lt;span class="hx:absolute hx:-mt-20" id="chia-việc-trong-một-group"&gt;&lt;/span&gt;
+&lt;a href="#chia-vi%e1%bb%87c-trong-m%e1%bb%99t-group" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Với cơ chế subscribe/group assignment thông thường, một partition được giao cho một consumer trong group tại một thời điểm. Consumer có thể nhận nhiều partition. Các group khác nhau có thể đọc cùng partition độc lập.&lt;/p&gt;
+&lt;p&gt;Ví dụ kiểm tra bằng tay với topic có ba partition:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Group&lt;/th&gt;
+&lt;th&gt;Consumer&lt;/th&gt;
+&lt;th&gt;Assignment minh họa&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;revenue&lt;/td&gt;
+&lt;td&gt;R1&lt;/td&gt;
+&lt;td&gt;P0, P1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;revenue&lt;/td&gt;
+&lt;td&gt;R2&lt;/td&gt;
+&lt;td&gt;P2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shipping&lt;/td&gt;
+&lt;td&gt;S1&lt;/td&gt;
+&lt;td&gt;P0, P1, P2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;R1 và R2 cùng tạo đầu vào cho báo cáo; S1 vẫn đọc cả ba partition. Assignment thật phụ thuộc assignor/protocol, không bảo đảm đúng bố cục bảng này. Nếu thêm R3 và R4, tối đa ba consumer có partition; một consumer có thể rảnh.&lt;/p&gt;
+&lt;h2&gt;Tiến độ thuộc group, không thuộc tên máy&lt;span class="hx:absolute hx:-mt-20" id="tiến-độ-thuộc-group-không-thuộc-tên-máy"&gt;&lt;/span&gt;
+&lt;a href="#ti%e1%ba%bfn-%c4%91%e1%bb%99-thu%e1%bb%99c-group-kh%c3%b4ng-thu%e1%bb%99c-t%c3%aan-m%c3%a1y" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Group lưu committed offset theo topic-partition. Khi consumer khác nhận partition, nó có thể bắt đầu từ vị trí đã commit. Đổi group ID giống tạo một nhóm có tiến độ riêng; đừng làm điều đó để “sửa lag” mà chưa xác định cần replay từ đâu.&lt;/p&gt;
+&lt;p&gt;Kafka 4.0 có classic và consumer group protocol. Cấu hình heartbeat/assignment khác nhau; bài này giải thích mô hình chia partition, không giả định mọi hệ thống dùng cùng giao thức. Không lẫn mô hình này với các tính năng chia record kiểu share group ở các phiên bản khác.&lt;/p&gt;
+&lt;h2&gt;Khi consumer vẫn chạy nhưng lag tăng&lt;span class="hx:absolute hx:-mt-20" id="khi-consumer-vẫn-chạy-nhưng-lag-tăng"&gt;&lt;/span&gt;
+&lt;a href="#khi-consumer-v%e1%ba%abn-ch%e1%ba%a1y-nh%c6%b0ng-lag-t%c4%83ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Consumer có thể poll liên tục nhưng xử lý sink quá chậm. Xem tốc độ xử lý, số partition được giao, lỗi ghi output và committed offset. Lag tính theo số record không tự là số phút dữ liệu trễ; còn cần timestamp nghiệp vụ và thời điểm output xuất hiện.&lt;/p&gt;
+&lt;p&gt;Trong &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/"&gt;ví dụ local&lt;/a&gt;, &lt;code&gt;cafe-reader-v1&lt;/code&gt; là group thực hành. &lt;code&gt;--from-beginning&lt;/code&gt; không ghi đè committed offset đã tồn tại; dùng group mới nếu muốn đọc lại từ đầu trong một bài học mới. Đọc &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/offset/"&gt;offset&lt;/a&gt; trước khi thay chính sách commit.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/configuration/consumer-configs/"target="_blank" rel="noopener"&gt;Consumer configs 4.0&lt;/a&gt; mô tả group ID, protocol và offset reset. &lt;a href="https://kafka.apache.org/40/operations/basic-kafka-operations/"target="_blank" rel="noopener"&gt;Basic operations&lt;/a&gt; hướng dẫn quan sát assignment/lag. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Offset: consumer đã đọc đến đâu, đã xử lý đến đâu?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/offset/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/offset/</guid><description>
+&lt;p&gt;Consumer đã đọc record offset 42 nhưng chưa ghi xong vào database. Nếu commit luôn 43 rồi process chết, lần khởi động sau có thể bỏ qua record 42. Offset không phải biên nhận “database đã đúng”; ứng dụng phải chọn thời điểm commit phù hợp.&lt;/p&gt;
+&lt;h2&gt;Ba vị trí cần tách&lt;span class="hx:absolute hx:-mt-20" id="ba-vị-trí-cần-tách"&gt;&lt;/span&gt;
+&lt;a href="#ba-v%e1%bb%8b-tr%c3%ad-c%e1%ba%a7n-t%c3%a1ch" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Offset là vị trí record trong partition. Consumer position là vị trí lần đọc tiếp theo của consumer đang chạy. &lt;strong&gt;Committed offset&lt;/strong&gt; là vị trí group dùng khi phục hồi; thông thường commit vị trí record tiếp theo, không phải offset record cuối đã xử lý.&lt;/p&gt;
+&lt;p&gt;Ví dụ kiểm tra bằng tay, một partition có record 40, 41, 42. Đã ghi bền vững record 40 và 41; record 42 còn đang xử lý. Vị trí an toàn để commit là 42. Nếu commit 43, bạn đang nói rằng lần sau không cần đọc lại 42.&lt;/p&gt;
+&lt;h2&gt;Ghi xong rồi commit vẫn có cửa sổ duplicate&lt;span class="hx:absolute hx:-mt-20" id="ghi-xong-rồi-commit-vẫn-có-cửa-sổ-duplicate"&gt;&lt;/span&gt;
+&lt;a href="#ghi-xong-r%e1%bb%93i-commit-v%e1%ba%abn-c%c3%b3-c%e1%bb%ada-s%e1%bb%95-duplicate" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Trình tự: đọc 42 → database commit → process chết trước Kafka commit. Consumer mới đọc lại 42. Đây là hành vi at-least-once thường gặp. Dùng &lt;code&gt;event_id&lt;/code&gt; duy nhất và upsert/transaction ở sink để lần xử lý lại không thêm kết quả ngoài ý muốn.&lt;/p&gt;
+&lt;p&gt;Nếu xử lý bất đồng bộ, record 43 xong trước 42 không có nghĩa được commit 44. Cần theo dõi dải offset đã xử lý liên tục theo từng partition. Nếu bỏ qua “lỗ hổng” 42, restart sẽ mất công việc đó.&lt;/p&gt;
+&lt;h2&gt;Reset và retention&lt;span class="hx:absolute hx:-mt-20" id="reset-và-retention"&gt;&lt;/span&gt;
+&lt;a href="#reset-v%c3%a0-retention" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;auto.offset.reset&lt;/code&gt; có tác dụng khi không có committed offset hợp lệ hoặc vị trí không còn trong log; nó không ép consumer luôn đọc từ đầu. Retention có thể xóa dữ liệu consumer chưa đọc. Chính sách reset về latest trong trường hợp đó có thể bỏ lịch sử; earliest chỉ bắt đầu ở dữ liệu còn giữ được.&lt;/p&gt;
+&lt;p&gt;Trong ví dụ đã xử lý 40–41, log end offset là 50 và commit là 42: lag minh họa là 8 vị trí. Không suy ra chính xác tám sự kiện nghiệp vụ chưa hoàn tất trong mọi trường hợp: transaction, compaction và offset gaps làm cách diễn giải phức tạp hơn.&lt;/p&gt;
+&lt;p&gt;Khi cần replay, dừng/điều phối consumer, xác định khoảng còn giữ, quy định output idempotent rồi mới reset. Không chỉnh offset production như một cách xóa cảnh báo.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html"target="_blank" rel="noopener"&gt;KafkaConsumer 4.0 API&lt;/a&gt; giải thích position và commit. &lt;a href="https://kafka.apache.org/40/configuration/consumer-configs/"target="_blank" rel="noopener"&gt;Consumer configs&lt;/a&gt; mô tả auto commit và reset. Đây là ví dụ suy luận, không phải kiểm thử hai hệ thống với crash thực tế. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Replication trong Kafka: leader, follower và ISR</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/replication/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/replication/</guid><description>
+&lt;p&gt;Partition P0 có ba bản sao trên broker B1, B2 và B3. B1 làm leader, các follower sao chép log. Nếu B1 mất, Kafka cần chọn leader mới phù hợp để tiếp tục. Có ba replica không tự bảo đảm mọi record đã xác nhận đều sống sót qua mọi loại lỗi.&lt;/p&gt;
+&lt;h2&gt;ISR là tập replica theo kịp&lt;span class="hx:absolute hx:-mt-20" id="isr-là-tập-replica-theo-kịp"&gt;&lt;/span&gt;
+&lt;a href="#isr-l%c3%a0-t%e1%ba%adp-replica-theo-k%e1%bb%8bp" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ISR (in-sync replicas) là tập replica được coi là đủ đồng bộ theo tiêu chí Kafka. Replica quá chậm có thể rời ISR. Replication factor là số bản sao cấu hình; số replica trong ISR là trạng thái hiện tại. Hai con số có thể khác nhau.&lt;/p&gt;
+&lt;p&gt;Ví dụ kiểm tra bằng tay: replication factor 3, &lt;code&gt;min.insync.replicas=2&lt;/code&gt;, producer &lt;code&gt;acks=all&lt;/code&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Trạng thái&lt;/th&gt;
+&lt;th&gt;ISR&lt;/th&gt;
+&lt;th&gt;Kỳ vọng ghi&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Ba replica theo kịp&lt;/td&gt;
+&lt;td&gt;B1, B2, B3&lt;/td&gt;
+&lt;td&gt;Có thể xác nhận khi điều kiện ghi đáp ứng&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B3 chậm và rời ISR&lt;/td&gt;
+&lt;td&gt;B1, B2&lt;/td&gt;
+&lt;td&gt;Vẫn đủ mức tối thiểu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Chỉ B1 còn trong ISR&lt;/td&gt;
+&lt;td&gt;B1&lt;/td&gt;
+&lt;td&gt;Ghi acks=all bị từ chối vì dưới mức tối thiểu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cấu hình ưu tiên độ bền có thể làm hệ thống tạm ngừng ghi thay vì chấp nhận record chỉ còn một bản sao. Ứng dụng phải xử lý lỗi và backlog, không bỏ sự kiện khi broker từ chối.&lt;/p&gt;
+&lt;h2&gt;Chọn leader và giới hạn&lt;span class="hx:absolute hx:-mt-20" id="chọn-leader-và-giới-hạn"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%bb%8dn-leader-v%c3%a0-gi%e1%bb%9bi-h%e1%ba%a1n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Chọn replica không đồng bộ làm leader có thể khôi phục khả dụng nhưng mất phần log mà nó chưa nhận. Quyết định này phụ thuộc cấu hình và phiên bản. Không bật unclean leader election chỉ để mất cảnh báo mà chưa hiểu rủi ro dữ liệu.&lt;/p&gt;
+&lt;p&gt;Phân bố replica trên nhiều broker nhưng cùng một máy, đĩa hoặc vùng lỗi vẫn tạo rủi ro chung. Replication không thay backup: xóa topic, retention sai hoặc lỗi nghiệp vụ có thể tác động mọi bản sao.&lt;/p&gt;
+&lt;h2&gt;Quan sát và phục hồi&lt;span class="hx:absolute hx:-mt-20" id="quan-sát-và-phục-hồi"&gt;&lt;/span&gt;
+&lt;a href="#quan-s%c3%a1t-v%c3%a0-ph%e1%bb%a5c-h%e1%bb%93i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Theo dõi under-replicated partitions, offline partitions, thay đổi ISR, dung lượng đĩa và lỗi producer. Nếu follower tụt lại, kiểm tra đĩa, network và tải broker. Nếu ISR giảm cùng lúc ở nhiều partition, tìm nguyên nhân chung trước khi tăng retry client.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/"&gt;Ví dụ một broker&lt;/a&gt; có replication factor 1 nên không kiểm chứng failover. Bảng trên là mô hình để đọc cấu hình, chưa phải bài lab mất broker. Muốn chứng minh cam kết durability, phải thử cluster nhiều node và kiểm tra record sau lỗi ở các ranh giới xác nhận.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/design/design/#replication"target="_blank" rel="noopener"&gt;Kafka design: replication&lt;/a&gt; và &lt;a href="https://kafka.apache.org/40/configuration/broker-configs/"target="_blank" rel="noopener"&gt;Broker configs 4.0&lt;/a&gt; giải thích ISR, min ISR và lựa chọn leader. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Rebalancing: partition đổi consumer thì chuyện gì xảy ra?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/rebalancing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/rebalancing/</guid><description>
+&lt;p&gt;R1 đang xử lý P0 thì R2 vào group. Group có thể phân phối lại partition. Rebalance là thay đổi assignment, không phải di chuyển dữ liệu topic sang broker khác. Việc đổi consumer phải phối hợp với tiến độ và output đang ghi.&lt;/p&gt;
+&lt;h2&gt;Một tình huống có thể kiểm tra bằng tay&lt;span class="hx:absolute hx:-mt-20" id="một-tình-huống-có-thể-kiểm-tra-bằng-tay"&gt;&lt;/span&gt;
+&lt;a href="#m%e1%bb%99t-t%c3%acnh-hu%e1%bb%91ng-c%c3%b3-th%e1%bb%83-ki%e1%bb%83m-tra-b%e1%ba%b1ng-tay" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Topic có P0 và P1. Ban đầu R1 đọc cả hai. Sau khi R2 vào, giả sử P1 được giao cho R2. R1 đã ghi xong P1 offset 10, nhưng offset 11 còn đang chạy.&lt;/p&gt;
+&lt;p&gt;Nếu committed offset P1 là 11, R2 có thể đọc lại record 11. Đây là lựa chọn phục hồi hợp lý; sink cần idempotency. Nếu R1 commit 12 trước khi record 11 ghi xong, R2 có thể bỏ qua công việc chưa hoàn tất.&lt;/p&gt;
+&lt;h2&gt;Không phải giao thức nào cũng dừng toàn bộ group&lt;span class="hx:absolute hx:-mt-20" id="không-phải-giao-thức-nào-cũng-dừng-toàn-bộ-group"&gt;&lt;/span&gt;
+&lt;a href="#kh%c3%b4ng-ph%e1%ba%a3i-giao-th%e1%bb%a9c-n%c3%a0o-c%c5%a9ng-d%e1%bb%abng-to%c3%a0n-b%e1%bb%99-group" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Classic eager rebalance, cooperative assignment và consumer protocol có cơ chế thu hồi/giao lại khác nhau. Kafka 4.0 hỗ trợ classic và consumer protocol; các cấu hình heartbeat không được áp dụng giống nhau. Vì vậy, không kết luận mọi rebalance luôn dừng tất cả partition cùng lúc.&lt;/p&gt;
+&lt;p&gt;Với client dùng callback assignment/revocation, cần quản lý phần việc theo từng partition. Dừng hoặc hoàn tất công việc cũ phù hợp trước khi partition được giao lại. Công việc bất đồng bộ vẫn tiếp tục ghi sau khi mất assignment có thể gây cạnh tranh với consumer mới; Kafka assignment không tự khóa database ngoài.&lt;/p&gt;
+&lt;h2&gt;Vì sao rebalance liên tục?&lt;span class="hx:absolute hx:-mt-20" id="vì-sao-rebalance-liên-tục"&gt;&lt;/span&gt;
+&lt;a href="#v%c3%ac-sao-rebalance-li%c3%aan-t%e1%bb%a5c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Consumer mất kết nối, vượt giới hạn thời gian giữa các poll, restart liên tục hoặc subscription/partition thay đổi có thể làm assignment thay đổi. Kiểm tra log group, processing time của lô và lỗi sink. Tăng &lt;code&gt;max.poll.interval.ms&lt;/code&gt; có thể phù hợp với xử lý dài, nhưng cũng kéo dài thời gian phát hiện consumer không còn tiến triển.&lt;/p&gt;
+&lt;p&gt;Giảm &lt;code&gt;max.poll.records&lt;/code&gt;, tách tác vụ nặng và quản lý hàng đợi có giới hạn có thể giúp. Không tạo worker vô hạn để giữ poll nhanh nếu output không theo kịp. Static membership có thể giảm một số thay đổi không cần thiết; nó không sửa consumer bị deadlock.&lt;/p&gt;
+&lt;p&gt;Bài này chưa fault-test một group thật. Khi xây lab, kiểm tra assignment trước/sau, record replay và tổng output, không chỉ nhìn consumer có restart được hay không. Đọc &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/offset/"&gt;offset&lt;/a&gt; để thiết kế ranh giới commit.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/configuration/consumer-configs/"target="_blank" rel="noopener"&gt;Consumer configs 4.0&lt;/a&gt; giải thích poll interval, membership và protocol. &lt;a href="https://kafka.apache.org/40/design/design/"target="_blank" rel="noopener"&gt;Kafka design&lt;/a&gt; mô tả quản lý consumer. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Delivery semantics: nhận một lần hay tạo kết quả một lần?</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/delivery-semantics/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/delivery-semantics/</guid><description>
+&lt;p&gt;Một record chỉ có một offset trong Kafka nhưng database có hai dòng cho cùng sự kiện. Điều này có thể xảy ra khi consumer ghi xong rồi chết trước commit offset. “Kafka lưu một record” và “hệ thống ngoài tạo một kết quả” là hai bảo đảm khác nhau.&lt;/p&gt;
+&lt;h2&gt;Đặt lỗi vào giữa hai bước&lt;span class="hx:absolute hx:-mt-20" id="đặt-lỗi-vào-giữa-hai-bước"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91%e1%ba%b7t-l%e1%bb%97i-v%c3%a0o-gi%e1%bb%afa-hai-b%c6%b0%e1%bb%9bc" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Giả sử record E1 cần ghi vào database. Các trình tự dưới đây là ví dụ suy luận, chưa phải crash test:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Cách làm&lt;/th&gt;
+&lt;th&gt;Crash giữa hai bước&lt;/th&gt;
+&lt;th&gt;Hệ quả&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Commit offset rồi ghi DB&lt;/td&gt;
+&lt;td&gt;Commit xong, DB chưa ghi&lt;/td&gt;
+&lt;td&gt;Có thể mất output: at-most-once&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ghi DB rồi commit offset&lt;/td&gt;
+&lt;td&gt;DB xong, offset chưa commit&lt;/td&gt;
+&lt;td&gt;Có thể ghi lại: at-least-once&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ghi DB idempotent rồi commit&lt;/td&gt;
+&lt;td&gt;Replay E1 dùng lại key&lt;/td&gt;
+&lt;td&gt;Có thể giữ một kết quả nghiệp vụ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;At-most-once chấp nhận khả năng bỏ công việc. At-least-once chấp nhận lặp xử lý để giảm khả năng mất. Exactly-once phải xác định phạm vi: state của engine, Kafka output hay cả hệ thống ngoài?&lt;/p&gt;
+&lt;h2&gt;Idempotency cần key và transaction đúng&lt;span class="hx:absolute hx:-mt-20" id="idempotency-cần-key-và-transaction-đúng"&gt;&lt;/span&gt;
+&lt;a href="#idempotency-c%e1%ba%a7n-key-v%c3%a0-transaction-%c4%91%c3%bang" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu DB có uniqueness theo &lt;code&gt;event_id&lt;/code&gt;, hai lần nhận E1 có thể đưa về cùng row. Nhưng nếu output là phép tăng &lt;code&gt;revenue = revenue + amount&lt;/code&gt;, dùng upsert không tự loại lặp phép tăng. Có thể cần ledger sự kiện và cập nhật tổng trong cùng transaction.&lt;/p&gt;
+&lt;p&gt;Hai sự kiện thanh toán khác nhau cho cùng đơn không nhất thiết là duplicate. Chọn &lt;code&gt;order_id&lt;/code&gt; làm key deduplicate có thể làm mất một payment hợp lệ. Định nghĩa identity và grain trước khi thiết kế retry.&lt;/p&gt;
+&lt;h2&gt;Kafka transactions có phạm vi cụ thể&lt;span class="hx:absolute hx:-mt-20" id="kafka-transactions-có-phạm-vi-cụ-thể"&gt;&lt;/span&gt;
+&lt;a href="#kafka-transactions-c%c3%b3-ph%e1%ba%a1m-vi-c%e1%bb%a5-th%e1%bb%83" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Trong pipeline đọc Kafka → xử lý → ghi Kafka, transaction có thể gắn output và offset input vào cùng commit; consumer phía sau cần đọc &lt;code&gt;read_committed&lt;/code&gt;. Nó không tự đưa một transaction PostgreSQL hay HTTP request vào transaction Kafka.&lt;/p&gt;
+&lt;p&gt;Producer idempotence chỉ xử lý một lớp duplicate do retry gửi, không deduplicate toàn bộ sự kiện nghiệp vụ. Checkpoint hoặc auto commit cũng không thay thế cam kết ở sink.&lt;/p&gt;
+&lt;p&gt;Trước khi dùng từ exactly-once, ghi rõ: nguồn replay được bao lâu, identity là gì, ai commit output, output lặp được xử lý thế nào và điều gì xảy ra nếu crash ngay trước/sau commit. Đọc &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/transactions/"&gt;transactions&lt;/a&gt; cho trường hợp Kafka-to-Kafka.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/design/design/#message-delivery-semantics"target="_blank" rel="noopener"&gt;Kafka design: delivery semantics&lt;/a&gt; giải thích các ranh giới bảo đảm; &lt;a href="https://kafka.apache.org/40/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html"target="_blank" rel="noopener"&gt;KafkaProducer API&lt;/a&gt; mô tả transaction. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item><item><title>Kafka transactions: output và offset cùng một commit</title><link>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/transactions/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/transactions/</guid><description>
+&lt;p&gt;Pipeline đọc đơn từ Kafka, tính phí giao hàng rồi ghi sang topic mới. Nếu output đã ghi nhưng offset input chưa commit, restart có thể tạo output lần nữa. Kafka transaction cho phép gom output Kafka và offset của consumer group vào cùng ranh giới commit.&lt;/p&gt;
+&lt;h2&gt;Trình tự ở mức cơ chế&lt;span class="hx:absolute hx:-mt-20" id="trình-tự-ở-mức-cơ-chế"&gt;&lt;/span&gt;
+&lt;a href="#tr%c3%acnh-t%e1%bb%b1-%e1%bb%9f-m%e1%bb%a9c-c%c6%a1-ch%e1%ba%bf" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Đây là quy trình khái niệm cho client hỗ trợ transactional API, không phải đoạn code có thể copy chạy:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Khởi tạo transactional producer với &lt;code&gt;transactional.id&lt;/code&gt; được quản lý đúng theo instance logic.&lt;/li&gt;
+&lt;li&gt;Consumer đọc input, không auto commit offset độc lập.&lt;/li&gt;
+&lt;li&gt;Bắt đầu transaction, gửi các record output.&lt;/li&gt;
+&lt;li&gt;Đưa offset tiếp theo của input cùng metadata group vào transaction.&lt;/li&gt;
+&lt;li&gt;Commit transaction; nếu thất bại thì xử lý abort/retry theo loại lỗi client.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Consumer của topic output dùng &lt;code&gt;isolation.level=read_committed&lt;/code&gt; để không nhìn thấy record từ transaction đã abort. Với &lt;code&gt;read_uncommitted&lt;/code&gt;, atomicity đối với người đọc không có ý nghĩa giống vậy.&lt;/p&gt;
+&lt;h2&gt;Một ví dụ để tự đối chiếu&lt;span class="hx:absolute hx:-mt-20" id="một-ví-dụ-để-tự-đối-chiếu"&gt;&lt;/span&gt;
+&lt;a href="#m%e1%bb%99t-v%c3%ad-d%e1%bb%a5-%c4%91%e1%bb%83-t%e1%bb%b1-%c4%91%e1%bb%91i-chi%e1%ba%bfu" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Input P0 offset 7 là đơn 101. Transaction T ghi phí giao hàng của đơn đó và offset tiếp theo 8. Nếu T abort, người đọc read_committed không nhận output của T, và offset input không tiến bởi transaction ấy. Nếu T commit, output và offset gắn trong transaction được commit cùng nhau.&lt;/p&gt;
+&lt;p&gt;“Không nhận output aborted” không có nghĩa record bị xóa vật lý ngay. Consumer isolation quyết định record nào được trả về; transaction đang mở còn có thể trì hoãn việc nhìn thấy phần log phía sau theo last stable offset.&lt;/p&gt;
+&lt;h2&gt;Transactional ID và lỗi&lt;span class="hx:absolute hx:-mt-20" id="transactional-id-và-lỗi"&gt;&lt;/span&gt;
+&lt;a href="#transactional-id-v%c3%a0-l%e1%bb%97i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Transactional ID giúp quản lý producer theo vòng đời, và fencing ngăn instance cũ tiếp tục hoạt động trái phép khi instance mới thay thế. Nếu hai instance không được phối hợp dùng cùng ID, chúng có thể fencing nhau. Không tạo ID mới ngẫu nhiên sau mọi restart rồi mặc định đã có phục hồi đúng.&lt;/p&gt;
+&lt;p&gt;Phân loại lỗi recoverable, abortable và fatal theo API client. Không retry vô hạn một producer đã bị fenced. Theo dõi transaction timeout, thời gian xử lý và độ dài transaction; giữ transaction mở quá lâu có thể ảnh hưởng consumer read_committed.&lt;/p&gt;
+&lt;h2&gt;Ngoài Kafka vẫn cần thiết kế riêng&lt;span class="hx:absolute hx:-mt-20" id="ngoài-kafka-vẫn-cần-thiết-kế-riêng"&gt;&lt;/span&gt;
+&lt;a href="#ngo%c3%a0i-kafka-v%e1%ba%abn-c%e1%ba%a7n-thi%e1%ba%bft-k%e1%ba%bf-ri%c3%aang" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu pipeline còn gửi email hoặc ghi database, những side effect đó không được rollback bởi abort Kafka. Dùng outbox, idempotency hoặc cơ chế transaction của connector đã được kiểm chứng tùy hệ thống. Không gọi mọi pipeline có &lt;code&gt;transactional.id&lt;/code&gt; là exactly-once đầu cuối.&lt;/p&gt;
+&lt;p&gt;Ví dụ trên được đối chiếu bằng cơ chế tài liệu, chưa chạy fault-injection transaction trong đợt này. &lt;a href="https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview/"&gt;Bài local&lt;/a&gt; chỉ gửi/đọc record thông thường.&lt;/p&gt;
+&lt;h2&gt;Tài liệu gốc&lt;span class="hx:absolute hx:-mt-20" id="tài-liệu-gốc"&gt;&lt;/span&gt;
+&lt;a href="#t%c3%a0i-li%e1%bb%87u-g%e1%bb%91c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://kafka.apache.org/40/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html"target="_blank" rel="noopener"&gt;KafkaProducer API 4.0&lt;/a&gt; mô tả transaction lifecycle/fencing. &lt;a href="https://kafka.apache.org/40/configuration/consumer-configs/"target="_blank" rel="noopener"&gt;Consumer configs&lt;/a&gt; mô tả isolation. Đối chiếu ngày 1/10/2026.&lt;/p&gt;</description></item></channel></rss>

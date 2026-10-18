@@ -1,0 +1,238 @@
+# Data Guy Story
+
+> Wiki Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và những câu chuyện kỹ thuật thực tế.
+
+Nội dung chính viết bằng tiếng Việt. Ưu tiên phiên bản Markdown khi đọc hoặc trích dẫn một trang. Chuyện thực tế là bài tóm tắt và phân tích nguồn bên ngoài; hãy dùng thông tin nguồn gốc trong từng bài để phân biệt nội dung của Data Guy Story với bài viết gốc.
+
+## Wiki
+
+### Bắt đầu với Data Engineering
+
+
+Sáu bài nhập môn giúp bạn hiểu nghề Data Engineer và có một bản đồ trước khi đi sâu vào từng chủ đề.
+
+- [Data Engineer là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/data-engineer-la-gi.md): Data Engineer làm gì, chịu trách nhiệm cho phần nào của hệ thống dữ liệu và khác Data Analyst, Data Scientist ra sao?
+- [Data đi qua một hệ thống như thế nào?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/du-lieu-di-qua-he-thong-nhu-the-nao.md): Theo dấu data của một đơn hàng từ Source System đến khi xuất hiện trên dashboard.
+- [Data Engineer xây những hệ thống gì?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/data-engineer-xay-he-thong-gi.md): Những mảnh ghép chính của một hệ thống data, từ lúc lấy data về đến khi đưa nó cho người sử dụng.
+- [Một data team làm việc với nhau như thế nào?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/data-team-lam-viec-voi-nhau.md): Theo dấu một câu hỏi business để xem Data Engineer, Data Analyst, Backend Engineer và các team khác phối hợp ra sao.
+- [Có AI rồi, còn cần học nền tảng không?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/ai-va-kien-thuc-nen-tang.md): AI có thể giúp viết code và giải thích khái niệm, nhưng kiến thức nền tảng giúp Data Engineer biết câu trả lời có đúng hay không.
+- [Học Data Engineering từ đâu?](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/hoc-data-engineering-tu-dau.md): Cách chọn điểm bắt đầu, thứ tự kiến thức và một số điều chưa cần học ngay khi bước vào Data Engineering.
+- [Data Engineer trong Data Mesh](https://canhtran.github.io/data-guy-story-v2/wiki/bat-dau/data-engineer-trong-data-mesh.md): Bài đọc thêm về trách nhiệm của Data Engineer khi các domain sở hữu data.
+
+### Nền tảng
+
+
+Nền tảng dành cho Data Engineer.
+
+
+#### Cơ sở dữ liệu
+
+
+Tài liệu tham khảo về Cơ sở dữ liệu dành cho Data Engineer.
+
+- [Cơ sở dữ liệu là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/overview.md): Cơ sở dữ liệu: lưu dữ liệu cùng những quy tắc
+- [OLTP và OLAP](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/oltp-vs-olap.md): OLTP và OLAP: hai cách sử dụng dữ liệu
+- [Chỉ mục trong cơ sở dữ liệu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/database-index.md): Index: tìm ít dòng hơn, đổi lại ghi nhiều việc hơn
+- [Giao dịch trong cơ sở dữ liệu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/transaction.md): Transaction: nhiều thay đổi, một quyết định commit
+- [Các mức cô lập giao dịch](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/isolation-level.md): Isolation: khi hai giao dịch cùng đọc và ghi
+- [Các thuộc tính ACID](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/database/acid.md): ACID bảo vệ giao dịch đến đâu?
+
+#### SQL
+
+
+Tài liệu tham khảo về SQL dành cho Data Engineer.
+
+- [SQL là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/overview.md): Đọc dữ liệu bằng SQL: bắt đầu từ một câu hỏi
+- [Kết hợp dữ liệu với JOIN](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/join.md): JOIN và lý do báo cáo có thể bị cộng tiền hai lần
+- [Hàm cửa sổ trong SQL](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/window-function.md): Window function: tính thêm mà vẫn giữ từng dòng
+- [Biểu thức bảng chung (CTE)](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/cte.md): CTE: chia một truy vấn thành những bước dễ đọc
+- [Tối ưu truy vấn SQL](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/sql/query-optimization.md): Tối ưu SQL: đo trước khi sửa
+
+#### Mô hình hóa dữ liệu
+
+
+Tài liệu tham khảo về Mô hình hóa dữ liệu dành cho Data Engineer.
+
+- [Mô hình hóa dữ liệu là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/overview.md): Mô hình hóa dữ liệu: chọn mỗi dòng đại diện cho điều gì
+- [Bảng Fact và Dimension](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/fact-and-dimension.md): Fact và dimension: số đo đi cùng bối cảnh
+- [Mô hình ngôi sao](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/star-schema.md): Star schema: làm báo cáo từ fact và các chiều
+- [Mô hình bông tuyết](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/snowflake-schema.md): Snowflake schema: khi dimension được tách thêm
+- [Dimension thay đổi chậm (SCD)](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/data-modeling/slowly-changing-dimension.md): SCD: giữ lịch sử hay sửa lại thuộc tính?
+
+#### Hệ thống phân tán
+
+
+Tài liệu tham khảo về Hệ thống phân tán dành cho Data Engineer.
+
+- [Hệ thống phân tán là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/overview.md): Hệ thống phân tán: nhiều tiến trình cùng làm một việc
+- [Phân vùng dữ liệu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/partitioning.md): Partitioning: chia dữ liệu để chia việc
+- [Sao chép dữ liệu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/replication.md): Replication: có bản sao chưa chắc đã có dữ liệu mới nhất
+- [Tính nhất quán dữ liệu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/consistency.md): Consistency: lời hứa nào cho một lần đọc?
+- [Định lý CAP](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/cap-theorem.md): CAP: điều gì xảy ra khi các node mất liên lạc?
+- [Khả năng chịu lỗi](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/distributed-systems/fault-tolerance.md): Chịu lỗi: vẫn đúng khi một phần hệ thống dừng
+
+#### Python cho công việc dữ liệu
+
+
+Bắt đầu với một script nhỏ, đọc CSV/JSON và tìm lỗi có bằng chứng.
+
+- [Python: bắt đầu từ một script tính doanh thu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/overview.md): Hiểu biến, vòng lặp và hàm qua dữ liệu ba đơn hàng.
+- [Đọc CSV và JSON: đọc được chưa có nghĩa đúng kiểu](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/files-and-json.md): Một ví dụ local chuyển số tiền từ CSV và xuất JSON tiếng Việt.
+- [Lỗi và logging: biết dòng nào sai, vì sao job dừng](https://canhtran.github.io/data-guy-story-v2/wiki/nen-tang/python/errors-and-logging.md): Ghi nhận dữ liệu bị loại mà không che lỗi chương trình.
+
+### Data Engineering
+
+
+Các khái niệm cốt lõi để xây, vận hành và lựa chọn kiến trúc cho một hệ thống data.
+
+- [Một Data Pipeline hoạt động ra sao?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-pipeline.md): Nhìn một Data Pipeline qua input, các bước xử lý, output và cách nó thất bại.
+- [Data Ingestion: đưa data ra khỏi Source System](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-ingestion.md): Cách đưa data từ Source System vào nền tảng data mà không làm ảnh hưởng hệ thống đang vận hành.
+- [Vì sao cần Data Warehouse?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-warehouse.md): Vì sao data phân tích thường được đưa ra khỏi database của application và tổ chức lại trong Data Warehouse?
+- [ETL và ELT khác nhau thế nào?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/etl-elt.md): Hiểu thứ tự Extract, Transform, Load và chọn nơi biến đổi data phù hợp với hệ thống.
+- [Xử lý data theo từng Batch](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/batch-processing.md): Cách một pipeline gom data thành từng lô hữu hạn và xử lý theo lịch.
+- [Data Orchestration khi nhiều job phụ thuộc nhau](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/orchestration.md): Cách sắp lịch, dependency và trạng thái cho nhiều data job phụ thuộc nhau.
+- [Data Quality: làm sao biết data đủ tin cậy?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-quality.md): Biến câu nói ‘data có vẻ đúng’ thành những kiểm tra cụ thể trước khi người khác sử dụng.
+- [Idempotency: chạy lại pipeline mà không tạo duplicate](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/idempotency.md): Vì sao cùng một input chạy lại nhiều lần vẫn phải tạo ra cùng một kết quả.
+- [Retry hoạt động như thế nào?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/retry.md): Phân biệt lỗi có thể thử lại và tránh biến Retry thành nguồn gây tải hoặc duplicate.
+- [Sửa lại data trong quá khứ với Backfill](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/backfill.md): Cách xử lý lại data lịch sử có chủ đích mà không làm hỏng kết quả hiện tại.
+- [Data Observability: theo dõi sức khoẻ của pipeline](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-observability.md): Theo dõi pipeline và data để phát hiện output trễ, thiếu hoặc bất thường trong production.
+- [Metadata: data để hiểu data](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/metadata.md): Hiểu data mô tả dataset, từ schema kỹ thuật đến owner và ý nghĩa business.
+- [Data Lineage: data đã đi qua đâu?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-lineage.md): Theo dấu data từ Source System qua các bước biến đổi đến dashboard và người sử dụng.
+- [Tìm đúng data với Data Catalog](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-catalog.md): Cách giúp người dùng tìm đúng dataset, hiểu nó và biết có nên sử dụng hay không.
+- [Data Contract giữa producer và consumer](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-contract.md): Thống nhất cấu trúc, ý nghĩa và cách thay đổi data giữa producer với consumer.
+- [Schema Evolution mà không làm hỏng downstream](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/schema-evolution.md): Thay đổi field và cấu trúc data mà không âm thầm làm hỏng consumer hiện tại.
+- [Batch hay Streaming?](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/batch-vs-streaming.md): So sánh hai cách xử lý data theo ranh giới, độ trễ và chi phí vận hành trước khi chọn.
+- [Stream Processing: xử lý data liên tục](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/stream-processing.md): Hiểu event liên tục, state, event time và những điều xảy ra khi data đến trễ hoặc sai thứ tự.
+- [Theo dõi thay đổi trong Database với CDC](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/change-data-capture.md): Đọc các thay đổi Insert, Update và Delete từ database mà không quét lại toàn bộ bảng.
+- [Lưu raw data ở quy mô lớn với Data Lake](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/data-lake.md): Hiểu cách lưu lượng lớn raw data và nhiều định dạng trên object storage cùng những trách nhiệm đi kèm.
+- [Khi Data Lake cần cách quản lý như Warehouse](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/lakehouse.md): Hiểu vì sao table format và compute engine được kết hợp để chạy workload kiểu warehouse trên Data Lake.
+- [File Format: chọn giữa CSV, JSON và Parquet](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/file-formats.md): Cách định dạng file ảnh hưởng đến kích thước, kiểu dữ liệu, tốc độ đọc và khả năng trao đổi.
+- [Table Format: chọn giữa Iceberg, Delta Lake và Hudi](https://canhtran.github.io/data-guy-story-v2/wiki/data-engineering/table-formats.md): Phân biệt table format với file format và hiểu các khả năng quản lý table trên object storage.
+
+### Công nghệ
+
+
+Tra cứu Spark, Kafka, Flink và tiến độ biên soạn các công cụ Data Engineering.
+
+
+#### dbt
+
+
+Tổ chức SQL và kiểm tra dữ liệu với dbt Core, chạy local cùng DuckDB.
+
+- [dbt: từ file SQL đến một báo cáo chạy lại được](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/dbt/overview.md): Dựng project dbt Core với DuckDB trên máy cá nhân, từ CSV đến doanh thu theo ngày.
+- [dbt tests: build xanh chưa chắc doanh thu đúng](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/dbt/data-tests.md): Bắt đơn trùng và số tiền âm, đọc lỗi rồi chạy lại project local.
+- [dbt incremental: nạp thêm mà không nhân đôi đơn](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/dbt/incremental.md): Thử incremental model với DuckDB, khóa duy nhất, dữ liệu sửa lại và full refresh.
+- [dbt snapshots: giữ lại các lần đổi trạng thái](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/dbt/snapshots.md): Theo dõi lịch sử một dòng nguồn với snapshot strategy check trên DuckDB.
+
+#### Apache Kafka
+
+
+Tài liệu tham khảo về Apache Kafka dành cho Data Engineer.
+
+- [Kafka là gì? Một log sự kiện cho nhiều hệ thống](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/overview.md): Hiểu Kafka qua đơn hàng, replay và thực hành một broker KRaft.
+- [Topic, partition và key: Kafka giữ thứ tự ở đâu?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/topic-partition.md): Phân biệt chủ đề, log theo partition và khóa phân phối sự kiện.
+- [Kafka producer: gửi thành công nghĩa là gì?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/producer.md): Hiểu acknowledgements, retry, batching và giới hạn của idempotent producer.
+- [Consumer group: cùng luồng, tiến độ riêng](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/consumer-group.md): Chia partition giữa consumer và tách các ứng dụng bằng group ID.
+- [Offset: consumer đã đọc đến đâu, đã xử lý đến đâu?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/offset.md): Phân biệt vị trí đọc, committed offset và ranh giới ghi output.
+- [Replication trong Kafka: leader, follower và ISR](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/replication.md): Hiểu độ bền dữ liệu khi replica chậm hoặc broker mất.
+- [Rebalancing: partition đổi consumer thì chuyện gì xảy ra?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/rebalancing.md): Xử lý assignment thay đổi, offset và công việc còn đang chạy.
+- [Delivery semantics: nhận một lần hay tạo kết quả một lần?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/delivery-semantics.md): So sánh cửa sổ lỗi giữa đọc, ghi output và commit tiến độ.
+- [Kafka transactions: output và offset cùng một commit](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/kafka/transactions.md): Hiểu atomic output, read_committed và giới hạn với database ngoài.
+
+#### Apache Flink
+
+
+Tài liệu tham khảo về Apache Flink dành cho Data Engineer.
+
+- [Flink là gì? Xử lý luồng có trạng thái](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/overview.md): Hiểu Flink qua tổng tiền theo cửa hàng và ranh giới phục hồi.
+- [Kiến trúc Flink: JobManager, TaskManager và slot](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/architecture.md): Phân biệt điều phối job, thực thi subtask và nguồn snapshot.
+- [Job, operator, task và subtask trong Flink](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/job-operator-task-subtask.md): Đọc execution graph mà không lẫn bước logic với instance song song.
+- [Parallelism trong Flink: thêm subtask có hết nghẽn?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/parallelism.md): Hiểu giới hạn source, key skew, slot và khả năng rescale state.
+- [State trong Flink: nhớ thông tin giữa các sự kiện](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/state.md): Phân biệt keyed state, operator state và chính sách giữ dữ liệu.
+- [Checkpoint trong Flink: snapshot nhất quán để phục hồi](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/checkpoint.md): Theo dõi barrier, tiến độ nguồn và trạng thái tại điểm khôi phục.
+- [Savepoint trong Flink: mang state sang lần triển khai mới](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/savepoint.md): Lên kế hoạch nâng cấp với operator UID và tương thích state.
+- [Event time trong Flink: doanh thu thuộc phút nào?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/event-time.md): Tách thời gian xảy ra và thời gian nhận, quy định timezone và cửa sổ.
+- [Watermark trong Flink: khi nào cửa sổ được tiến lên?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/watermark.md): Hiểu tiến độ event time, input im lặng và dữ liệu đến muộn.
+- [Backpressure trong Flink: chậm ở sink, dấu hiệu ở source](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/backpressure.md): Tìm bottleneck qua tốc độ, busy time và hàng đợi có giới hạn.
+- [Exactly-once trong Flink: state đúng, sink có đúng không?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/flink/exactly-once.md): Phân biệt replay record với ảnh hưởng một lần và kiểm tra connector.
+
+#### Apache Spark
+
+
+Tài liệu tham khảo về Apache Spark dành cho Data Engineer.
+
+- [Spark là gì? Xử lý dữ liệu bằng nhiều task](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/overview.md): Khi nào cần Spark, luồng xử lý cơ bản và môi trường PySpark cục bộ.
+- [Kiến trúc Spark: driver, executor, job, stage và task](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/architecture.md): Theo dõi một action từ driver tới các task và đọc ranh giới shuffle.
+- [RDD trong Spark: transformation, action và lineage](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/rdd.md): Dùng ví dụ tổng tiền theo key để hiểu RDD và giới hạn phục hồi.
+- [DataFrame trong Spark: schema, lọc và tổng hợp](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/dataframe.md): Xử lý dữ liệu có cấu trúc với schema rõ ràng, NULL và output Parquet.
+- [Partition trong Spark: chia việc và chia file](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/partition.md): Phân biệt execution partition và thư mục partition khi lưu dữ liệu.
+- [Shuffle trong Spark: vì sao dữ liệu phải đổi chỗ?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/shuffle.md): Theo dõi tổng tiền theo key, Exchange, spill và cách giảm dữ liệu trao đổi.
+- [Catalyst: từ câu SQL đến kế hoạch thực thi Spark](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/catalyst.md): Đọc logical và physical plan, hiểu tối ưu và giới hạn của Python UDF.
+- [JOIN trong Spark: broadcast hay phân phối hai bên?](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/join-strategies.md): Kiểm tra grain trước, rồi đọc BroadcastHashJoin và SortMergeJoin.
+- [Structured Streaming: micro-batch, checkpoint và output](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/spark/structured-streaming.md): Đọc file tăng dần, kiểm tra restart và hiểu điều kiện để tránh output trùng.
+
+#### DuckDB
+
+
+Phân tích file cục bộ bằng SQL và Python với DuckDB.
+
+- [DuckDB: phân tích dữ liệu ngay trong một script](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/duckdb/overview.md): Cài DuckDB và chạy truy vấn đầu tiên mà không dựng database server.
+- [DuckDB: đọc CSV, JSON và ghi Parquet](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/duckdb/query-files.md): Truy vấn file với schema rõ ràng, NULL và kiểm tra tổng tiền sau khi ghi.
+- [DuckDB trong Python: transaction và chạy lại một lô](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/duckdb/python-pipeline.md): Dùng tham số, rollback và thay thế một partition ngày theo hợp đồng rõ ràng.
+- [DuckDB: đọc kế hoạch và xử lý lỗi tài nguyên](https://canhtran.github.io/data-guy-story-v2/wiki/technologies/duckdb/performance-and-errors.md): Dùng EXPLAIN để quan sát, phân biệt query sai với giới hạn bộ nhớ.
+
+## Lộ trình học
+- [Demo NotebookLM: Pandas và đơn hàng cà phê](https://canhtran.github.io/data-guy-story-v2/learning-paths/pandas-cafe-demo.md): Một buổi thử: cài Python/pandas, tạo DataFrame và báo cáo doanh thu quán cà phê.
+- [Học cùng NotebookLM](https://canhtran.github.io/data-guy-story-v2/learning-paths/hoc-cung-notebooklm.md): Thêm một link nguồn, dùng prompt mentor và tự kiểm tra kết quả trên máy của bạn.
+
+### Nhập môn Data Engineering
+
+
+Học qua dự án bản tin quán cà phê, với AI hướng dẫn từ bước cài đặt.
+
+- [Nguồn NotebookLM: Nhập môn Data Engineering](https://canhtran.github.io/data-guy-story-v2/learning-paths/nhap-mon-data-engineering/hoc-cung-ai.md): Lộ trình, bài Wiki, bài thử và prompt mentor trong một trang để nhập bằng URL.
+
+### Data Engineering thực chiến
+
+
+Xây kho dữ liệu phân tích nhiều nguồn trên máy của bạn.
+
+- [Nguồn NotebookLM: Data Engineering thực chiến](https://canhtran.github.io/data-guy-story-v2/learning-paths/data-engineering-thuc-chien/hoc-cung-ai.md): Lộ trình, bài Wiki, bài thử và prompt mentor trong một trang để nhập bằng URL.
+
+### Data Engineering nâng cao: Spark & Lakehouse
+
+
+Học xử lý dữ liệu phân tán và bảng lakehouse với hệ thống cài trên máy cá nhân.
+
+- [Nguồn NotebookLM: Data Engineering nâng cao: Spark & Lakehouse](https://canhtran.github.io/data-guy-story-v2/learning-paths/spark-lakehouse/hoc-cung-ai.md): Lộ trình, bài Wiki, bài thử và prompt mentor trong một trang để nhập bằng URL.
+
+### Streaming Engineering
+
+
+Xây pipeline sự kiện với Kafka và Flink chạy trên máy cá nhân.
+
+- [Nguồn NotebookLM: Streaming Engineering](https://canhtran.github.io/data-guy-story-v2/learning-paths/streaming-engineering/hoc-cung-ai.md): Lộ trình, bài Wiki, bài thử và prompt mentor trong một trang để nhập bằng URL.
+
+### Data Platform Engineering
+
+
+Tạo công cụ dữ liệu dùng chung cho nhiều team trên môi trường cục bộ.
+
+- [Nguồn NotebookLM: Data Platform Engineering](https://canhtran.github.io/data-guy-story-v2/learning-paths/data-platform-engineering/hoc-cung-ai.md): Lộ trình, bài Wiki, bài thử và prompt mentor trong một trang để nhập bằng URL.
+
+## Blog
+- [Giao việc cho sếp](https://canhtran.github.io/data-guy-story-v2/blog/2025-06-01-giao-viec-cho-sep.md): Đừng nghĩ manager là người quản thúc và giám sát mình. Hãy coi manager của mình là một support system mà bản thân có thể tận dụng để phát … — Xuất bản 2025-06-01
+- [Lời nhắn nhủ và cách học hành](https://canhtran.github.io/data-guy-story-v2/blog/2025-03-30-loi-nhan-nhu-va-cach-hoc-hanh.md): Từ những lời nhắn nhủ dành cho Juniors — Xuất bản 2025-03-30
+- [Đọc vị manager trong 10 phút](https://canhtran.github.io/data-guy-story-v2/blog/2025-02-20-doc-vi-manager-trong-10-phut.md): Làm manager khó đấy, phải đâu chuyện đùa — Xuất bản 2025-02-20
+- [Tại sao data engineer cần biết Docker](https://canhtran.github.io/data-guy-story-v2/blog/2022-06-18-tai-sao-data-engineer-can-biet-docker.md): Bữa nay tui kể thêm một kĩ năng nữa cần phải biết của mấy bạn Data Engineer. Tiêu đề là Docker nhưng bài viết có nhắc đến Terraform, … — Xuất bản 2022-06-18
+- [Câu chuyện về các bạn user kì cục](https://canhtran.github.io/data-guy-story-v2/blog/2021-05-29-cau-chuyen-ve-cac-ban-user-ki-cuc.md):  — Xuất bản 2021-05-29
+## Optional
+
+Tài liệu cũ đang chờ rà soát và chuyển vào Wiki mới.
+
+### Nền tảng - Hành trang cho người mới
+
+- [1. Data là gì?](https://canhtran.github.io/data-guy-story-v2/docs/foundation/data-la-gi.md): Nếu bạn đang nghĩ &ldquo;data&rdquo; là cái gì đó cao siêu, toàn số má với biểu đồ chằng chịt, chỉ có dân làm AI mới hiểu nổi – thì mình kể …
+- [4. Các loại dữ liệu](https://canhtran.github.io/data-guy-story-v2/docs/foundation/cac-loai-du-lieu.md): Sau khi hiểu được vòng đời của dữ liệu đi từ nông trại đến lúc lên mâm, có một câu hỏi tiếp theo: Vậy cái đống nguyên liệu (data) đó trông …
+- [Về tui](https://canhtran.github.io/data-guy-story-v2/about/): Thông tin về tác giả Data Guy Story.
