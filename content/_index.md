@@ -17,7 +17,7 @@ toc: false
     <a class="dgs-button dgs-button-secondary" href="wiki/">Đọc thử Wiki</a>
   </div>
   <div class="dgs-route-grid" aria-label="Hai cách bắt đầu">
-    <a class="dgs-route" href="learning-paths/"><span class="dgs-route-kicker">HỌC QUA DỰ ÁN</span><strong>Lộ trình học</strong><span>Bạn đang ở đâu? Sinh viên sắp ra trường, người đi làm muốn chuyển nghề, hay junior mới vào team — điểm bắt đầu của mỗi người một khác. 5 lộ trình ở đây xếp sẵn thứ tự đọc cho từng trường hợp, và mỗi lộ trình có một trang nguồn để bạn học cùng NotebookLM. Điều kiện duy nhất: có một cái máy tính, và chịu tự tay chạy code.</span><span class="dgs-route-link">Xem các lộ trình →</span></a>
+    <a class="dgs-route" href="learning-paths/"><span class="dgs-route-kicker">HỌC QUA DỰ ÁN</span><strong>Lộ trình học</strong><span>5 lộ trình từ nền tảng đến nâng cao, giúp bạn từng bước học Data Engineering. Nội dung được thiết kế AI-friendly để bạn có thể học, thực hành và giải đáp thắc mắc cùng AI.</span><span class="dgs-route-link">Xem các lộ trình →</span></a>
     <a class="dgs-route" href="wiki/"><span class="dgs-route-kicker">ĐỌC VÀ TRA CỨU</span><strong>Wiki</strong><span>Đây là sổ tay làm việc của mình, mở công khai cho bạn đọc. 92 bài — SQL, database, data modeling, Kafka, Flink, Spark, dbt, DuckDB… — là những gì mình ghi lại trong lúc đi làm. Nó chưa xong đâu: gặp cái mới mình viết thêm, thấy mình hiểu sai mình sửa lại.</span><span class="dgs-route-link">Mở Wiki →</span></a>
   </div>
   <div class="dgs-home-bottom">
