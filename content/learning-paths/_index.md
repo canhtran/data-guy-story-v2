@@ -1,6 +1,6 @@
 ---
-title: Lộ trình học
-description: Chọn một dự án để học Data Engineering, từ pipeline đầu tiên đến Spark, streaming và data platform.
+title: Lộ trình học Data Engineering
+description: Mình chia các kiến thức Data Engineering thành 5 lộ trình, từ những thứ cơ bản nhất đến các chủ đề chuyên sâu hơn. Mỗi lộ trình có nội dung cần học và dự án để bạn thực hành.
 draft: false
 type: docs
 sidebar:
@@ -8,7 +8,7 @@ sidebar:
 contentType: hub
 ---
 
-<p class="dgs-lead">Học Data Engineering có khá nhiều thứ phải học, nên đôi khi khó biết bắt đầu từ đâu. Mình đang soạn các lộ trình này để bạn có một thứ tự rõ ràng: chọn một dự án, học những gì cần để làm được nó, rồi tự làm một dự án khác.</p>
+<p class="dgs-lead">Mình chia các kiến thức Data Engineering thành 5 lộ trình, từ những thứ cơ bản nhất đến các chủ đề chuyên sâu hơn. Mỗi lộ trình có nội dung cần học và dự án để bạn thực hành.</p>
 
 Bạn sẽ cài và chạy các công cụ trên máy của mình. Phần hướng dẫn sẽ có cả bước cài đặt, cách kiểm tra xem đã chạy đúng chưa và cách tìm lỗi khi bị kẹt. AI có thể giúp bạn đọc lỗi, giải thích đoạn code hoặc gợi ý bước tiếp theo; còn kết quả có đúng hay không thì mình vẫn cần tự kiểm tra.
 
@@ -18,16 +18,14 @@ Bạn sẽ cài và chạy các công cụ trên máy của mình. Phần hướ
 
 ## Bạn muốn bắt đầu từ đâu?
 
-Nếu còn mới với SQL, Python hoặc chưa từng làm pipeline, bạn có thể bắt đầu với **Nhập môn Data Engineering**. Nếu đã đưa được dữ liệu từ nguồn vào một bảng hoặc báo cáo, hãy xem **Data Engineering thực chiến** để học tiếp cách xây kho dữ liệu.
-
-Các lộ trình Spark & Lakehouse, Streaming và Data Platform dành cho lúc bạn muốn tìm hiểu sâu hơn về từng phần. Không cần học hết cả năm lộ trình; cứ chọn phần liên quan đến việc bạn muốn làm.
+Nếu bạn mới bắt đầu, hãy đi từ lộ trình đầu tiên. Nếu đã biết SQL, Python và những kiến thức cơ bản về dữ liệu, bạn có thể chọn thẳng chủ đề mình muốn tìm hiểu.
 
 {{< learning-path-cards >}}
 
-Mỗi lộ trình có một trang riêng với kiến thức cần có, nội dung từng tuần và các dự án dự kiến. Trong lúc chờ bài học, bạn có thể ghé [Wiki]({{< relref "/wiki/_index.md" >}}) để đọc về chủ đề mình đang quan tâm.
+Trong lúc chờ bài học, bạn có thể ghé [Wiki]({{< relref "/wiki/_index.md" >}}) để đọc về chủ đề mình đang quan tâm.
 
-## Bạn muốn học cùng AI?
+## Học cùng AI
 
-Mỗi lộ trình có một **trang nguồn cho NotebookLM**: mình gom các bài cần đọc và prompt mentor vào đó. Mở lộ trình bạn chọn, tìm phần “Học cùng NotebookLM”, rồi thêm link trang nguồn vào notebook của bạn.
+Bạn cũng có thể dùng AI để học các nội dung trong lộ trình. Mình có chuẩn bị hướng dẫn để bạn đưa tài liệu vào NotebookLM và đặt câu hỏi dựa trên chính những gì đang học.
 
 [Đọc cách thêm link và bắt đầu buổi học]({{< relref "/learning-paths/hoc-cung-notebooklm.md" >}}). Các trang nguồn hiện hỗ trợ đọc và bài thử; bộ bài học theo tuần vẫn đang được soạn.

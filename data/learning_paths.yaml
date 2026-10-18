@@ -1,30 +1,30 @@
 - title: Nhập môn Data Engineering
   audience: Bắt đầu ở đây nếu bạn còn mới với SQL, Python hoặc chưa từng làm pipeline.
-  outcome: Làm một pipeline đọc dữ liệu từ file và tạo báo cáo; hiểu từng bước mình đã làm.
+  outcome: Bắt đầu với SQL, Python và cách dữ liệu đi từ nguồn vào đến nơi có thể sử dụng. Cuối lộ trình, bạn sẽ tự xây dựng một pipeline nhỏ.
   status: Đang biên soạn
   page: /learning-paths/nhap-mon-data-engineering
   project: Bản tin quán cà phê mỗi sáng
 - title: Data Engineering thực chiến
   audience: Bạn đã làm được pipeline nhỏ và muốn thử gom dữ liệu từ nhiều nguồn.
-  outcome: Xây kho dữ liệu, kiểm tra số liệu và xử lý khi một lần chạy bị lỗi.
+  outcome: Thực hành xây dựng pipeline dữ liệu, từ việc lấy dữ liệu từ các nguồn khác nhau đến xử lý và đưa dữ liệu vào nơi có thể phân tích.
   status: Lên kế hoạch
   page: /learning-paths/data-engineering-thuc-chien
   project: Nguồn số liệu đáng tin cho chuỗi cà phê
 - title: "Data Engineering nâng cao: Spark & Lakehouse"
   audience: Bạn muốn học Spark và hiểu cách lưu dữ liệu với Iceberg.
-  outcome: Dựng lakehouse trên máy mình, tìm nguyên nhân job chạy chậm và thử chạy lại dữ liệu.
+  outcome: Tìm hiểu cách xử lý dữ liệu bằng Spark và tổ chức dữ liệu với Iceberg. Thực hành qua bài toán phân tích dữ liệu bán lẻ.
   status: Lên kế hoạch
   page: /learning-paths/spark-lakehouse
   project: Phân tích bán lẻ nhiều kênh
 - title: Streaming Engineering
   audience: Bạn muốn thử xử lý dữ liệu liên tục với Kafka và Flink.
-  outcome: Làm pipeline xử lý sự kiện, thử dữ liệu đến muộn và xem điều gì xảy ra khi job dừng.
+  outcome: Tìm hiểu cách xử lý dữ liệu liên tục với Kafka và Flink, từ lúc sự kiện được gửi đi đến khi kết quả được tạo ra.
   status: Lên kế hoạch
   page: /learning-paths/streaming-engineering
   project: Theo dõi giao hàng theo thời gian sự kiện
 - title: Data Platform Engineering
   audience: Bạn muốn xây công cụ để các data team cùng sử dụng.
-  outcome: Dựng nền tảng trên máy mình để hai team có workspace riêng, quyền truy cập và cách chạy job.
+  outcome: Tìm hiểu cách xây dựng nền tảng dữ liệu để nhiều nhóm có thể sử dụng, triển khai và quản lý pipeline theo cách nhất quán.
   status: Lên kế hoạch
   page: /learning-paths/data-platform-engineering
   project: Nền tảng tự phục vụ cho hai team
