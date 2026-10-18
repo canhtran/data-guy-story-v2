@@ -34,7 +34,10 @@ Một vài nguyên tắc bạn có thể áp dụng:
 - Hãy hiểu vì sao cách sửa được đề xuất có thể giải quyết vấn đề trước khi áp dụng. Sau đó chạy lại, kiểm tra kết quả và hỏi tiếp nếu lỗi vẫn còn.
 - AI có thể đưa ra hướng xử lý không phù hợp hoặc thông tin đã cũ. Hãy đối chiếu với tài liệu gốc và kết quả chạy thực tế, đừng mặc định rằng câu trả lời nào cũng đúng.
 
-Nguyên tắc quan trọng nhất: AI hướng dẫn, bạn là người thực hiện. AI có thể giúp bạn hiểu vấn đề, tìm nguyên nhân và sửa lỗi, nhưng bạn nên tự viết code và hiểu những gì mình triển khai. Đó mới là cách để kiến thức ở lại với bạn sau khi hoàn thành một bài học.
+<div class="dgs-callout">
+  <p class="dgs-callout-title">AI hướng dẫn, bạn là người thực hiện</p>
+  <p>AI có thể giúp bạn hiểu vấn đề, tìm nguyên nhân và sửa lỗi, nhưng bạn nên tự viết code và hiểu những gì mình triển khai. Đó mới là cách để kiến thức ở lại với bạn sau khi hoàn thành một bài học.</p>
+</div>
 
 ### Bắt đầu học với NotebookLM
 
@@ -42,4 +45,4 @@ Mỗi lộ trình sẽ có link tài liệu và prompt hướng dẫn AI theo n�
 
 Prompt giúp AI hiểu nội dung bạn đang học và cách hỗ trợ phù hợp: giải thích khái niệm, hướng dẫn từng bước, phân tích lỗi và đề xuất cách xử lý. AI không nên làm bài hoặc viết toàn bộ code thay bạn
 
-[Đọc cách thêm link và bắt đầu buổi học]({{< relref "/learning-paths/hoc-cung-notebooklm.md" >}})
+<p><a class="dgs-button dgs-button-primary" href="{{< relref "/learning-paths/hoc-cung-notebooklm.md" >}}">Hướng dẫn thiết lập NotebookLM <span aria-hidden="true">→</span></a></p>
