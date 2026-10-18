@@ -21,7 +21,7 @@ toc: false
     <a class="dgs-route" href="wiki/"><span class="dgs-route-kicker">ĐỌC VÀ TRA CỨU</span><strong>Wiki</strong><span>Thư viện kiến thức cá nhân của mình, được tích lũy và hệ thống hóa qua quá trình học hỏi, làm việc và giải quyết các bài toán thực tế trong Data Engineering.</span><span class="dgs-route-link">Mở Wiki →</span></a>
   </div>
   <div class="dgs-home-bottom">
-    <p><strong>Chuyện thực tế</strong><br>Các công ty lớn xây hệ thống data như thế nào, và khi hệ thống sập thì họ học được gì? Mình đọc engineering blog của họ, tóm tắt lại bằng tiếng Việt, và luôn để link bài gốc — muốn kiểm chứng, bạn cứ bấm vào mà đọc. <a href="stories/">Đọc thử một chuyện →</a></p>
-    <p><strong>Blog</strong><br>Chỗ này không có bài học nào cả. Chỉ có chuyện đi làm, chuyện học hành, và thỉnh thoảng là chuyện mình làm sai. Bài mới nhất nằm trên cùng. <a href="blog/">Đọc Blog →</a></p>
+    <p><strong>Chuyện thực tế</strong><br>Những câu chuyện, vấn đề và bài học mình đọc trong quá trình làm Data Engineering, từ những lỗi khó tìm đến cách giải quyết các bài toán thực tế. <a href="stories/">Đọc thử một chuyện →</a></p>
+    <p><strong>Blog</strong><br>Những suy nghĩ, góc nhìn và điều mình muốn chia sẻ về công nghệ, Data Engineering và hành trình phát triển trong nghề. <a href="blog/">Đọc Blog →</a></p>
   </div>
 </div>
