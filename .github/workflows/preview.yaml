@@ -1,0 +1,58 @@
+# Deploy a preview of each pull request to the gh-pages branch under
+# pr-preview/pr-<number>/ and leave a sticky comment on the PR with the
+# preview link. The preview is removed automatically when the PR closes.
+# Docs: https://github.com/rossjrw/pr-preview-action
+name: Deploy PR previews
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+concurrency: preview-${{ github.ref }}
+
+# Writing to gh-pages and commenting on the PR both need write access.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.156.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # fetch all history for .GitInfo and .Lastmod
+          submodules: recursive
+      - name: Setup Go
+        if: github.event.action != 'closed'  # no build needed when removing a preview
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+      - name: Setup Hugo
+        if: github.event.action != 'closed'
+        run: |
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+      - name: Build with Hugo
+        if: github.event.action != 'closed'
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+        run: |
+          hugo \
+            --gc --minify \
+            --baseURL "https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-${{ github.event.number }}/"
+          touch ./public/.nojekyll
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./public
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
