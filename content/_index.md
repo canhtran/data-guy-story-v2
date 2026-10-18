@@ -5,9 +5,9 @@ toc: false
 ---
 
 <div class="dgs-home">
-  <div class="dgs-eyebrow">DATA GUY STORY · HỌC DATA ENGINEERING BẰNG TIẾNG VIỆT · MIỄN PHÍ</div>
+  <div class="dgs-eyebrow">DATA GUY STORY · DATA ENGINEERING</div>
   <h1>Chào bạn, mình là Cảnh.</h1>
-  <p class="dgs-lead">Đây là nơi mình chia sẻ kiến thức, kinh nghiệm và góc nhìn cá nhân về Data Engineering.</p>
+  <p class="dgs-lead">Mình chia sẻ những gì đã học, đã làm và tích lũy trong hành trình làm Data Engineering — từ kiến thức nền tảng đến các hệ thống thực tế.</p>
   <div class="dgs-actions">
     <a class="dgs-button dgs-button-primary" href="learning-paths/">Xem lộ trình học <span aria-hidden="true">→</span></a>
     <a class="dgs-button dgs-button-secondary" href="wiki/">Đọc thử Wiki</a>
