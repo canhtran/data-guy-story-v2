@@ -1,0 +1,1617 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Data Guy Story – Data Engineering</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/</link><description>Recent content in Data Engineering on Data Guy Story</description><generator>Hugo -- gohugo.io</generator><language>vi-VN</language><atom:link href="https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/index.xml" rel="self" type="application/rss+xml"/><item><title>Một Data Pipeline hoạt động ra sao?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-pipeline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-pipeline/</guid><description>
+&lt;p&gt;Mỗi đêm, một nhân viên tải file đơn hàng, sửa vài cột trong spreadsheet rồi gửi report doanh thu. Công việc này tạo ra kết quả, nhưng phụ thuộc vào một người nhớ làm đúng từng bước.&lt;/p&gt;
+&lt;p&gt;Khi các bước được nối lại thành một quy trình có thể chạy lặp lại, chúng ta có một &lt;strong&gt;Data Pipeline&lt;/strong&gt; (luồng xử lý đưa data từ đầu vào đến đầu ra).&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Input&amp;lt;br/&amp;gt;Đơn hàng trong MySQL&amp;#34;]
+B[&amp;#34;Extract&amp;lt;br/&amp;gt;Đọc order cần xử lý&amp;#34;]
+C[&amp;#34;Transform&amp;lt;br/&amp;gt;Làm sạch và tính doanh thu&amp;#34;]
+D[&amp;#34;Load&amp;lt;br/&amp;gt;Ghi vào Data Warehouse&amp;#34;]
+E[&amp;#34;Output&amp;lt;br/&amp;gt;Bảng doanh thu theo ngày&amp;#34;]
+A --&amp;gt; B --&amp;gt; C --&amp;gt; D --&amp;gt; E
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Pipeline có thể chỉ là một chương trình Python và một câu SQL. Điều quan trọng là data đi qua các bước có input, output và cách chạy rõ ràng.&lt;/p&gt;
+&lt;h2&gt;Theo dấu một order&lt;span class="hx:absolute hx:-mt-20" id="theo-dấu-một-order"&gt;&lt;/span&gt;
+&lt;a href="#theo-d%e1%ba%a5u-m%e1%bb%99t-order" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;MySQL có row sau:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th&gt;status&lt;/th&gt;
+&lt;th style="text-align: right"&gt;total_amount&lt;/th&gt;
+&lt;th&gt;updated_at&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td&gt;delivered&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;td&gt;2026-09-08 12:32:00&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Pipeline đọc row, kiểm tra các field bắt buộc, chuẩn hoá thời gian rồi ghi vào bảng dành cho report:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th&gt;order_date&lt;/th&gt;
+&lt;th&gt;is_delivered&lt;/th&gt;
+&lt;th style="text-align: right"&gt;revenue&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td&gt;2026-09-08&lt;/td&gt;
+&lt;td&gt;true&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Dashboard đọc bảng này để tính tổng doanh thu. Nếu định nghĩa &lt;code&gt;revenue&lt;/code&gt; thay đổi, logic được sửa tại một nơi thay vì để từng dashboard tự đoán.&lt;/p&gt;
+&lt;h2&gt;Năm câu hỏi để hiểu một pipeline&lt;span class="hx:absolute hx:-mt-20" id="năm-câu-hỏi-để-hiểu-một-pipeline"&gt;&lt;/span&gt;
+&lt;a href="#n%c4%83m-c%c3%a2u-h%e1%bb%8fi-%c4%91%e1%bb%83-hi%e1%bb%83u-m%e1%bb%99t-pipeline" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Câu hỏi&lt;/th&gt;
+&lt;th&gt;Trong ví dụ này&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Input là gì?&lt;/td&gt;
+&lt;td&gt;Bảng &lt;code&gt;orders&lt;/code&gt; trong MySQL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Output là gì?&lt;/td&gt;
+&lt;td&gt;Bảng &lt;code&gt;fact_orders&lt;/code&gt; trong Data Warehouse&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Khi nào chạy?&lt;/td&gt;
+&lt;td&gt;Mỗi 15 phút&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Mỗi lần xử lý phần nào?&lt;/td&gt;
+&lt;td&gt;Order mới hoặc vừa cập nhật&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ai dùng kết quả?&lt;/td&gt;
+&lt;td&gt;Team vận hành và tài chính&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Nếu chưa trả lời được năm câu này, việc đọc code hay chọn công cụ thường chỉ làm hệ thống khó hiểu hơn.&lt;/p&gt;
+&lt;h2&gt;Pipeline chạy lần sau như thế nào?&lt;span class="hx:absolute hx:-mt-20" id="pipeline-chạy-lần-sau-như-thế-nào"&gt;&lt;/span&gt;
+&lt;a href="#pipeline-ch%e1%ba%a1y-l%e1%ba%a7n-sau-nh%c6%b0-th%e1%ba%bf-n%c3%a0o" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Một pipeline lặp lại phải biết data nào đã xử lý. Nếu lần trước đọc đến 12:15, lần sau có thể đọc từ 12:15 đến 12:30. Tuy nhiên, update có thể đến muộn. Pipeline thường đọc chồng một khoảng nhỏ rồi dùng &lt;code&gt;order_id&lt;/code&gt; để cập nhật row đã có.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Lần 1: 12:00 → 12:15
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Lần 2: 12:10 → 12:30
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↑ đọc chồng 5 phút&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Cách này chỉ an toàn khi chạy lại không nhân đôi output. Đó là Idempotency, một chủ đề riêng trong phần vận hành.&lt;/p&gt;
+&lt;h2&gt;Chạy thành công vẫn có thể cho data sai&lt;span class="hx:absolute hx:-mt-20" id="chạy-thành-công-vẫn-có-thể-cho-data-sai"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%ba%a1y-th%c3%a0nh-c%c3%b4ng-v%e1%ba%abn-c%c3%b3-th%e1%bb%83-cho-data-sai" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Chương trình kết thúc không có error chưa đảm bảo output dùng được:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;API trả danh sách rỗng do token hết hạn.&lt;/li&gt;
+&lt;li&gt;JOIN làm một order xuất hiện hai lần.&lt;/li&gt;
+&lt;li&gt;Pipeline chỉ lấy 12 giờ đầu ngày nhưng vẫn ghi bảng.&lt;/li&gt;
+&lt;li&gt;Field đổi tên, code thay giá trị thiếu bằng &lt;code&gt;0&lt;/code&gt; và che mất lỗi.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pipeline cần ghi lại số row đọc, số row ghi, khoảng data đã xử lý và kiểm tra Data Quality trước khi công bố output.&lt;/p&gt;
+&lt;h2&gt;Khi nào chưa cần pipeline phức tạp?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-chưa-cần-pipeline-phức-tạp"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-ch%c6%b0a-c%e1%ba%a7n-pipeline-ph%e1%bb%a9c-t%e1%ba%a1p" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu một file được xử lý mỗi tháng và tác động thấp, một script có hướng dẫn rõ có thể đã đủ. Khi data cập nhật thường xuyên, nhiều người phụ thuộc vào output hoặc lỗi gây quyết định sai, pipeline nên được tự động hoá và theo dõi.&lt;/p&gt;
+&lt;p&gt;Hãy giữ mental model đơn giản: pipeline nhận input, thực hiện các bước có thể kiểm tra, rồi tạo output cho một người dùng cụ thể.&lt;/p&gt;</description></item><item><title>Data Ingestion: đưa data ra khỏi Source System</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-ingestion/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-ingestion/</guid><description>
+&lt;p&gt;Data Pipeline đầu tiên cần lấy đơn hàng từ MySQL. Đọc một bảng nghe đơn giản, nhưng database này đang phục vụ khách đặt món. Một query nặng có thể làm application chậm.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Ingestion&lt;/strong&gt; (thu thập và đưa data vào hệ thống) là phần đưa data từ Source System đến nơi data có thể được lưu và xử lý tiếp.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Source System&amp;lt;br/&amp;gt;MySQL của application&amp;#34;]
+B[&amp;#34;Data Ingestion&amp;lt;br/&amp;gt;Đọc phần cần thiết&amp;#34;]
+C[&amp;#34;Raw Storage&amp;lt;br/&amp;gt;Bản sao trong nền tảng data&amp;#34;]
+A --&amp;gt; B --&amp;gt; C
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Lần đầu và những lần sau&lt;span class="hx:absolute hx:-mt-20" id="lần-đầu-và-những-lần-sau"&gt;&lt;/span&gt;
+&lt;a href="#l%e1%ba%a7n-%c4%91%e1%ba%a7u-v%c3%a0-nh%e1%bb%afng-l%e1%ba%a7n-sau" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Lần đầu pipeline chạy, nó có thể cần ba năm lịch sử. Đây là &lt;strong&gt;Initial Load&lt;/strong&gt; (lần tải ban đầu). Sau đó, &lt;strong&gt;Incremental Load&lt;/strong&gt; (tải phần tăng thêm) chỉ lấy row mới hoặc vừa thay đổi.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Lần chạy&lt;/th&gt;
+&lt;th&gt;Điều kiện đọc&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Số row ví dụ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Initial Load&lt;/td&gt;
+&lt;td&gt;Toàn bộ &lt;code&gt;orders&lt;/code&gt;&lt;/td&gt;
+&lt;td style="text-align: right"&gt;12,400,000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;12:15&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;updated_at&lt;/code&gt; từ 12:00 đến 12:15&lt;/td&gt;
+&lt;td style="text-align: right"&gt;3,842&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;12:30&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;updated_at&lt;/code&gt; từ 12:15 đến 12:30&lt;/td&gt;
+&lt;td style="text-align: right"&gt;4,106&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Initial Load cần giới hạn tốc độ hoặc đọc từ replica để tránh gây tải lớn. Incremental Load cần một field đáng tin để không bỏ sót thay đổi.&lt;/p&gt;
+&lt;h2&gt;Ba cách lấy phần thay đổi&lt;span class="hx:absolute hx:-mt-20" id="ba-cách-lấy-phần-thay-đổi"&gt;&lt;/span&gt;
+&lt;a href="#ba-c%c3%a1ch-l%e1%ba%a5y-ph%e1%ba%a7n-thay-%c4%91%e1%bb%95i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Cách đơn giản là query theo timestamp:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;updated_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;start_time&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;updated_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;end_time&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Đối tác cũng có thể gửi file mỗi ngày, hoặc dịch vụ thanh toán cung cấp API phân trang. Pipeline cần nhớ file hay page nào đã nhận.&lt;/p&gt;
+&lt;p&gt;Với database thay đổi liên tục, Change Data Capture có thể đọc nhật ký Insert, Update và Delete. Cách này bắt thay đổi tốt hơn query timestamp, nhưng vận hành phức tạp hơn.&lt;/p&gt;
+&lt;h2&gt;Giữ dấu vết của nguồn&lt;span class="hx:absolute hx:-mt-20" id="giữ-dấu-vết-của-nguồn"&gt;&lt;/span&gt;
+&lt;a href="#gi%e1%bb%af-d%e1%ba%a5u-v%e1%ba%bft-c%e1%bb%a7a-ngu%e1%bb%93n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Field&lt;/th&gt;
+&lt;th&gt;Ý nghĩa&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;order_id&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Khoá của row ở nguồn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;source_updated_at&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Thời điểm row đổi trong application&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ingested_at&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Thời điểm nền tảng data nhận row&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;source_system&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Row đến từ hệ thống nào&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;source_updated_at&lt;/code&gt; và &lt;code&gt;ingested_at&lt;/code&gt; trả lời hai câu khác nhau. Khoảng cách giữa chúng giúp phát hiện data đến trễ.&lt;/p&gt;
+&lt;h2&gt;Delete dễ bị bỏ quên&lt;span class="hx:absolute hx:-mt-20" id="delete-dễ-bị-bỏ-quên"&gt;&lt;/span&gt;
+&lt;a href="#delete-d%e1%bb%85-b%e1%bb%8b-b%e1%bb%8f-qu%c3%aan" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu application xoá &lt;code&gt;ORD-1042&lt;/code&gt;, query theo &lt;code&gt;updated_at&lt;/code&gt; không còn row để đọc. Bản sao trong warehouse vẫn giữ order như thể nó tồn tại.&lt;/p&gt;
+&lt;p&gt;Source System có thể dùng &lt;code&gt;deleted_at&lt;/code&gt;, phát một sự kiện xoá hoặc để CDC đọc thao tác Delete. Data Engineer cần hỏi từ đầu: row có bị xoá không, và downstream mong muốn điều gì khi nó bị xoá?&lt;/p&gt;
+&lt;h2&gt;Đừng làm hỏng Source System&lt;span class="hx:absolute hx:-mt-20" id="đừng-làm-hỏng-source-system"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91%e1%bb%abng-l%c3%a0m-h%e1%bb%8fng-source-system" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Rủi ro phổ biến là query toàn bảng giờ cao điểm, mở quá nhiều connection, vượt API rate limit hoặc Retry liên tục khi nguồn đang lỗi. Pipeline cần pagination, giới hạn tài nguyên và backoff phù hợp.&lt;/p&gt;
+&lt;p&gt;Với bảng nhỏ cập nhật theo giờ, query timestamp có thể đủ. Với hàng triệu thay đổi hoặc cần bắt Delete nhanh, CDC có thể phù hợp hơn. Với đối tác chỉ gửi file cuối ngày, không cần biến nó thành Streaming.&lt;/p&gt;
+&lt;p&gt;Data Ingestion tốt đưa đủ thay đổi đến đích trong thời gian đã hứa, kiểm tra được, và không làm ảnh hưởng hệ thống nguồn.&lt;/p&gt;</description></item><item><title>Vì sao cần Data Warehouse?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-warehouse/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-warehouse/</guid><description>
+&lt;p&gt;Ứng dụng đã lưu đơn hàng trong MySQL. Nếu data đã nằm trong database, tại sao công ty còn cần thêm một nơi khác?&lt;/p&gt;
+&lt;p&gt;MySQL đang nhận đơn và cập nhật trạng thái giao hàng. Một query quét vài năm lịch sử để tính doanh thu có thể tranh tài nguyên với application.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Warehouse&lt;/strong&gt; (kho dữ liệu) là hệ thống lưu trữ được thiết kế chủ yếu cho phân tích. Nó gom data từ nhiều Source System, giữ lịch sử và tổ chức data để những câu query lớn dễ viết và chạy hiệu quả hơn.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;MySQL&amp;lt;br/&amp;gt;Đơn hàng&amp;#34;]
+B[&amp;#34;Thanh toán&amp;lt;br/&amp;gt;Giao dịch&amp;#34;]
+C[&amp;#34;Giao hàng&amp;lt;br/&amp;gt;Thời gian giao&amp;#34;]
+D[&amp;#34;Data Warehouse&amp;lt;br/&amp;gt;Data đã được tổ chức&amp;#34;]
+E[&amp;#34;Dashboard&amp;lt;br/&amp;gt;Doanh thu và vận hành&amp;#34;]
+A --&amp;gt; D
+B --&amp;gt; D
+C --&amp;gt; D
+D --&amp;gt; E
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Hai workload khác nhau&lt;span class="hx:absolute hx:-mt-20" id="hai-workload-khác-nhau"&gt;&lt;/span&gt;
+&lt;a href="#hai-workload-kh%c3%a1c-nhau" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Database của application xử lý nhiều thao tác nhỏ và liên tục. Data Warehouse thường đọc rất nhiều row để tổng hợp:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restaurant_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;SUM&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;net_amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;revenue&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fact_orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;DATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2026-08-01&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;DATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2026-09-01&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;GROUP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restaurant_id&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Nhu cầu&lt;/th&gt;
+&lt;th&gt;Database application&lt;/th&gt;
+&lt;th&gt;Data Warehouse&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Tạo một order&lt;/td&gt;
+&lt;td&gt;Công việc chính&lt;/td&gt;
+&lt;td&gt;Không phải công việc chính&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Cập nhật trạng thái&lt;/td&gt;
+&lt;td&gt;Công việc chính&lt;/td&gt;
+&lt;td&gt;Nhận bản sao sau đó&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Tổng hợp hàng triệu order&lt;/td&gt;
+&lt;td&gt;Có thể ảnh hưởng app&lt;/td&gt;
+&lt;td&gt;Được thiết kế cho loại query này&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ghép nhiều hệ thống&lt;/td&gt;
+&lt;td&gt;Khó và tăng phụ thuộc&lt;/td&gt;
+&lt;td&gt;Công việc phổ biến&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Giữ lịch sử dài hạn&lt;/td&gt;
+&lt;td&gt;Tuỳ vận hành&lt;/td&gt;
+&lt;td&gt;Thường cần thiết&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Một Data Warehouse vẫn là một dạng database. Điểm khác nằm ở workload mà nó phục vụ.&lt;/p&gt;
+&lt;h2&gt;Tổ chức lại data&lt;span class="hx:absolute hx:-mt-20" id="tổ-chức-lại-data"&gt;&lt;/span&gt;
+&lt;a href="#t%e1%bb%95-ch%e1%bb%a9c-l%e1%ba%a1i-data" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ở nguồn, một order nằm trong &lt;code&gt;orders&lt;/code&gt;, &lt;code&gt;payments&lt;/code&gt;, &lt;code&gt;deliveries&lt;/code&gt; và &lt;code&gt;restaurants&lt;/code&gt;. Warehouse có thể tạo &lt;code&gt;fact_orders&lt;/code&gt; với một row cho mỗi order:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th&gt;order_date&lt;/th&gt;
+&lt;th&gt;restaurant_id&lt;/th&gt;
+&lt;th style="text-align: right"&gt;net_amount&lt;/th&gt;
+&lt;th style="text-align: right"&gt;delivery_minutes&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td&gt;2026-09-08&lt;/td&gt;
+&lt;td&gt;RES-18&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;td style="text-align: right"&gt;30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1043&lt;/td&gt;
+&lt;td&gt;2026-09-08&lt;/td&gt;
+&lt;td&gt;RES-07&lt;/td&gt;
+&lt;td style="text-align: right"&gt;85000&lt;/td&gt;
+&lt;td style="text-align: right"&gt;51&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Thông tin nhà hàng nằm trong &lt;code&gt;dim_restaurants&lt;/code&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;restaurant_id&lt;/th&gt;
+&lt;th&gt;restaurant_name&lt;/th&gt;
+&lt;th&gt;area&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;RES-18&lt;/td&gt;
+&lt;td&gt;Cơm Nhà&lt;/td&gt;
+&lt;td&gt;Tampines&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;RES-07&lt;/td&gt;
+&lt;td&gt;Bếp Nhỏ&lt;/td&gt;
+&lt;td&gt;Bedok&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Nhiều report có thể dùng chung định nghĩa doanh thu thay vì tự nối các bảng nguồn theo nhiều cách.&lt;/p&gt;
+&lt;h2&gt;Warehouse không tự làm data đúng&lt;span class="hx:absolute hx:-mt-20" id="warehouse-không-tự-làm-data-đúng"&gt;&lt;/span&gt;
+&lt;a href="#warehouse-kh%c3%b4ng-t%e1%bb%b1-l%c3%a0m-data-%c4%91%c3%bang" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Pipeline vẫn có thể bỏ sót order, nhân đôi thanh toán hoặc ghép sai nhà hàng. Warehouse cung cấp nơi phù hợp để lưu và query; Data Engineer vẫn cần Transformation và Data Quality.&lt;/p&gt;
+&lt;p&gt;Nó cũng có thể trở thành nơi chứa nhiều bảng gần giống nhau mà không ai biết bảng nào còn được cập nhật. Metadata, Data Lineage và Data Catalog giúp giải quyết vấn đề này.&lt;/p&gt;
+&lt;h2&gt;Khi nào cần?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-cần"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-c%e1%ba%a7n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Một cửa hàng nhỏ có thể query từ bản sao PostgreSQL. Data Warehouse có giá trị khi query phân tích ảnh hưởng application, cần kết hợp nhiều nguồn, giữ lịch sử dài hoặc nhiều team cần dùng chung bảng và định nghĩa.&lt;/p&gt;
+&lt;p&gt;Source System lưu data để hoạt động kinh doanh diễn ra. Data Warehouse tổ chức bản sao của data đó để phân tích an toàn hơn.&lt;/p&gt;</description></item><item><title>ETL và ELT khác nhau thế nào?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/etl-elt/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/etl-elt/</guid><description>
+&lt;p&gt;Data đơn hàng đã được lấy khỏi MySQL, nhưng cấu trúc vẫn phục vụ application. Trước khi tính doanh thu, team phải làm sạch và ghép nó với thanh toán.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Extract&lt;/strong&gt;: đọc data từ Source System.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Transform&lt;/strong&gt;: làm sạch, kiểm tra, đổi cấu trúc hoặc tính thêm field.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Load&lt;/strong&gt;: ghi data vào nơi đích.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;ETL&lt;/strong&gt; đi theo Extract → Transform → Load. &lt;strong&gt;ELT&lt;/strong&gt; đi theo Extract → Load → Transform. Khác biệt chính là data được biến đổi trước hay sau khi vào hệ thống đích.&lt;/p&gt;
+&lt;h2&gt;Cùng một row, hai đường đi&lt;span class="hx:absolute hx:-mt-20" id="cùng-một-row-hai-đường-đi"&gt;&lt;/span&gt;
+&lt;a href="#c%c3%b9ng-m%e1%bb%99t-row-hai-%c4%91%c6%b0%e1%bb%9dng-%c4%91i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;id&lt;/th&gt;
+&lt;th style="text-align: right"&gt;total_cents&lt;/th&gt;
+&lt;th&gt;status&lt;/th&gt;
+&lt;th&gt;created_at&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;td&gt;DELIVERED&lt;/td&gt;
+&lt;td&gt;2026-09-08T12:02:10+08:00&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Team muốn output:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th style="text-align: right"&gt;total_amount&lt;/th&gt;
+&lt;th&gt;status&lt;/th&gt;
+&lt;th&gt;order_date&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td style="text-align: right"&gt;1200.00&lt;/td&gt;
+&lt;td&gt;delivered&lt;/td&gt;
+&lt;td&gt;2026-09-08&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Với ETL:&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Extract&amp;lt;br/&amp;gt;Đọc từ MySQL&amp;#34;]
+B[&amp;#34;Transform&amp;lt;br/&amp;gt;Đổi tên, kiểu và giá trị&amp;#34;]
+C[&amp;#34;Load&amp;lt;br/&amp;gt;Ghi vào Warehouse&amp;#34;]
+A --&amp;gt; B --&amp;gt; C
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Với ELT:&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Extract&amp;lt;br/&amp;gt;Đọc từ MySQL&amp;#34;]
+B[&amp;#34;Load&amp;lt;br/&amp;gt;Ghi vào raw_orders&amp;#34;]
+C[&amp;#34;Transform&amp;lt;br/&amp;gt;Tạo bảng đã làm sạch&amp;#34;]
+A --&amp;gt; B --&amp;gt; C
+&lt;/pre&gt;
+&lt;/div&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;total_cents&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;total_amount&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;LOWER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;CAST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;created_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;DATE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_date&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;raw_orders&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Khi nào ETL hợp lý?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-etl-hợp-lý"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-etl-h%e1%bb%a3p-l%c3%bd" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ETL hữu ích khi data phải được xử lý trước khi đến đích. Ví dụ, pipeline phải loại số thẻ thanh toán đầy đủ trước bước Load. Nó cũng phù hợp khi hệ thống đích không đủ khả năng Transform.&lt;/p&gt;
+&lt;p&gt;Nếu chỉ giữ data đã Transform, team có thể mất thông tin gốc cần cho yêu cầu mới. Xử lý lại lịch sử cũng khó hơn nếu raw data không còn.&lt;/p&gt;
+&lt;h2&gt;Khi nào ELT hợp lý?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-elt-hợp-lý"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-elt-h%e1%bb%a3p-l%c3%bd" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Data Warehouse hiện đại có thể lưu nhiều data và chạy Transformation lớn. ELT cho phép giữ raw data để kiểm tra, viết Transformation bằng SQL và tạo nhiều output từ cùng một nguồn.&lt;/p&gt;
+&lt;p&gt;Load trước không có nghĩa đưa mọi data vào không kiểm soát. Quyền truy cập, dữ liệu cá nhân, chi phí và thời gian lưu giữ vẫn cần quyết định rõ.&lt;/p&gt;
+&lt;h2&gt;Hệ thống thật có thể dùng cả hai&lt;span class="hx:absolute hx:-mt-20" id="hệ-thống-thật-có-thể-dùng-cả-hai"&gt;&lt;/span&gt;
+&lt;a href="#h%e1%bb%87-th%e1%bb%91ng-th%e1%ba%adt-c%c3%b3-th%e1%bb%83-d%c3%b9ng-c%e1%ba%a3-hai" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Pipeline có thể giải nén file và che dữ liệu nhạy cảm trước khi Load, rồi dùng SQL trong warehouse để tạo bảng report. Thay vì hỏi cách nào luôn tốt hơn, hãy hỏi:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Data nào được phép đi vào đích?&lt;/li&gt;
+&lt;li&gt;Có cần giữ bản gốc để xử lý lại không?&lt;/li&gt;
+&lt;li&gt;Nơi nào đủ khả năng chạy Transformation?&lt;/li&gt;
+&lt;li&gt;Ai cần đọc và thay đổi logic?&lt;/li&gt;
+&lt;li&gt;Nếu Transformation lỗi, data đã Load có bị dùng nhầm không?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;ETL và ELT mô tả thứ tự. Pipeline tốt còn phải chạy lại an toàn, quan sát được và kiểm tra chất lượng output.&lt;/p&gt;</description></item><item><title>Xử lý data theo từng Batch</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/batch-processing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/batch-processing/</guid><description>
+&lt;p&gt;Team tài chính cần doanh thu ngày hôm qua trước 7 giờ sáng. Họ không cần con số đổi sau từng giây; họ cần kết quả đầy đủ và có thể đối soát.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Batch Processing&lt;/strong&gt; (xử lý theo lô) gom một tập data có giới hạn rồi xử lý trong một lần chạy. Lô có thể là order trong một ngày, một file vừa nhận hoặc các row mới kể từ lần chạy trước.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;00:00–23:59&amp;lt;br/&amp;gt;Order được tạo&amp;#34;]
+B[&amp;#34;01:00&amp;lt;br/&amp;gt;Chốt lô hôm qua&amp;#34;]
+C[&amp;#34;01:05&amp;lt;br/&amp;gt;Transform và kiểm tra&amp;#34;]
+D[&amp;#34;01:20&amp;lt;br/&amp;gt;Bảng doanh thu sẵn sàng&amp;#34;]
+A --&amp;gt; B --&amp;gt; C --&amp;gt; D
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Một lô có ranh giới&lt;span class="hx:absolute hx:-mt-20" id="một-lô-có-ranh-giới"&gt;&lt;/span&gt;
+&lt;a href="#m%e1%bb%99t-l%c3%b4-c%c3%b3-ranh-gi%e1%bb%9bi" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Job nhận hai tham số:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;start_time = 2026-09-08 00:00:00
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;end_time = 2026-09-09 00:00:00&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;created_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TIMESTAMP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2026-09-08 00:00:00&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;created_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TIMESTAMP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2026-09-09 00:00:00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Khoảng này gồm &lt;code&gt;start_time&lt;/code&gt; nhưng không gồm &lt;code&gt;end_time&lt;/code&gt;, nên order đúng lúc nửa đêm không bị tính ở cả hai ngày.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th&gt;created_at&lt;/th&gt;
+&lt;th style="text-align: right"&gt;amount&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td&gt;2026-09-08 12:02:10&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1043&lt;/td&gt;
+&lt;td&gt;2026-09-08 12:07:31&lt;/td&gt;
+&lt;td style="text-align: right"&gt;85000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Job có thể tổng hợp thành:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_date&lt;/th&gt;
+&lt;th style="text-align: right"&gt;total_orders&lt;/th&gt;
+&lt;th style="text-align: right"&gt;revenue&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;2026-09-08&lt;/td&gt;
+&lt;td style="text-align: right"&gt;2&lt;/td&gt;
+&lt;td style="text-align: right"&gt;205000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Full Load và Incremental Load&lt;span class="hx:absolute hx:-mt-20" id="full-load-và-incremental-load"&gt;&lt;/span&gt;
+&lt;a href="#full-load-v%c3%a0-incremental-load" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Full Load&lt;/strong&gt; đọc toàn bộ data mỗi lần. Nó đơn giản và có thể đủ tốt khi bảng nhỏ. &lt;strong&gt;Incremental Load&lt;/strong&gt; chỉ đọc phần mới hoặc thay đổi, nhanh hơn khi lịch sử lớn nhưng dễ bỏ sót update.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Cách đọc&lt;/th&gt;
+&lt;th&gt;Ưu điểm&lt;/th&gt;
+&lt;th&gt;Rủi ro&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Full Load&lt;/td&gt;
+&lt;td&gt;Dễ hiểu và tái tạo&lt;/td&gt;
+&lt;td&gt;Chậm khi data lớn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Incremental Load&lt;/td&gt;
+&lt;td&gt;Chỉ xử lý phần cần&lt;/td&gt;
+&lt;td&gt;Có thể tạo khoảng trống&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Nên bắt đầu bằng cách đơn giản nhất đáp ứng thời gian chạy.&lt;/p&gt;
+&lt;h2&gt;Data đến muộn&lt;span class="hx:absolute hx:-mt-20" id="data-đến-muộn"&gt;&lt;/span&gt;
+&lt;a href="#data-%c4%91%e1%ba%bfn-mu%e1%bb%99n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Thanh toán của ngày 8 có thể đến vào sáng ngày 9 vì hệ thống nguồn bị chậm. Pipeline có thể đọc lại ba ngày gần nhất hoặc cho phép chạy lại một ngày cụ thể. Output phải có Idempotency để lần chạy lại không cộng doanh thu lần thứ hai.&lt;/p&gt;
+&lt;h2&gt;Thất bại giữa chừng&lt;span class="hx:absolute hx:-mt-20" id="thất-bại-giữa-chừng"&gt;&lt;/span&gt;
+&lt;a href="#th%e1%ba%a5t-b%e1%ba%a1i-gi%e1%bb%afa-ch%e1%bb%abng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu job ghi 600 trong 1.000 row rồi dừng, người dùng có thể thấy một ngày chưa hoàn tất. Cách an toàn hơn là ghi vào vùng tạm, kiểm tra rồi mới thay partition chính.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Tính lô ngày 08-09&amp;#34;]
+B[&amp;#34;Ghi vào vùng tạm&amp;#34;]
+C[&amp;#34;Kiểm tra kết quả&amp;#34;]
+D[&amp;#34;Thay partition chính&amp;#34;]
+A --&amp;gt; B --&amp;gt; C --&amp;gt; D
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Batch phù hợp khi người dùng chấp nhận data trễ vài phút, vài giờ hoặc một ngày, input đến theo file, hoặc kết quả cần chốt theo kỳ. Nếu tài xế cần nhận order mới trong vài giây, đợi batch mỗi giờ là quá chậm. Nhưng với nhiều report và đối soát, Batch vẫn rõ ràng, dễ vận hành và đủ nhanh.&lt;/p&gt;</description></item><item><title>Data Orchestration khi nhiều job phụ thuộc nhau</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/orchestration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/orchestration/</guid><description>
+&lt;p&gt;Một script lấy order có thể chạy bằng &lt;code&gt;cron&lt;/code&gt;. Nhưng report doanh thu còn cần thanh toán, thông tin nhà hàng và bước kiểm tra. Nếu mỗi script có lịch riêng, report có thể chạy trước khi data thanh toán sẵn sàng.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Orchestration&lt;/strong&gt; (điều phối công việc data) quản lý khi nào job chạy, job nào phải đợi job nào, trạng thái từng lần chạy và cách phản ứng khi có lỗi.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Lấy order&amp;#34;]
+B[&amp;#34;Lấy thanh toán&amp;#34;]
+C[&amp;#34;Làm sạch data&amp;#34;]
+D[&amp;#34;Tạo doanh thu&amp;#34;]
+E[&amp;#34;Kiểm tra Data Quality&amp;#34;]
+F[&amp;#34;Công bố bảng&amp;#34;]
+A --&amp;gt; C
+B --&amp;gt; C
+C --&amp;gt; D --&amp;gt; E --&amp;gt; F
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Schedule chưa thể hiện dependency&lt;span class="hx:absolute hx:-mt-20" id="schedule-chưa-thể-hiện-dependency"&gt;&lt;/span&gt;
+&lt;a href="#schedule-ch%c6%b0a-th%e1%bb%83-hi%e1%bb%87n-dependency" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Giờ&lt;/th&gt;
+&lt;th&gt;Job&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Thời gian thường chạy&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;01:00&lt;/td&gt;
+&lt;td&gt;Lấy order&lt;/td&gt;
+&lt;td style="text-align: right"&gt;10 phút&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;01:00&lt;/td&gt;
+&lt;td&gt;Lấy thanh toán&lt;/td&gt;
+&lt;td style="text-align: right"&gt;20 phút&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;01:30&lt;/td&gt;
+&lt;td&gt;Tạo doanh thu&lt;/td&gt;
+&lt;td style="text-align: right"&gt;15 phút&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Một hôm API thanh toán chậm và job mất 45 phút. Job doanh thu vẫn bắt đầu lúc 01:30, đọc data chưa đủ và tạo report thấp hơn thực tế.&lt;/p&gt;
+&lt;p&gt;Orchestrator thể hiện dependency trực tiếp: doanh thu chỉ chạy khi cả hai job upstream thành công.&lt;/p&gt;
+&lt;h2&gt;Mỗi lần chạy có trạng thái&lt;span class="hx:absolute hx:-mt-20" id="mỗi-lần-chạy-có-trạng-thái"&gt;&lt;/span&gt;
+&lt;a href="#m%e1%bb%97i-l%e1%ba%a7n-ch%e1%ba%a1y-c%c3%b3-tr%e1%ba%a1ng-th%c3%a1i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;scheduled → running → success
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↘ failed → retrying&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Trạng thái giúp trả lời job đã chạy chưa, đang chờ gì, lỗi ở bước nào và thử lại bao nhiêu lần. Nếu chỉ có nhiều script và log rời rạc, Data Engineer phải tự ghép câu trả lời khi incident xảy ra.&lt;/p&gt;
+&lt;h2&gt;Ngày xử lý khác giờ chạy&lt;span class="hx:absolute hx:-mt-20" id="ngày-xử-lý-khác-giờ-chạy"&gt;&lt;/span&gt;
+&lt;a href="#ng%c3%a0y-x%e1%bb%ad-l%c3%bd-kh%c3%a1c-gi%e1%bb%9d-ch%e1%ba%a1y" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Job chạy lúc 01:00 ngày 9 thường xử lý ngày 8:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Thời điểm chạy&lt;/th&gt;
+&lt;th&gt;Khoảng data xử lý&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;2026-09-09 01:00&lt;/td&gt;
+&lt;td&gt;2026-09-08 00:00 → 2026-09-09 00:00&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Chạy lại 2026-09-10 14:00&lt;/td&gt;
+&lt;td&gt;Vẫn là khoảng ngày 8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Job nên nhận khoảng data thay vì dùng &lt;code&gt;NOW()&lt;/code&gt; để đoán. Nhờ vậy Retry và Backfill tạo đúng kết quả dù chạy muộn.&lt;/p&gt;
+&lt;h2&gt;Orchestrator không sửa được job thiếu an toàn&lt;span class="hx:absolute hx:-mt-20" id="orchestrator-không-sửa-được-job-thiếu-an-toàn"&gt;&lt;/span&gt;
+&lt;a href="#orchestrator-kh%c3%b4ng-s%e1%bb%ada-%c4%91%c6%b0%e1%bb%a3c-job-thi%e1%ba%bfu-an-to%c3%a0n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Orchestrator có thể Retry, nhưng nếu task luôn &lt;code&gt;INSERT&lt;/code&gt; toàn bộ data, Retry tạo duplicate. Nó báo job thành công nhưng không biết doanh thu đúng nếu thiếu quality check.&lt;/p&gt;
+&lt;p&gt;Một job nên nhận input rõ, chạy lại an toàn, trả lỗi khi output chưa hoàn tất và chỉ công bố data sau kiểm tra.&lt;/p&gt;
+&lt;p&gt;Một pipeline duy nhất có thể bắt đầu bằng cron. Orchestrator có ích khi có nhiều dependency, nhiều lịch, nhu cầu Retry/Backfill hoặc cần lịch sử từng lần chạy. Airflow, Dagster và Prefect là ví dụ công cụ; trước tiên hãy vẽ đúng dependency và trạng thái thất bại.&lt;/p&gt;</description></item><item><title>Data Quality: làm sao biết data đủ tin cậy?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-quality/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-quality/</guid><description>
+&lt;p&gt;Pipeline chạy thành công và dashboard mở được. Nhưng doanh thu hôm nay bằng không vì &lt;code&gt;payment_status&lt;/code&gt; vừa đổi từ &lt;code&gt;paid&lt;/code&gt; thành &lt;code&gt;PAID&lt;/code&gt;. Không có error kỹ thuật; data sai về ý nghĩa.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Quality&lt;/strong&gt; (chất lượng dữ liệu) cho biết data có đủ phù hợp cho một mục đích cụ thể hay không. Thay vì nói “data phải sạch”, team viết điều kiện có thể kiểm tra.&lt;/p&gt;
+&lt;h2&gt;Chất lượng phụ thuộc cách dùng&lt;span class="hx:absolute hx:-mt-20" id="chất-lượng-phụ-thuộc-cách-dùng"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%ba%a5t-l%c6%b0%e1%bb%a3ng-ph%e1%bb%a5-thu%e1%bb%99c-c%c3%a1ch-d%c3%b9ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Địa chỉ thiếu số căn hộ có thể đủ cho report theo khu vực nhưng không đủ để giao hàng. Cùng dataset có thể đạt yêu cầu này và không đạt yêu cầu khác.&lt;/p&gt;
+&lt;p&gt;Với &lt;code&gt;fact_orders&lt;/code&gt;, team tài chính có thể cần:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Điều kiện&lt;/th&gt;
+&lt;th&gt;Vì sao?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;order_id&lt;/code&gt; không rỗng&lt;/td&gt;
+&lt;td&gt;Order phải nhận diện được&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;order_id&lt;/code&gt; duy nhất&lt;/td&gt;
+&lt;td&gt;Không tính doanh thu hai lần&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;net_amount &amp;gt;= 0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Giá trị âm cần quy tắc riêng&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;status&lt;/code&gt; thuộc danh sách&lt;/td&gt;
+&lt;td&gt;Không bỏ qua status mới&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Data hôm qua có trước 07:00&lt;/td&gt;
+&lt;td&gt;Kịp giờ đối soát&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Đây là Completeness, Uniqueness, Validity và Timeliness. Tên nhóm ít quan trọng hơn việc check bắt đúng rủi ro.&lt;/p&gt;
+&lt;h2&gt;Check từng row&lt;span class="hx:absolute hx:-mt-20" id="check-từng-row"&gt;&lt;/span&gt;
+&lt;a href="#check-t%e1%bb%abng-row" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fact_orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;OR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;net_amount&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;OR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;IN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;created&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;paid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;delivered&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;cancelled&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nếu query trả row, pipeline có thể dừng batch, cách ly row lỗi hoặc cảnh báo rồi tiếp tục theo chính sách đã thống nhất. Không nên âm thầm xoá row lỗi vì tổng số order sẽ có vẻ hợp lệ dù data bị mất.&lt;/p&gt;
+&lt;h2&gt;Check cả dataset&lt;span class="hx:absolute hx:-mt-20" id="check-cả-dataset"&gt;&lt;/span&gt;
+&lt;a href="#check-c%e1%ba%a3-dataset" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Mọi row có thể hợp lệ nhưng pipeline chỉ lấy được một nửa data.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Check&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Hôm qua&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Hôm nay&lt;/th&gt;
+&lt;th&gt;Đánh giá&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Tổng row&lt;/td&gt;
+&lt;td style="text-align: right"&gt;102,430&lt;/td&gt;
+&lt;td style="text-align: right"&gt;51,018&lt;/td&gt;
+&lt;td&gt;Bất thường&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;order_id&lt;/code&gt; rỗng&lt;/td&gt;
+&lt;td style="text-align: right"&gt;0%&lt;/td&gt;
+&lt;td style="text-align: right"&gt;0%&lt;/td&gt;
+&lt;td&gt;Đạt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Thời điểm mới nhất&lt;/td&gt;
+&lt;td style="text-align: right"&gt;23:59&lt;/td&gt;
+&lt;td style="text-align: right"&gt;12:01&lt;/td&gt;
+&lt;td&gt;Chưa đủ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Nếu row_count hôm nay &amp;lt; 70% trung vị 7 ngày gần nhất
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;→ không công bố bảng và gửi cảnh báo&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Ngưỡng không phải chân lý. Ngày lễ có thể làm volume đổi mạnh, nên rule cần phản ánh hành vi business.&lt;/p&gt;
+&lt;h2&gt;Đặt check vào đúng chỗ&lt;span class="hx:absolute hx:-mt-20" id="đặt-check-vào-đúng-chỗ"&gt;&lt;/span&gt;
+&lt;a href="#%c4%91%e1%ba%b7t-check-v%c3%a0o-%c4%91%c3%bang-ch%e1%bb%97" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Source&amp;lt;br/&amp;gt;Data vừa đến&amp;#34;]
+B[&amp;#34;Kiểm tra schema&amp;#34;]
+C[&amp;#34;Transform&amp;#34;]
+D[&amp;#34;Kiểm tra business&amp;#34;]
+E[&amp;#34;Publish&amp;#34;]
+A --&amp;gt; B --&amp;gt; C --&amp;gt; D --&amp;gt; E
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Check sớm giúp khoanh vùng lỗi; check output xác nhận thứ người dùng thực sự nhận. Pipeline quan trọng thường cần cả hai.&lt;/p&gt;
+&lt;p&gt;Alert nên cho biết bảng, partition, rule, giá trị thực tế, ngưỡng và owner. Nếu không ai biết phải làm gì khi check fail, check đó chưa hoàn chỉnh.&lt;/p&gt;
+&lt;p&gt;Không thể kiểm tra mọi thứ. Hãy bắt đầu từ bảng quan trọng và lỗi từng gây tác động: duplicate key, thiếu partition, data đến muộn, giá trị ngoài domain và metric đổi bất thường. Một số check gắn với quyết định thật có giá trị hơn hàng trăm check không ai xử lý.&lt;/p&gt;</description></item><item><title>Idempotency: chạy lại pipeline mà không tạo duplicate</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/idempotency/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/idempotency/</guid><description>
+&lt;p&gt;Pipeline đã ghi xong 900 order thì mất kết nối. Bạn không biết 100 order cuối đã được ghi hay chưa, nên chạy lại cả lô. Nếu job dùng &lt;code&gt;INSERT&lt;/code&gt;, bảng có thể xuất hiện duplicate.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Idempotency&lt;/strong&gt; (khả năng chạy lại mà không tạo thêm kết quả ngoài ý muốn) nghĩa là xử lý cùng input một hay nhiều lần vẫn đưa hệ thống đến cùng trạng thái.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Input&amp;lt;br/&amp;gt;ORD-1042&amp;#34;] --&amp;gt; B[&amp;#34;Chạy lần 1&amp;#34;] --&amp;gt; C[&amp;#34;Một row ORD-1042&amp;#34;]
+A --&amp;gt; D[&amp;#34;Chạy lại&amp;#34;] --&amp;gt; E[&amp;#34;Vẫn một row ORD-1042&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Dùng business key để nhận diện row&lt;span class="hx:absolute hx:-mt-20" id="dùng-business-key-để-nhận-diện-row"&gt;&lt;/span&gt;
+&lt;a href="#d%c3%b9ng-business-key-%c4%91%e1%bb%83-nh%e1%ba%adn-di%e1%bb%87n-row" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;order_id&lt;/code&gt; cho biết hai lần nhận được có phải cùng một order hay không.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;order_id&lt;/th&gt;
+&lt;th&gt;status&lt;/th&gt;
+&lt;th style="text-align: right"&gt;amount&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ORD-1042&lt;/td&gt;
+&lt;td&gt;paid&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Thay vì luôn thêm row, pipeline có thể &lt;strong&gt;Upsert&lt;/strong&gt;: thêm khi key chưa tồn tại, cập nhật khi key đã có.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;INSERT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;INTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;VALUES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ORD-1042&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;paid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;120000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;CONFLICT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;order_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;DO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;UPDATE&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EXCLUDED&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EXCLUDED&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Với bảng tổng hợp theo ngày, một cách khác là tính lại toàn bộ partition rồi thay thế nguyên khối. Xoá rồi ghi lại cần transaction hoặc vùng tạm; nếu job dừng sau bước xoá, người dùng sẽ thấy data trống.&lt;/p&gt;
+&lt;h2&gt;Không phải lúc nào key cũng rõ&lt;span class="hx:absolute hx:-mt-20" id="không-phải-lúc-nào-key-cũng-rõ"&gt;&lt;/span&gt;
+&lt;a href="#kh%c3%b4ng-ph%e1%ba%a3i-l%c3%bac-n%c3%a0o-key-c%c5%a9ng-r%c3%b5" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Một payment retry có thể tạo nhiều transaction hợp lệ cho cùng order. Dùng &lt;code&gt;order_id&lt;/code&gt; làm key sẽ ghi đè nhầm. Key phải phản ánh grain: nếu mỗi row là một lần thanh toán, &lt;code&gt;payment_id&lt;/code&gt; mới phù hợp.&lt;/p&gt;
+&lt;p&gt;Idempotency cần được test bằng cách cố tình chạy cùng lô hai lần và so cả số row lẫn metric. Đây là nền tảng để Retry và Backfill an toàn.&lt;/p&gt;</description></item><item><title>Retry hoạt động như thế nào?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/retry/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/retry/</guid><description>
+&lt;p&gt;API thanh toán trả lỗi &lt;code&gt;503 Service Unavailable&lt;/code&gt;. Nếu pipeline dừng ngay, report bị thiếu. Nếu gọi lại liên tục, nó có thể làm dịch vụ đang yếu càng quá tải.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Retry&lt;/strong&gt; (thử lại) là chạy lại một thao tác sau khi nó thất bại vì một vấn đề có khả năng tạm thời.&lt;/p&gt;
+&lt;h2&gt;Lỗi nào nên thử lại?&lt;span class="hx:absolute hx:-mt-20" id="lỗi-nào-nên-thử-lại"&gt;&lt;/span&gt;
+&lt;a href="#l%e1%bb%97i-n%c3%a0o-n%c3%aan-th%e1%bb%ad-l%e1%ba%a1i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Lỗi&lt;/th&gt;
+&lt;th&gt;Retry?&lt;/th&gt;
+&lt;th&gt;Lý do&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Timeout mạng&lt;/td&gt;
+&lt;td&gt;Có, với giới hạn&lt;/td&gt;
+&lt;td&gt;Kết nối có thể phục hồi&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP 429&lt;/td&gt;
+&lt;td&gt;Có, theo &lt;code&gt;Retry-After&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Dịch vụ yêu cầu giảm tốc&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP 503&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;td&gt;Dịch vụ tạm thời chưa sẵn sàng&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Sai password&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;td&gt;Chờ không sửa được cấu hình&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SQL sai cú pháp&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;td&gt;Code phải được sửa&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Schema thiếu field bắt buộc&lt;/td&gt;
+&lt;td&gt;Thường không&lt;/td&gt;
+&lt;td&gt;Cần điều tra contract&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Chờ lâu dần giữa các lần&lt;span class="hx:absolute hx:-mt-20" id="chờ-lâu-dần-giữa-các-lần"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%bb%9d-l%c3%a2u-d%e1%ba%a7n-gi%e1%bb%afa-c%c3%a1c-l%e1%ba%a7n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Lần 1 thất bại → chờ 2 giây
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Lần 2 thất bại → chờ 4 giây
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Lần 3 thất bại → chờ 8 giây
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Sau giới hạn → đánh dấu failed&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Đây là &lt;strong&gt;Exponential Backoff&lt;/strong&gt; (thời gian chờ tăng dần). Thêm một khoảng ngẫu nhiên nhỏ giúp nhiều worker không gọi lại cùng lúc.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Gọi API&amp;#34;] --&amp;gt; B{&amp;#34;Thành công?&amp;#34;}
+B --&amp;gt;|Có| C[&amp;#34;Ghi kết quả&amp;#34;]
+B --&amp;gt;|Lỗi tạm thời| D[&amp;#34;Chờ với backoff&amp;#34;]
+D --&amp;gt; E{&amp;#34;Còn lượt?&amp;#34;}
+E --&amp;gt;|Có| A
+E --&amp;gt;|Không| F[&amp;#34;Fail và alert&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Một timeout không cho biết request trước đã được xử lý hay chưa. Retry thao tác tạo payment có thể thu tiền hai lần. Hệ thống cần idempotency key hoặc kiểm tra trạng thái trước khi thử lại.&lt;/p&gt;
+&lt;p&gt;Retry nên có giới hạn, ghi lại nguyên nhân và cuối cùng tạo alert có người chịu trách nhiệm. Nó giúp vượt qua lỗi tạm thời, không thay thế việc sửa lỗi lâu dài.&lt;/p&gt;</description></item><item><title>Sửa lại data trong quá khứ với Backfill</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/backfill/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/backfill/</guid><description>
+&lt;p&gt;Pipeline bỏ sót thanh toán từ ngày 1 đến ngày 3 vì một filter sai. Sau khi sửa code, data hôm nay đúng nhưng ba ngày lịch sử vẫn thiếu.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Backfill&lt;/strong&gt; (xử lý bù data lịch sử) là chạy logic cho một khoảng quá khứ để tạo phần output bị thiếu hoặc cập nhật kết quả theo logic mới.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Xác định khoảng lỗi&amp;lt;br/&amp;gt;01-09 → 03-09&amp;#34;]
+B[&amp;#34;Sửa và kiểm tra logic&amp;#34;]
+C[&amp;#34;Chạy thử một partition&amp;#34;]
+D[&amp;#34;Backfill từng ngày&amp;#34;]
+E[&amp;#34;Đối chiếu và công bố&amp;#34;]
+A --&amp;gt; B --&amp;gt; C --&amp;gt; D --&amp;gt; E
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Job phải nhận khoảng data rõ ràng&lt;span class="hx:absolute hx:-mt-20" id="job-phải-nhận-khoảng-data-rõ-ràng"&gt;&lt;/span&gt;
+&lt;a href="#job-ph%e1%ba%a3i-nh%e1%ba%adn-kho%e1%ba%a3ng-data-r%c3%b5-r%c3%a0ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;transform_orders --start-date 2026-09-01 --end-date 2026-09-04&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Không nên dùng “hôm qua” nằm cứng trong code. Một lần chạy ngày 9 vẫn phải tạo đúng partition ngày 1 khi được yêu cầu.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Partition&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Trước&lt;/th&gt;
+&lt;th style="text-align: right"&gt;Sau backfill&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;2026-09-01&lt;/td&gt;
+&lt;td style="text-align: right"&gt;81,204&lt;/td&gt;
+&lt;td style="text-align: right"&gt;102,118&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2026-09-02&lt;/td&gt;
+&lt;td style="text-align: right"&gt;79,884&lt;/td&gt;
+&lt;td style="text-align: right"&gt;101,732&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2026-09-03&lt;/td&gt;
+&lt;td style="text-align: right"&gt;80,105&lt;/td&gt;
+&lt;td style="text-align: right"&gt;103,041&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Backfill có thể gây ảnh hưởng production&lt;span class="hx:absolute hx:-mt-20" id="backfill-có-thể-gây-ảnh-hưởng-production"&gt;&lt;/span&gt;
+&lt;a href="#backfill-c%c3%b3-th%e1%bb%83-g%c3%a2y-%e1%ba%a3nh-h%c6%b0%e1%bb%9fng-production" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Đọc ba năm data cùng lúc có thể chiếm hết compute, làm chậm job hằng ngày và gửi nhiều update đến downstream. Hãy chia theo partition, giới hạn số job song song và ưu tiên pipeline hiện tại.&lt;/p&gt;
+&lt;p&gt;Trước khi chạy cần biết:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Input lịch sử còn đủ không?&lt;/li&gt;
+&lt;li&gt;Code mới có tương thích schema cũ không?&lt;/li&gt;
+&lt;li&gt;Output được thay an toàn hay sẽ duplicate?&lt;/li&gt;
+&lt;li&gt;Dashboard và notification có phản ứng với update cũ không?&lt;/li&gt;
+&lt;li&gt;Có cách so sánh trước và sau không?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Backfill kết thúc khi data đã được kiểm tra, không chỉ khi job hiện màu xanh. Hãy đối chiếu row count, tổng tiền, khoảng thời gian và một mẫu order với Source System.&lt;/p&gt;</description></item><item><title>Data Observability: theo dõi sức khoẻ của pipeline</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-observability/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-observability/</guid><description>
+&lt;p&gt;Data Quality check biết &lt;code&gt;order_id&lt;/code&gt; không được rỗng. Nhưng ai phát hiện pipeline chưa chạy, data trễ ba giờ hoặc số order giảm bất thường?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Observability&lt;/strong&gt; (khả năng quan sát hệ thống data) là khả năng hiểu trạng thái của pipeline và data từ các tín hiệu mà hệ thống tạo ra.&lt;/p&gt;
+&lt;h2&gt;Quan sát cả job lẫn data&lt;span class="hx:absolute hx:-mt-20" id="quan-sát-cả-job-lẫn-data"&gt;&lt;/span&gt;
+&lt;a href="#quan-s%c3%a1t-c%e1%ba%a3-job-l%e1%ba%abn-data" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Tín hiệu&lt;/th&gt;
+&lt;th&gt;Câu hỏi&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Freshness&lt;/td&gt;
+&lt;td&gt;Data mới nhất đến từ khi nào?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Volume&lt;/td&gt;
+&lt;td&gt;Số row có khác thường không?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Distribution&lt;/td&gt;
+&lt;td&gt;Giá trị và tỷ lệ có đổi mạnh không?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Schema&lt;/td&gt;
+&lt;td&gt;Field nào vừa thêm, xoá hoặc đổi type?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Lineage&lt;/td&gt;
+&lt;td&gt;Output nào bị ảnh hưởng bởi lỗi upstream?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Job metrics&lt;/td&gt;
+&lt;td&gt;Job có chạy, chậm hay Retry nhiều không?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Pipeline và data&amp;#34;] --&amp;gt; B[&amp;#34;Metrics, logs, checks&amp;#34;]
+B --&amp;gt; C[&amp;#34;Monitor&amp;#34;]
+C --&amp;gt; D{&amp;#34;Có bất thường?&amp;#34;}
+D --&amp;gt;|Có| E[&amp;#34;Alert đúng owner&amp;#34;]
+E --&amp;gt; F[&amp;#34;Điều tra và khôi phục&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Một freshness monitor có thể kiểm tra:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;max(ingested_at) phải cách hiện tại &amp;lt; 30 phút&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nếu source vốn chỉ gửi file lúc 6 giờ sáng, rule 30 phút sẽ báo động giả cả ngày. Monitor phải dựa trên nhịp data đã hứa.&lt;/p&gt;
+&lt;h2&gt;Alert cần dẫn đến hành động&lt;span class="hx:absolute hx:-mt-20" id="alert-cần-dẫn-đến-hành-động"&gt;&lt;/span&gt;
+&lt;a href="#alert-c%e1%ba%a7n-d%e1%ba%abn-%c4%91%e1%ba%bfn-h%c3%a0nh-%c4%91%e1%bb%99ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;“Table failed” chưa đủ. Alert nên có dataset, partition, giá trị thực tế, ngưỡng, upstream gần nhất và owner. Cũng cần phân biệt warning với sự cố chặn người dùng.&lt;/p&gt;
+&lt;p&gt;Observability không tự đảm bảo Data Quality. Nó kết hợp checks, logs, metrics và lineage để phát hiện rồi khoanh vùng vấn đề nhanh hơn. Bắt đầu với các bảng quan trọng và tín hiệu gắn với cam kết thật; quá nhiều alert không có owner chỉ tạo tiếng ồn.&lt;/p&gt;</description></item><item><title>Metadata: data để hiểu data</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/metadata/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/metadata/</guid><description>
+&lt;p&gt;Warehouse có bảng &lt;code&gt;fact_orders&lt;/code&gt;, nhưng tên bảng không cho biết một row đại diện cho gì, cập nhật lúc nào hay ai chịu trách nhiệm.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Metadata&lt;/strong&gt; (data mô tả data) cung cấp context để con người và hệ thống hiểu, tìm và vận hành một dataset.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Nhóm&lt;/th&gt;
+&lt;th&gt;Ví dụ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Technical metadata&lt;/td&gt;
+&lt;td&gt;Tên field, type, partition, kích thước&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Operational metadata&lt;/td&gt;
+&lt;td&gt;Lần cập nhật cuối, thời gian chạy, số row&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Business metadata&lt;/td&gt;
+&lt;td&gt;Định nghĩa revenue, grain, cách sử dụng&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ownership metadata&lt;/td&gt;
+&lt;td&gt;Team và kênh liên hệ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Security metadata&lt;/td&gt;
+&lt;td&gt;Mức nhạy cảm, quyền truy cập&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Ví dụ tối thiểu cho &lt;code&gt;fact_orders&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;fact_orders&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;grain&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;one row per order&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;data-platform&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;freshness&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;every 15 minutes&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;primary_key&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;order_id&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;contains_pii&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Metadata đến từ đâu?&lt;span class="hx:absolute hx:-mt-20" id="metadata-đến-từ-đâu"&gt;&lt;/span&gt;
+&lt;a href="#metadata-%c4%91%e1%ba%bfn-t%e1%bb%ab-%c4%91%c3%a2u" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Schema có thể lấy tự động từ warehouse. Thời gian chạy đến từ orchestrator. Owner và định nghĩa business cần con người xác nhận. Tự động thu thập giảm công sức nhưng không thể tự đoán &lt;code&gt;net_revenue&lt;/code&gt; có trừ voucher hay không.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Warehouse&amp;lt;br/&amp;gt;Schema&amp;#34;] --&amp;gt; D[&amp;#34;Metadata&amp;#34;]
+B[&amp;#34;Orchestrator&amp;lt;br/&amp;gt;Lần chạy&amp;#34;] --&amp;gt; D
+C[&amp;#34;Con người&amp;lt;br/&amp;gt;Owner và định nghĩa&amp;#34;] --&amp;gt; D
+D --&amp;gt; E[&amp;#34;Catalog, Lineage, Monitor&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Metadata cũ còn nguy hiểm hơn metadata thiếu vì tạo cảm giác tin cậy sai. Hãy gắn việc cập nhật owner và mô tả vào quy trình thay đổi dataset, đồng thời tự động hoá những field máy có thể xác nhận.&lt;/p&gt;
+&lt;p&gt;Metadata là nguyên liệu cho Data Catalog và Data Lineage. Catalog giúp tìm và hiểu data; Lineage dùng quan hệ giữa các dataset để theo dấu đường đi.&lt;/p&gt;</description></item><item><title>Data Lineage: data đã đi qua đâu?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-lineage/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-lineage/</guid><description>
+&lt;p&gt;Dashboard doanh thu giảm 30%. Bảng đầu ra có năm upstream table và nhiều pipeline. Data Engineer cần biết thay đổi bắt đầu ở đâu và còn ai bị ảnh hưởng.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Lineage&lt;/strong&gt; (quan hệ nguồn gốc và đường đi của data) mô tả dataset được tạo từ đâu, qua bước nào và được output nào sử dụng.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;MySQL&amp;lt;br/&amp;gt;orders&amp;#34;] --&amp;gt; B[&amp;#34;raw_orders&amp;#34;]
+C[&amp;#34;Payment API&amp;#34;] --&amp;gt; D[&amp;#34;raw_payments&amp;#34;]
+B --&amp;gt; E[&amp;#34;fact_orders&amp;#34;]
+D --&amp;gt; E
+E --&amp;gt; F[&amp;#34;Dashboard doanh thu&amp;#34;]
+E --&amp;gt; G[&amp;#34;Bảng đối soát&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Lineage trả lời hai hướng&lt;span class="hx:absolute hx:-mt-20" id="lineage-trả-lời-hai-hướng"&gt;&lt;/span&gt;
+&lt;a href="#lineage-tr%e1%ba%a3-l%e1%bb%9di-hai-h%c6%b0%e1%bb%9bng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Upstream&lt;/strong&gt; của &lt;code&gt;fact_orders&lt;/code&gt; cho biết input nào tạo ra nó. &lt;strong&gt;Downstream&lt;/strong&gt; cho biết bảng, dashboard hoặc model nào phụ thuộc vào nó.&lt;/p&gt;
+&lt;p&gt;Khi &lt;code&gt;payment_status&lt;/code&gt; đổi type, downstream lineage giúp xác định phạm vi ảnh hưởng trước khi deploy. Khi dashboard sai, upstream lineage thu hẹp nơi cần điều tra.&lt;/p&gt;
+&lt;p&gt;Lineage có nhiều mức chi tiết:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Mức&lt;/th&gt;
+&lt;th&gt;Ví dụ&lt;/th&gt;
+&lt;th&gt;Dùng khi&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;System&lt;/td&gt;
+&lt;td&gt;MySQL → Warehouse → BI&lt;/td&gt;
+&lt;td&gt;Nhìn kiến trúc tổng thể&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Dataset&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;raw_orders&lt;/code&gt; → &lt;code&gt;fact_orders&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Điều tra pipeline&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Column&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;payments.amount&lt;/code&gt; → &lt;code&gt;fact_orders.revenue&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Phân tích thay đổi field&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Lineage có thể thu tự động từ SQL và job, nhưng dynamic SQL hoặc thao tác thủ công dễ tạo khoảng trống. Owner vẫn cần kiểm tra những đường quan trọng.&lt;/p&gt;
+&lt;p&gt;Một sơ đồ đẹp nhưng đã cũ không giúp xử lý incident. Lineage nên gắn với metadata đang chạy, thời điểm cập nhật và link đến job thật. Bắt đầu ở dataset quan trọng thay vì cố vẽ toàn bộ công ty cùng lúc.&lt;/p&gt;</description></item><item><title>Tìm đúng data với Data Catalog</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-catalog/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-catalog/</guid><description>
+&lt;p&gt;Một Analyst tìm “doanh thu” và thấy &lt;code&gt;orders_revenue&lt;/code&gt;, &lt;code&gt;daily_revenue_v2&lt;/code&gt;, &lt;code&gt;finance_revenue_final&lt;/code&gt; cùng sáu bảng khác. Tên bảng không đủ để chọn.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Catalog&lt;/strong&gt; (danh mục dữ liệu) là nơi giúp người dùng khám phá dataset và đọc context cần thiết để sử dụng nó.&lt;/p&gt;
+&lt;p&gt;Một entry hữu ích có thể hiển thị:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Thông tin&lt;/th&gt;
+&lt;th&gt;Ví dụ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Tên&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;finance.fact_orders&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Mô tả&lt;/td&gt;
+&lt;td&gt;Một row cho mỗi order đã thanh toán&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Owner&lt;/td&gt;
+&lt;td&gt;Finance Data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Freshness&lt;/td&gt;
+&lt;td&gt;Mỗi 15 phút&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Quality&lt;/td&gt;
+&lt;td&gt;12/12 checks đạt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Classification&lt;/td&gt;
+&lt;td&gt;Internal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Lineage&lt;/td&gt;
+&lt;td&gt;Từ &lt;code&gt;raw_orders&lt;/code&gt;, &lt;code&gt;raw_payments&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Trạng thái&lt;/td&gt;
+&lt;td&gt;Certified&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Search&amp;lt;br/&amp;gt;doanh thu theo order&amp;#34;] --&amp;gt; B[&amp;#34;Catalog entry&amp;#34;]
+B --&amp;gt; C[&amp;#34;Đọc grain và định nghĩa&amp;#34;]
+C --&amp;gt; D[&amp;#34;Kiểm tra freshness và owner&amp;#34;]
+D --&amp;gt; E[&amp;#34;Dùng dataset hoặc hỏi owner&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Catalog không chỉ là ô tìm kiếm. Nếu metadata nghèo, kết quả tìm kiếm vẫn là danh sách tên khó hiểu. Nếu catalog không nằm trong workflow hằng ngày, mô tả nhanh chóng lỗi thời.&lt;/p&gt;
+&lt;h2&gt;Certification và deprecation&lt;span class="hx:absolute hx:-mt-20" id="certification-và-deprecation"&gt;&lt;/span&gt;
+&lt;a href="#certification-v%c3%a0-deprecation" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Team có thể đánh dấu dataset đã được review là &lt;strong&gt;Certified&lt;/strong&gt; (được xác nhận để dùng cho mục đích nêu rõ). Bảng sắp bỏ cần trạng thái &lt;strong&gt;Deprecated&lt;/strong&gt;, ngày ngừng và bảng thay thế.&lt;/p&gt;
+&lt;p&gt;Không nên hiểu Certified là đúng cho mọi câu hỏi. &lt;code&gt;fact_orders&lt;/code&gt; phù hợp tính order revenue có thể không phù hợp tính dòng tiền đã settled.&lt;/p&gt;
+&lt;p&gt;Catalog có giá trị khi giảm thời gian hỏi “data nằm đâu?”, giúp người dùng tránh bảng cũ và chỉ đúng owner khi cần làm rõ. Hãy bắt đầu với những dataset nhiều người dùng, không phải số lượng entry lớn.&lt;/p&gt;</description></item><item><title>Data Contract giữa producer và consumer</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-contract/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-contract/</guid><description>
+&lt;p&gt;Team thanh toán đổi &lt;code&gt;amount&lt;/code&gt; từ cent sang dollar mà không báo. Pipeline vẫn chạy, nhưng doanh thu nhỏ đi 100 lần.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Contract&lt;/strong&gt; (cam kết về data giữa producer và consumer) ghi lại data nào được cung cấp, ý nghĩa của nó, mức chất lượng mong đợi và cách thay đổi được quản lý.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;payment_completed&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;payments-team&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;payment_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;{&lt;span class="nt"&gt;type: string, required&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;}&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;order_id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;{&lt;span class="nt"&gt;type: string, required&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;}&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;amount_cents&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;{&lt;span class="nt"&gt;type: integer, minimum&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;}&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;currency&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;{&lt;span class="nt"&gt;type: string, allowed&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="l"&gt;SGD]}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Contract có thể gồm:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Schema và field bắt buộc.&lt;/li&gt;
+&lt;li&gt;Grain, key và ý nghĩa business.&lt;/li&gt;
+&lt;li&gt;Freshness hoặc availability đã hứa.&lt;/li&gt;
+&lt;li&gt;Quy tắc quality quan trọng.&lt;/li&gt;
+&lt;li&gt;Owner, consumer và quy trình thay đổi.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Producer&amp;lt;br/&amp;gt;Team thanh toán&amp;#34;] --&amp;gt; B[&amp;#34;Data Contract&amp;#34;]
+B --&amp;gt; C[&amp;#34;Consumer&amp;lt;br/&amp;gt;Pipeline doanh thu&amp;#34;]
+D[&amp;#34;Đề xuất thay đổi&amp;#34;] --&amp;gt; E[&amp;#34;Kiểm tra compatibility&amp;#34;]
+E --&amp;gt; B
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Contract không chỉ là schema&lt;span class="hx:absolute hx:-mt-20" id="contract-không-chỉ-là-schema"&gt;&lt;/span&gt;
+&lt;a href="#contract-kh%c3%b4ng-ch%e1%bb%89-l%c3%a0-schema" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Hai field cùng type &lt;code&gt;integer&lt;/code&gt; vẫn có thể mang đơn vị khác nhau. Kiểm tra schema không phát hiện cent đổi thành dollar. Contract cần ghi ý nghĩa mà code và con người có thể kiểm tra.&lt;/p&gt;
+&lt;h2&gt;Ai chịu trách nhiệm?&lt;span class="hx:absolute hx:-mt-20" id="ai-chịu-trách-nhiệm"&gt;&lt;/span&gt;
+&lt;a href="#ai-ch%e1%bb%8bu-tr%c3%a1ch-nhi%e1%bb%87m" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Producer chịu trách nhiệm giữ lời hứa hoặc thông báo thay đổi. Consumer chịu trách nhiệm dùng đúng mục đích và nêu dependency quan trọng. Data team hỗ trợ công cụ, checks và cách phối hợp; họ không thể tự định nghĩa data của mọi domain.&lt;/p&gt;
+&lt;p&gt;Không cần viết contract dài cho mọi bảng tạm. Hãy dùng nó ở ranh giới giữa team, nơi thay đổi có thể âm thầm làm hỏng downstream. Contract tốt làm thay đổi có chủ đích; nó không đóng băng hệ thống mãi mãi.&lt;/p&gt;</description></item><item><title>Schema Evolution mà không làm hỏng downstream</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/schema-evolution/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/schema-evolution/</guid><description>
+&lt;p&gt;Application cần thêm &lt;code&gt;delivery_method&lt;/code&gt; vào order. Một tháng sau, team muốn đổi &lt;code&gt;total_amount&lt;/code&gt; từ số nguyên sang object gồm amount và currency. Hai thay đổi có mức rủi ro khác nhau.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Schema Evolution&lt;/strong&gt; (quá trình schema thay đổi theo thời gian) là cách thêm, bỏ hoặc sửa cấu trúc data trong khi quản lý compatibility với consumer.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Thay đổi&lt;/th&gt;
+&lt;th&gt;Rủi ro thường gặp&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Thêm field optional&lt;/td&gt;
+&lt;td&gt;Consumer cũ thường bỏ qua được&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Thêm field required&lt;/td&gt;
+&lt;td&gt;Row cũ và producer cũ không có giá trị&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Đổi tên field&lt;/td&gt;
+&lt;td&gt;Consumer cũ thấy field biến mất&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Đổi type&lt;/td&gt;
+&lt;td&gt;Query hoặc parser có thể lỗi&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Xoá field&lt;/td&gt;
+&lt;td&gt;Mọi dependency phải chuyển trước&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Thay đổi theo nhiều bước&lt;span class="hx:absolute hx:-mt-20" id="thay-đổi-theo-nhiều-bước"&gt;&lt;/span&gt;
+&lt;a href="#thay-%c4%91%e1%bb%95i-theo-nhi%e1%bb%81u-b%c6%b0%e1%bb%9bc" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Để đổi &lt;code&gt;amount&lt;/code&gt; thành &lt;code&gt;amount_cents&lt;/code&gt;, team có thể:&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;1. Thêm amount_cents&amp;#34;] --&amp;gt; B[&amp;#34;2. Ghi cả hai field&amp;#34;]
+B --&amp;gt; C[&amp;#34;3. Chuyển consumer&amp;#34;]
+C --&amp;gt; D[&amp;#34;4. Theo dõi field cũ&amp;#34;]
+D --&amp;gt; E[&amp;#34;5. Xoá amount&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Trong giai đoạn chuyển tiếp:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;payment_id&lt;/th&gt;
+&lt;th style="text-align: right"&gt;amount&lt;/th&gt;
+&lt;th style="text-align: right"&gt;amount_cents&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;PAY-88&lt;/td&gt;
+&lt;td style="text-align: right"&gt;1200.00&lt;/td&gt;
+&lt;td style="text-align: right"&gt;120000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Data Contract ghi thời hạn và owner. Lineage tìm consumer. Quality check xác nhận hai field tương đương.&lt;/p&gt;
+&lt;h2&gt;Data lịch sử vẫn tồn tại&lt;span class="hx:absolute hx:-mt-20" id="data-lịch-sử-vẫn-tồn-tại"&gt;&lt;/span&gt;
+&lt;a href="#data-l%e1%bb%8bch-s%e1%bb%ad-v%e1%ba%abn-t%e1%bb%93n-t%e1%ba%a1i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Schema mới không tự sửa file Parquet cũ. Reader có thể phải hiểu cả version cũ và mới, hoặc team Backfill lịch sử sang schema mới. Cần test với data từ nhiều thời điểm, không chỉ sample mới nhất.&lt;/p&gt;
+&lt;p&gt;Schema registry và table format có thể kiểm tra một số compatibility rule, nhưng không biết thay đổi ý nghĩa business. Đổi &lt;code&gt;status=done&lt;/code&gt; thành &lt;code&gt;status=delivered&lt;/code&gt; vẫn cùng type string và vẫn có thể phá metric.&lt;/p&gt;
+&lt;p&gt;Schema sẽ thay đổi vì sản phẩm thay đổi. Mục tiêu là cho producer tiến lên mà consumer có thời gian phát hiện, chuyển đổi và xác nhận kết quả.&lt;/p&gt;</description></item><item><title>Batch hay Streaming?</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/batch-vs-streaming/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/batch-vs-streaming/</guid><description>
+&lt;p&gt;Report tài chính cần chốt mỗi ngày, còn hệ thống phát hiện thanh toán bất thường cần phản ứng trong vài giây. Cả hai xử lý data, nhưng yêu cầu về thời gian khác nhau.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Batch Processing&lt;/strong&gt; xử lý một tập data hữu hạn. &lt;strong&gt;Stream Processing&lt;/strong&gt; (xử lý luồng data liên tục) xử lý các event khi chúng tiếp tục đến.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Câu hỏi&lt;/th&gt;
+&lt;th&gt;Batch&lt;/th&gt;
+&lt;th&gt;Streaming&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Input có kết thúc?&lt;/td&gt;
+&lt;td&gt;Có ranh giới rõ&lt;/td&gt;
+&lt;td&gt;Tiếp tục đến&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Kết quả cập nhật&lt;/td&gt;
+&lt;td&gt;Theo lịch&lt;/td&gt;
+&lt;td&gt;Liên tục&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Độ trễ&lt;/td&gt;
+&lt;td&gt;Phút, giờ, ngày&lt;/td&gt;
+&lt;td&gt;Giây hoặc thấp hơn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Xử lý data đến muộn&lt;/td&gt;
+&lt;td&gt;Chạy lại partition&lt;/td&gt;
+&lt;td&gt;Watermark và update kết quả&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Vận hành&lt;/td&gt;
+&lt;td&gt;Thường đơn giản hơn&lt;/td&gt;
+&lt;td&gt;Cần quản lý state, order, replay&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Business cần kết quả khi nào?&amp;#34;] --&amp;gt; B{&amp;#34;Trong vài giây?&amp;#34;}
+B --&amp;gt;|Không| C[&amp;#34;Bắt đầu với Batch&amp;#34;]
+B --&amp;gt;|Có| D[&amp;#34;Xem xét Streaming&amp;#34;]
+D --&amp;gt; E[&amp;#34;Chấp nhận thêm độ phức tạp vận hành?&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Cùng một bài toán, hai cách&lt;span class="hx:absolute hx:-mt-20" id="cùng-một-bài-toán-hai-cách"&gt;&lt;/span&gt;
+&lt;a href="#c%c3%b9ng-m%e1%bb%99t-b%c3%a0i-to%c3%a1n-hai-c%c3%a1ch" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Batch gom order trong cửa sổ năm phút rồi tính tổng. Streaming cập nhật tổng khi từng event đến. Sau năm phút, hai output có thể giống nhau; khác biệt là thời điểm nhìn thấy kết quả và cách hệ thống đạt đến đó.&lt;/p&gt;
+&lt;p&gt;Streaming không đồng nghĩa data luôn đúng ngay lập tức. Event có thể đến trễ, sai thứ tự hoặc được gửi lại. Hệ thống phải quyết định bao lâu sẽ chờ và khi nào cập nhật kết quả cũ.&lt;/p&gt;
+&lt;h2&gt;Chọn theo yêu cầu thật&lt;span class="hx:absolute hx:-mt-20" id="chọn-theo-yêu-cầu-thật"&gt;&lt;/span&gt;
+&lt;a href="#ch%e1%bb%8dn-theo-y%c3%aau-c%e1%ba%a7u-th%e1%ba%adt" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu người dùng xem dashboard mỗi sáng, pipeline mỗi đêm có thể đủ. Nếu fraud decision phải chặn giao dịch trước khi hoàn tất, batch một giờ không đáp ứng được. Đừng chọn Streaming chỉ vì volume lớn: một batch engine vẫn xử lý được data rất lớn. Lý do chính thường là latency và nhu cầu phản ứng liên tục.&lt;/p&gt;
+&lt;p&gt;Nhiều hệ thống dùng cả hai: Streaming cho tín hiệu sớm, Batch để đối soát và sửa lịch sử. Hãy bắt đầu với phương án đơn giản đáp ứng SLA rồi chỉ thêm độ phức tạp khi giá trị của kết quả sớm đủ lớn.&lt;/p&gt;</description></item><item><title>Stream Processing: xử lý data liên tục</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/stream-processing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/stream-processing/</guid><description>
+&lt;p&gt;Mỗi khi order đổi trạng thái, application phát một event. Team vận hành muốn số order đang chờ tài xế được cập nhật trong vài giây.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Stream Processing&lt;/strong&gt; (xử lý luồng data liên tục) đọc một dòng event không có điểm kết thúc đã biết và cập nhật output khi event đến.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Order events&amp;#34;] --&amp;gt; B[&amp;#34;Stream processor&amp;#34;]
+B --&amp;gt; C[&amp;#34;State&amp;lt;br/&amp;gt;Order hiện tại&amp;#34;]
+C --&amp;gt; D[&amp;#34;Output&amp;lt;br/&amp;gt;Số order đang chờ&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Một event có thể là:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;event_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;EV-91&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;order_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;ORD-1042&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;driver_assigned&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;occurred_at&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2026-09-08T12:08:00+08:00&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Event time và processing time&lt;span class="hx:absolute hx:-mt-20" id="event-time-và-processing-time"&gt;&lt;/span&gt;
+&lt;a href="#event-time-v%c3%a0-processing-time" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Event Time&lt;/strong&gt; là lúc sự việc xảy ra. &lt;strong&gt;Processing Time&lt;/strong&gt; là lúc processor nhận và xử lý nó. Mạng chậm có thể khiến event 12:08 đến sau event 12:10.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;event_id&lt;/th&gt;
+&lt;th&gt;occurred_at&lt;/th&gt;
+&lt;th&gt;arrived_at&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;EV-92&lt;/td&gt;
+&lt;td&gt;12:10&lt;/td&gt;
+&lt;td&gt;12:10:02&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;EV-91&lt;/td&gt;
+&lt;td&gt;12:08&lt;/td&gt;
+&lt;td&gt;12:10:05&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Window tính theo Event Time cần chờ một khoảng cho event đến muộn. &lt;strong&gt;Watermark&lt;/strong&gt; là ước lượng rằng phần lớn event trước một mốc đã đến; event muộn hơn chính sách có thể cập nhật kết quả cũ hoặc đi vào nơi xử lý riêng.&lt;/p&gt;
+&lt;h2&gt;State và duplicate&lt;span class="hx:absolute hx:-mt-20" id="state-và-duplicate"&gt;&lt;/span&gt;
+&lt;a href="#state-v%c3%a0-duplicate" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Để đếm order đang chờ, processor phải nhớ trạng thái trước đó. State cần được checkpoint để khôi phục sau lỗi. Event cũng có thể được giao lại, nên &lt;code&gt;event_id&lt;/code&gt; hoặc phép cập nhật idempotent giúp tránh đếm hai lần.&lt;/p&gt;
+&lt;p&gt;Streaming đưa thêm các câu hỏi về ordering, state, replay, late data và capacity liên tục. Nếu output chỉ cần mỗi giờ, Batch thường dễ vận hành hơn. Streaming phù hợp khi giá trị của phản ứng sớm đủ lớn để trả chi phí phức tạp đó.&lt;/p&gt;</description></item><item><title>Theo dõi thay đổi trong Database với CDC</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/change-data-capture/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/change-data-capture/</guid><description>
+&lt;p&gt;Bảng &lt;code&gt;orders&lt;/code&gt; có hàng trăm triệu row. Query lại toàn bảng mỗi năm phút vừa chậm vừa tạo tải lớn, nhưng pipeline vẫn cần biết order nào vừa đổi trạng thái.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Change Data Capture&lt;/strong&gt; (thu thập thay đổi dữ liệu), thường viết là &lt;strong&gt;CDC&lt;/strong&gt;, lấy các thao tác Insert, Update và Delete rồi chuyển chúng đến hệ thống khác.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Application ghi MySQL&amp;#34;] --&amp;gt; B[&amp;#34;Transaction log&amp;#34;]
+B --&amp;gt; C[&amp;#34;CDC connector&amp;#34;]
+C --&amp;gt; D[&amp;#34;Change events&amp;#34;]
+D --&amp;gt; E[&amp;#34;Warehouse hoặc stream processor&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Một update có thể được biểu diễn:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;operation&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;update&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;key&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;order_id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ORD-1042&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;before&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paid&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;after&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;delivered&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Vì sao transaction log hữu ích?&lt;span class="hx:absolute hx:-mt-20" id="vì-sao-transaction-log-hữu-ích"&gt;&lt;/span&gt;
+&lt;a href="#v%c3%ac-sao-transaction-log-h%e1%bb%afu-%c3%adch" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Database đã ghi log để duy trì transaction và phục hồi. Đọc log cho phép bắt cả Delete và nhiều update liên tiếp mà query &lt;code&gt;updated_at&lt;/code&gt; có thể bỏ qua. Nó cũng tránh chạy query quét lớn thường xuyên.&lt;/p&gt;
+&lt;h2&gt;Snapshot rồi mới theo thay đổi&lt;span class="hx:absolute hx:-mt-20" id="snapshot-rồi-mới-theo-thay-đổi"&gt;&lt;/span&gt;
+&lt;a href="#snapshot-r%e1%bb%93i-m%e1%bb%9bi-theo-thay-%c4%91%e1%bb%95i" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;CDC thường bắt đầu bằng snapshot hiện trạng, sau đó tiếp tục từ một vị trí trong log. Nếu vị trí giữa hai bước sai, pipeline có thể tạo khoảng trống hoặc duplicate. Consumer phải lưu offset và xử lý event lặp lại an toàn.&lt;/p&gt;
+&lt;p&gt;Schema thay đổi, log retention quá ngắn, transaction lớn và quyền truy cập là các vấn đề vận hành thật. CDC cũng không tự tạo bảng phân tích: nó sao chép thay đổi gần với Source System; downstream vẫn cần Transformation và Data Quality.&lt;/p&gt;
+&lt;p&gt;Với bảng nhỏ cập nhật theo giờ, query incremental đơn giản có thể tốt hơn. CDC có giá trị khi cần update/delete nhanh, volume thay đổi lớn hoặc muốn giảm query lên database nguồn.&lt;/p&gt;</description></item><item><title>Lưu raw data ở quy mô lớn với Data Lake</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-lake/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/data-lake/</guid><description>
+&lt;p&gt;Công ty muốn giữ log ứng dụng, JSON từ đối tác, ảnh biên nhận và lịch sử order nhiều năm. Đưa mọi thứ vào bảng warehouse có thể đắt hoặc không phù hợp.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Lake&lt;/strong&gt; (hồ dữ liệu) lưu data ở quy mô lớn, thường trên object storage, với nhiều định dạng và mức xử lý khác nhau.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Database, API, logs, files&amp;#34;] --&amp;gt; B[&amp;#34;Data Lake&amp;lt;br/&amp;gt;Object storage&amp;#34;]
+B --&amp;gt; C[&amp;#34;Raw&amp;#34;]
+B --&amp;gt; D[&amp;#34;Cleaned&amp;#34;]
+B --&amp;gt; E[&amp;#34;Curated&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Một layout đơn giản:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/orders/raw/ingest_date=2026-09-08/part-001.json
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/orders/clean/order_date=2026-09-08/part-001.parquet&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Sao chép mã"
+aria-label="Sao chép mã"
+data-copied-label="Đã sao chép!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Data Lake khác Data Warehouse ở đâu?&lt;span class="hx:absolute hx:-mt-20" id="data-lake-khác-data-warehouse-ở-đâu"&gt;&lt;/span&gt;
+&lt;a href="#data-lake-kh%c3%a1c-data-warehouse-%e1%bb%9f-%c4%91%c3%a2u" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Data Lake&lt;/th&gt;
+&lt;th&gt;Data Warehouse&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Lưu file/object nhiều định dạng&lt;/td&gt;
+&lt;td&gt;Tổ chức quanh table để query&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Có thể giữ raw data rẻ&lt;/td&gt;
+&lt;td&gt;Thường phục vụ analytical workload trực tiếp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Schema có thể được áp dụng khi đọc&lt;/td&gt;
+&lt;td&gt;Schema và constraint được quản lý chặt hơn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Cần engine khác để xử lý/query&lt;/td&gt;
+&lt;td&gt;Engine query là phần cốt lõi&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Ranh giới ngày càng mờ vì warehouse đọc object storage và lake có table format. Điều quan trọng là khả năng hệ thống thật, không phải nhãn marketing.&lt;/p&gt;
+&lt;h2&gt;Hồ data có thể thành nơi khó dùng&lt;span class="hx:absolute hx:-mt-20" id="hồ-data-có-thể-thành-nơi-khó-dùng"&gt;&lt;/span&gt;
+&lt;a href="#h%e1%bb%93-data-c%c3%b3-th%e1%bb%83-th%c3%a0nh-n%c6%a1i-kh%c3%b3-d%c3%b9ng" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nếu file không có owner, schema, partition convention hoặc retention, người dùng không biết data nào tin được. Small files làm query chậm; quyền bucket quá rộng làm lộ data; xoá nhầm path có thể phá nhiều bảng.&lt;/p&gt;
+&lt;p&gt;Data Lake phù hợp khi cần giữ raw data lớn, nhiều định dạng, chia sẻ cho nhiều engine hoặc tách compute khỏi storage. Một team chỉ có các bảng phân tích có cấu trúc có thể bắt đầu bằng Data Warehouse đơn giản hơn.&lt;/p&gt;</description></item><item><title>Khi Data Lake cần cách quản lý như Warehouse</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/lakehouse/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/lakehouse/</guid><description>
+&lt;p&gt;Data Lake lưu Parquet rẻ và linh hoạt, nhưng nhiều job cùng sửa file dễ làm người đọc thấy trạng thái dở dang. Team cũng cần Update, Delete, schema evolution và lịch sử snapshot.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lakehouse&lt;/strong&gt; là cách xây khả năng quản lý table kiểu Data Warehouse trên storage của Data Lake, thường bằng object storage, table format và một hay nhiều compute engine.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Object Storage&amp;lt;br/&amp;gt;Parquet files&amp;#34;] --&amp;gt; B[&amp;#34;Table Format&amp;lt;br/&amp;gt;Metadata và snapshots&amp;#34;]
+B --&amp;gt; C[&amp;#34;Compute Engine&amp;#34;]
+C --&amp;gt; D[&amp;#34;SQL, BI, ML&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;Table không chỉ là một thư mục file&lt;span class="hx:absolute hx:-mt-20" id="table-không-chỉ-là-một-thư-mục-file"&gt;&lt;/span&gt;
+&lt;a href="#table-kh%c3%b4ng-ch%e1%bb%89-l%c3%a0-m%e1%bb%99t-th%c6%b0-m%e1%bb%a5c-file" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Table format theo dõi file nào thuộc snapshot hiện tại. Writer tạo file mới rồi commit metadata; reader thấy snapshot trước hoặc sau commit, không thấy nửa chừng.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Khả năng&lt;/th&gt;
+&lt;th&gt;Thư mục Parquet&lt;/th&gt;
+&lt;th&gt;Table được quản lý&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Atomic commit&lt;/td&gt;
+&lt;td&gt;Khó&lt;/td&gt;
+&lt;td&gt;Có cơ chế commit&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Update/Delete&lt;/td&gt;
+&lt;td&gt;Tự viết lại và theo dõi&lt;/td&gt;
+&lt;td&gt;Được table format hỗ trợ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Time travel&lt;/td&gt;
+&lt;td&gt;Không có sẵn&lt;/td&gt;
+&lt;td&gt;Đọc snapshot cũ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Schema evolution&lt;/td&gt;
+&lt;td&gt;Dễ không nhất quán&lt;/td&gt;
+&lt;td&gt;Có rule và metadata&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Lakehouse không phải một sản phẩm duy nhất. Iceberg, Delta Lake và Hudi là table format với thiết kế khác nhau; Spark, Flink hoặc query engine là compute.&lt;/p&gt;
+&lt;h2&gt;Khi nào cần?&lt;span class="hx:absolute hx:-mt-20" id="khi-nào-cần"&gt;&lt;/span&gt;
+&lt;a href="#khi-n%c3%a0o-c%e1%ba%a7n" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Lakehouse hữu ích khi data lớn nằm trên object storage, nhiều workload cần dùng chung table và team cần transaction hoặc snapshot. Nếu warehouse hiện tại đáp ứng chi phí, performance và governance, chuyển kiến trúc chỉ để có tên mới hiếm khi tạo giá trị.&lt;/p&gt;
+&lt;p&gt;Sự linh hoạt cũng mang thêm việc vận hành: compact small files, dọn snapshot cũ, chọn partition, kiểm soát catalog và compatibility giữa engine. Hãy đánh giá những trách nhiệm này cùng lợi ích storage mở.&lt;/p&gt;</description></item><item><title>File Format: chọn giữa CSV, JSON và Parquet</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/file-formats/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/file-formats/</guid><description>
+&lt;p&gt;Cùng một triệu order có thể được lưu bằng CSV, JSON hoặc Parquet. Nội dung business giống nhau, nhưng kích thước và cách engine đọc rất khác.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;File Format&lt;/strong&gt; (định dạng file) quy định data được mã hoá và tổ chức trong một file.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Format&lt;/th&gt;
+&lt;th&gt;Tổ chức&lt;/th&gt;
+&lt;th&gt;Điểm mạnh&lt;/th&gt;
+&lt;th&gt;Hạn chế&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;CSV&lt;/td&gt;
+&lt;td&gt;Text theo row&lt;/td&gt;
+&lt;td&gt;Đơn giản, mở ở nhiều nơi&lt;/td&gt;
+&lt;td&gt;Type và nested data yếu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JSON&lt;/td&gt;
+&lt;td&gt;Text theo object&lt;/td&gt;
+&lt;td&gt;Linh hoạt, nested tự nhiên&lt;/td&gt;
+&lt;td&gt;Lặp tên field, file lớn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Parquet&lt;/td&gt;
+&lt;td&gt;Binary theo column&lt;/td&gt;
+&lt;td&gt;Nén và analytical scan tốt&lt;/td&gt;
+&lt;td&gt;Khó đọc trực tiếp bằng mắt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Row và column&lt;span class="hx:absolute hx:-mt-20" id="row-và-column"&gt;&lt;/span&gt;
+&lt;a href="#row-v%c3%a0-column" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Report chỉ cần &lt;code&gt;restaurant_id&lt;/code&gt; và &lt;code&gt;amount&lt;/code&gt; trong bảng 50 field. CSV thường phải đọc cả row. Parquet tổ chức theo column nên engine có thể bỏ qua các column không dùng.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Query cần 2/50 columns&amp;#34;] --&amp;gt; B{&amp;#34;Format&amp;#34;}
+B --&amp;gt;|CSV hoặc JSON| C[&amp;#34;Đọc gần như toàn file&amp;#34;]
+B --&amp;gt;|Parquet| D[&amp;#34;Đọc column cần thiết&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;p&gt;Parquet còn giữ type và statistics theo nhóm row, giúp bỏ qua phần không phù hợp filter. Đây là lý do nó thường dùng cho analytical storage.&lt;/p&gt;
+&lt;h2&gt;Format không sửa data quality&lt;span class="hx:absolute hx:-mt-20" id="format-không-sửa-data-quality"&gt;&lt;/span&gt;
+&lt;a href="#format-kh%c3%b4ng-s%e1%bb%ada-data-quality" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;CSV có thể chứa dấu phẩy trong text, encoding khác nhau hoặc ngày không thống nhất. JSON linh hoạt nên hai row có thể mang shape khác nhau. Parquet có schema nhưng nhiều file trong cùng dataset vẫn có thể khác schema.&lt;/p&gt;
+&lt;p&gt;CSV phù hợp để trao đổi nhỏ và tương thích rộng. JSON phù hợp event/API có cấu trúc lồng. Parquet phù hợp scan phân tích lớn. Có thể nhận JSON ở ingestion rồi chuyển sang Parquet sau khi làm sạch; không cần ép một format cho mọi giai đoạn.&lt;/p&gt;</description></item><item><title>Table Format: chọn giữa Iceberg, Delta Lake và Hudi</title><link>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/table-formats/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/wiki/data-engineering/table-formats/</guid><description>
+&lt;p&gt;Parquet biết cách lưu column trong một file, nhưng không biết 8.000 file nào tạo thành version hiện tại của bảng &lt;code&gt;orders&lt;/code&gt;. Nó cũng không tự điều phối hai writer đang commit cùng lúc.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Table Format&lt;/strong&gt; (định dạng quản lý table) đặt một lớp metadata trên các data file để theo dõi snapshot, schema, partition và thay đổi của table.&lt;/p&gt;
+&lt;div role="img" aria-label="Sơ đồ"&gt;
+&lt;pre class="mermaid hx:mt-6"&gt;
+flowchart TD
+A[&amp;#34;Catalog&amp;lt;br/&amp;gt;Tìm table&amp;#34;] --&amp;gt; B[&amp;#34;Table metadata&amp;lt;br/&amp;gt;Snapshot hiện tại&amp;#34;]
+B --&amp;gt; C[&amp;#34;Manifest&amp;lt;br/&amp;gt;Danh sách data files&amp;#34;]
+C --&amp;gt; D[&amp;#34;Parquet files&amp;lt;br/&amp;gt;Data thật&amp;#34;]
+&lt;/pre&gt;
+&lt;/div&gt;&lt;h2&gt;File format và table format làm hai việc&lt;span class="hx:absolute hx:-mt-20" id="file-format-và-table-format-làm-hai-việc"&gt;&lt;/span&gt;
+&lt;a href="#file-format-v%c3%a0-table-format-l%c3%a0m-hai-vi%e1%bb%87c" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Câu hỏi&lt;/th&gt;
+&lt;th&gt;File format&lt;/th&gt;
+&lt;th&gt;Table format&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Giá trị trong một file được mã hoá ra sao?&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;File nào thuộc table hiện tại?&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Snapshot trước gồm file nào?&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Commit đồng thời xử lý ra sao?&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Column được nén thế nào?&lt;/td&gt;
+&lt;td&gt;Có&lt;/td&gt;
+&lt;td&gt;Không&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Iceberg, Delta Lake và Hudi đều giải quyết nhóm vấn đề này nhưng khác protocol, catalog integration, engine support và cách tối ưu update.&lt;/p&gt;
+&lt;h2&gt;Cách chọn&lt;span class="hx:absolute hx:-mt-20" id="cách-chọn"&gt;&lt;/span&gt;
+&lt;a href="#c%c3%a1ch-ch%e1%bb%8dn" class="subheading-anchor" aria-label="Liên kết cố định đến phần này"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Đừng chọn từ bảng feature chung chung. Hãy kiểm tra:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Compute engine đang dùng hỗ trợ read/write đến mức nào?&lt;/li&gt;
+&lt;li&gt;Catalog và cloud environment tích hợp ra sao?&lt;/li&gt;
+&lt;li&gt;Workload chủ yếu append, update từ CDC hay streaming upsert?&lt;/li&gt;
+&lt;li&gt;Team có vận hành compaction và cleanup được không?&lt;/li&gt;
+&lt;li&gt;Tool khác có đọc đúng version và feature đang bật không?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Table format đem transaction, schema evolution và time travel đến object storage, nhưng không tự tạo Data Quality, governance hay data model tốt. Một thư mục Parquet append-only nhỏ có thể chưa cần nó. Khi nhiều writer, update/delete và lịch sử snapshot trở thành yêu cầu thật, lớp metadata này bắt đầu có giá trị.&lt;/p&gt;</description></item></channel></rss>

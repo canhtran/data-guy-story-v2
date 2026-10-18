@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://canhtran.github.io/data-guy-story-v2/pr-preview/pr-15/sitemap.xml
