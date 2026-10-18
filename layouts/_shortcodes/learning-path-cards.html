@@ -3,10 +3,9 @@
     {{ $item := . }}
     {{ with site.GetPage $item.page }}
       <a class="dgs-path-card" href="{{ .RelPermalink }}" aria-label="Xem chi tiết lộ trình {{ $item.title }}">
-        <span class="dgs-status">{{ $item.status }}</span>
         <strong class="dgs-path-title">{{ $item.title }}</strong>
         <span class="dgs-card-audience">{{ $item.audience }}</span>
-        <span>{{ $item.outcome }}</span>
+        {{ with $item.outcome }}<span>{{ . }}</span>{{ end }}
         <span class="dgs-card-project"><strong>Dự án dẫn đường:</strong> {{ $item.project }}</span>
         <span class="dgs-route-link">Xem chi tiết <span aria-hidden="true">→</span></span>
       </a>
