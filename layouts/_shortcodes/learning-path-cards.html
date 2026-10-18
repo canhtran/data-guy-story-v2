@@ -1,13 +1,13 @@
 <div class="dgs-path-grid">
-  {{ range hugo.Data.learning_paths }}
-    {{ $item := . }}
+  {{ range $i, $item := hugo.Data.learning_paths }}
     {{ with site.GetPage $item.page }}
       <a class="dgs-path-card" href="{{ .RelPermalink }}" aria-label="Xem chi tiết lộ trình {{ $item.title }}">
+        <span class="dgs-path-number">{{ printf "%02d" (add $i 1) }}</span>
         <strong class="dgs-path-title">{{ $item.title }}</strong>
         <span class="dgs-card-audience">{{ $item.audience }}</span>
         {{ with $item.outcome }}<span>{{ . }}</span>{{ end }}
-        <span class="dgs-card-project"><strong>Project:</strong> {{ $item.project }}</span>
-        <span class="dgs-route-link">Xem chi tiết <span aria-hidden="true">→</span></span>
+        <span class="dgs-card-project"><span class="dgs-project-label">PROJECT</span><span class="dgs-project-name">{{ $item.project }}</span></span>
+        <span class="dgs-route-link">View learning path <span aria-hidden="true">→</span></span>
       </a>
     {{ end }}
   {{ end }}
