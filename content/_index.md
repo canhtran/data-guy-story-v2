@@ -18,7 +18,7 @@ toc: false
   </div>
   <div class="dgs-route-grid" aria-label="Hai cách bắt đầu">
     <a class="dgs-route" href="learning-paths/"><span class="dgs-route-kicker">HỌC QUA DỰ ÁN</span><strong>Lộ trình học</strong><span>5 lộ trình từ nền tảng đến nâng cao, giúp bạn từng bước học Data Engineering. Nội dung được thiết kế AI-friendly để bạn có thể học, thực hành và giải đáp thắc mắc cùng AI.</span><span class="dgs-route-link">Xem các lộ trình →</span></a>
-    <a class="dgs-route" href="wiki/"><span class="dgs-route-kicker">ĐỌC VÀ TRA CỨU</span><strong>Wiki</strong><span>Đây là sổ tay làm việc của mình, mở công khai cho bạn đọc. 92 bài — SQL, database, data modeling, Kafka, Flink, Spark, dbt, DuckDB… — là những gì mình ghi lại trong lúc đi làm. Nó chưa xong đâu: gặp cái mới mình viết thêm, thấy mình hiểu sai mình sửa lại.</span><span class="dgs-route-link">Mở Wiki →</span></a>
+    <a class="dgs-route" href="wiki/"><span class="dgs-route-kicker">ĐỌC VÀ TRA CỨU</span><strong>Wiki</strong><span>Thư viện kiến thức cá nhân của mình, được tích lũy và hệ thống hóa qua quá trình học hỏi, làm việc và giải quyết các bài toán thực tế trong Data Engineering.</span><span class="dgs-route-link">Mở Wiki →</span></a>
   </div>
   <div class="dgs-home-bottom">
     <p><strong>Chuyện thực tế</strong><br>Các công ty lớn xây hệ thống data như thế nào, và khi hệ thống sập thì họ học được gì? Mình đọc engineering blog của họ, tóm tắt lại bằng tiếng Việt, và luôn để link bài gốc — muốn kiểm chứng, bạn cứ bấm vào mà đọc. <a href="stories/">Đọc thử một chuyện →</a></p>
