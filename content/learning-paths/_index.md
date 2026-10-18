@@ -21,7 +21,7 @@ Nếu mới học Data Engineering, hãy bắt đầu từ Nhập môn. Nếu đ
 
 {{< learning-path-cards >}}
 
-Trong lúc chờ bài học, bạn có thể ghé [Wiki]({{< relref "/wiki/_index.md" >}}) để đọc về chủ đề mình đang quan tâm.
+Hoặc, bạn có thể ghé [Wiki]({{< relref "/wiki/_index.md" >}}) để đọc về chủ đề mình đang quan tâm.
 
 ## Học cùng AI
 
