@@ -13,7 +13,7 @@ contentType: hub
 
 Bạn sẽ tự cài và chạy các công cụ trên máy. Mình sẽ hướng dẫn cách kiểm tra kết quả và tìm lỗi khi có vấn đề. Có thể dùng AI để hỏi thêm, nhưng kết quả vẫn cần tự kiểm tra.
 
-<div class="dgs-free-note">Các bài học và công cụ đều miễn phí. Bạn không cần thuê cloud để làm theo hướng dẫn.</div>
+<div class="dgs-free-note">Các bài học và công cụ đều hoàn toàn miễn phí nhé</div>
 
 ## Bạn muốn bắt đầu từ đâu?
 
@@ -25,6 +25,6 @@ Hoặc, bạn có thể ghé [Wiki]({{< relref "/wiki/_index.md" >}}) để đ�
 
 ## Học cùng AI
 
-Bạn có thể đưa tài liệu vào NotebookLM rồi hỏi về những phần chưa hiểu. Mình có để hướng dẫn bắt đầu ở đây.
+Mình cũng đã setup để các bạn có thể dễ dàng tận dụng AI
 
 [Đọc cách thêm link và bắt đầu buổi học]({{< relref "/learning-paths/hoc-cung-notebooklm.md" >}})
