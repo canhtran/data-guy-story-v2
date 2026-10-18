@@ -1,6 +1,11 @@
-# Deploy a preview of each pull request to the gh-pages branch under
-# pr-preview/pr-<number>/ and leave a sticky comment on the PR with the
-# preview link. The preview is removed automatically when the PR closes.
+# Deploy a preview of each pull request and leave a sticky comment on the
+# PR with the preview link. The preview is removed automatically when the
+# PR closes.
+#
+# The site is built from the pull request's own branch (its head commit,
+# checked out explicitly below — not the default synthetic merge commit).
+# The gh-pages branch is only where the finished preview is published,
+# under pr-preview/pr-<number>/, because GitHub Pages serves one branch.
 # Docs: https://github.com/rossjrw/pr-preview-action
 name: Deploy PR previews
 
@@ -25,10 +30,20 @@ jobs:
     env:
       HUGO_VERSION: 0.156.0
     steps:
-      - name: Checkout
+      - name: Checkout PR branch
+        if: github.event.action != 'closed'
         uses: actions/checkout@v4
         with:
+          # Build the PR branch itself (its head commit), not the
+          # synthetic merge commit actions/checkout uses by default.
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0  # fetch all history for .GitInfo and .Lastmod
+          submodules: recursive
+      - name: Checkout repository (for preview removal)
+        if: github.event.action == 'closed'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
           submodules: recursive
       - name: Setup Go
         if: github.event.action != 'closed'  # no build needed when removing a preview
