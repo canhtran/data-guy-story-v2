@@ -24,6 +24,8 @@
 .dgs-button { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 2.9rem; padding: .7rem 1.1rem; border-radius: .65rem; font-weight: 700; text-decoration: none !important; }
 .dgs-button-primary { background: var(--dgs-accent-strong); color: #fff !important; }
 .dgs-button-secondary { color: var(--dgs-accent-strong) !important; border: 1px solid var(--dgs-border); background: var(--dgs-card); }
+.dgs-text-link { display: inline-flex; align-items: center; gap: .35rem; min-height: 2.9rem; padding: .7rem .2rem; font-weight: 650; color: var(--dgs-accent-strong); text-decoration: none !important; }
+.dgs-text-link:hover { text-decoration: underline !important; text-underline-offset: .25rem; }
 .dark .dgs-button-primary { background: #54c8b5; color: #092b2d !important; }
 .dgs-route-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .dgs-route { display: flex; flex-direction: column; gap: .75rem; min-height: 15rem; padding: clamp(1.2rem, 2vw, 2rem); border: 1px solid var(--dgs-border); border-radius: 1rem; background: var(--dgs-surface); color: var(--dgs-muted) !important; text-decoration: none !important; }
