@@ -35,7 +35,7 @@ Một vài nguyên tắc bạn có thể áp dụng:
 - AI có thể đưa ra hướng xử lý không phù hợp hoặc thông tin đã cũ. Hãy đối chiếu với tài liệu gốc và kết quả chạy thực tế, đừng mặc định rằng câu trả lời nào cũng đúng.
 
 <div class="dgs-callout">
-  <p class="dgs-callout-title">AI hướng dẫn, bạn là người thực hiện</p>
+  <p class="dgs-callout-title">💡 AI hướng dẫn, bạn là người thực hiện</p>
   <p>AI có thể giúp bạn hiểu vấn đề, tìm nguyên nhân và sửa lỗi, nhưng bạn nên tự viết code và hiểu những gì mình triển khai. Đó mới là cách để kiến thức ở lại với bạn sau khi hoàn thành một bài học.</p>
 </div>
 
