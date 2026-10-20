@@ -4,6 +4,8 @@ description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
 draft: false
 contentType: "hub"
 weight: 1
+sidebar:
+  hide: true
 cascade:
   type: docs
 ---
