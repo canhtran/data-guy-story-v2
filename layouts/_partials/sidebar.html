@@ -47,7 +47,17 @@
   <div class="hextra-scrollbar hx:overflow-y-auto hx:overflow-x-hidden hx:p-4 hx:grow hx:md:h-[calc(100vh-var(--navbar-height)-var(--menu-height))]">
     <ul class="hx:flex hx:flex-col hx:gap-1 hx:md:hidden">
       <!-- Nav -->
+      {{- if and $scopedWiki (ne $context $wiki) }}
+      {{/* Wiki section/article pages: the mobile menu shows the same single
+           contextual group tree as the desktop sidebar, not the global
+           site tree (which would render every Wiki article a second time). */}}
+      <li><a class="dgs-mobile-wiki-link" href="{{ $wiki.RelPermalink }}">Tất cả Wiki</a></li>
+      {{/* No "toc" flag here: in this theme toc=true at level 0 forces the
+           global main-menu tree regardless of the context passed. */}}
+      {{ template "sidebar-main" (dict "context" $navRoot "pageURL" $pageURL "page" $context) -}}
+      {{- else }}
       {{ template "sidebar-main" (dict "context" site.Home "pageURL" $pageURL "page" $context "toc" true) -}}
+      {{- end }}
       {{ template "sidebar-footer" }}
     </ul>
 
