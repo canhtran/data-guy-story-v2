@@ -14,6 +14,8 @@ Chào bạn,
 
 Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng giải thích theo cách mà ngày trước mình cũng muốn được nghe. Chỗ nào cần giữ tiếng Anh thì mình vẫn giữ, vì trước sau gì đi làm cũng gặp.
 
+{{< wiki-categories >}}
+
 ## Bạn đang ở đâu?
 
 ### Mới tìm hiểu Data Engineering
