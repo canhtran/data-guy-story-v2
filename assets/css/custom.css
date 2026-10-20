@@ -94,6 +94,15 @@
 .hextra-sidebar-item[data-active="true"] > a { background: var(--dgs-surface); color: var(--dgs-accent-strong); box-shadow: inset 3px 0 var(--dgs-accent); font-weight: 700; }
 .hextra-sidebar-item > a:focus-visible, .dgs-sidebar-heading a:focus-visible { outline: 2px solid var(--dgs-accent); outline-offset: 2px; }
 @media (max-width: 767px) { .dgs-sidebar-heading { display: none; } }
+/* Smooth, short expand/collapse for sidebar groups: Hextra toggles height
+   instantly (h-0 to h-auto), which makes the content below jump. Animate the
+   children wrapper's grid row instead; no layout properties are animated. */
+.hextra-sidebar-container li > .hextra-sidebar-children { display: grid; grid-template-rows: 0fr; height: auto; transition: grid-template-rows .16s ease, padding-top .16s ease; }
+.hextra-sidebar-container li.open > .hextra-sidebar-children { grid-template-rows: 1fr; }
+.hextra-sidebar-container li > .hextra-sidebar-children > ul { min-height: 0; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .hextra-sidebar-container li > .hextra-sidebar-children { transition: none; }
+}
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
