@@ -111,6 +111,7 @@
 .dgs-wiki-footer a:hover { text-decoration: underline; }
 .dgs-wiki-footer a:focus-visible { outline: 2px solid var(--dgs-accent); outline-offset: 2px; }
 .dgs-wiki-footer span { font-size: .8rem; color: var(--dgs-muted); }
+.dgs-mobile-wiki-link { display: block; padding: .45rem .5rem; border-radius: .375rem; font-size: .875rem; font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
 @media (min-width: 768px) {
   .hextra-sidebar-container.dgs-has-wiki-footer .hextra-scrollbar { height: calc(100vh - var(--navbar-height) - var(--menu-height) - 4.1rem); }
 }
