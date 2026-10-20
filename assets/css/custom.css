@@ -103,6 +103,26 @@
 @media (prefers-reduced-motion: reduce) {
   .hextra-sidebar-container li > .hextra-sidebar-children { transition: none; }
 }
+/* Wiki navigation redesign: persistent "Tất cả Wiki" footer row in the
+   sidebar (the nav list keeps its own scroll area above it) and the
+   category cards on the Wiki landing page. */
+.dgs-wiki-footer { display: flex; flex-direction: column; gap: .15rem; margin: 0 1rem; padding: .75rem .25rem; border-top: 1px solid var(--dgs-border); }
+.dgs-wiki-footer a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-footer a:hover { text-decoration: underline; }
+.dgs-wiki-footer a:focus-visible { outline: 2px solid var(--dgs-accent); outline-offset: 2px; }
+.dgs-wiki-footer span { font-size: .8rem; color: var(--dgs-muted); }
+.dgs-mobile-wiki-link { display: block; padding: .45rem .5rem; border-radius: .375rem; font-size: .875rem; font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+@media (min-width: 768px) {
+  .hextra-sidebar-container.dgs-has-wiki-footer .hextra-scrollbar { height: calc(100vh - var(--navbar-height) - var(--menu-height) - 4.1rem); }
+}
+.dgs-wiki-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.dgs-wiki-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.2rem 1.3rem; border: 1px solid var(--dgs-border); border-radius: 1rem; background: var(--dgs-surface); color: var(--dgs-muted) !important; text-decoration: none !important; }
+.dgs-wiki-card:hover { border-color: var(--dgs-accent); }
+.dgs-wiki-card:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-card-desc { line-height: 1.55; }
+.dgs-wiki-card-arrow { margin-top: auto; color: var(--dgs-accent-strong); font-weight: 700; }
+@media (max-width: 680px) { .dgs-wiki-grid { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
