@@ -9,13 +9,18 @@
 {{/* IsAncestor is false for the Wiki landing page itself, so include it explicitly:
      it should get the same scoped sidebar as every other Wiki page. */}}
 {{- $scopedWiki := and $wiki (or ($wiki.IsAncestor $context) (eq $context $wiki)) -}}
-{{- if $scopedWiki -}}
-  {{- if $context.IsSection -}}
-    {{- $navRoot = $context -}}
-  {{- else -}}
-    {{- $navRoot = $context.Parent -}}
+{{/* The Wiki sidebar tree is always rooted at the top-level Wiki group that
+     contains the current page (a direct child section of /wiki), so every
+     page in the same group renders the identical tree; only the open/active
+     state varies. The Wiki landing page keeps the full Wiki tree. */}}
+{{- if and $scopedWiki (ne $context $wiki) -}}
+  {{- range $wiki.Sections -}}
+    {{- if or (eq $context .) (.IsAncestor $context) -}}
+      {{- $navRoot = . -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
+{{- $showWikiFooter := and $scopedWiki (ne $context $wiki) -}}
 {{- $pageURL := $context.RelPermalink -}}
 
 {{- if .context.Params.sidebar.hide -}}
@@ -32,7 +37,7 @@
   {{- end -}}
 {{- end -}}
 
-<aside class="hextra-sidebar-container hx:flex hx:flex-col hx:print:hidden hx:md:top-16 hx:md:shrink-0 hx:md:w-64 hx:md:self-start hx:max-md:[transform:translate3d(0,-100%,0)] {{ $sidebarClass }}">
+<aside class="hextra-sidebar-container{{ if $showWikiFooter }} dgs-has-wiki-footer{{ end }} hx:flex hx:flex-col hx:print:hidden hx:md:top-16 hx:md:shrink-0 hx:md:w-64 hx:md:self-start hx:max-md:[transform:translate3d(0,-100%,0)] {{ $sidebarClass }}">
   {{- if (site.Params.search.enable | default true) -}}
     <!-- Search bar on small screen -->
     <div class="hx:px-4 hx:pt-4 hx:md:hidden">
@@ -65,6 +70,12 @@
       </ul>
     {{ end -}}
   </div>
+  {{- if $showWikiFooter }}
+  <div class="dgs-wiki-footer hx:max-md:hidden">
+    <a href="{{ $wiki.RelPermalink }}">Tất cả Wiki</a>
+    <span>Khám phá các nhóm kiến thức khác</span>
+  </div>
+  {{- end }}
   {{/* Hide theme switch when sidebar is disabled */}}
   {{ $switchesClass := cond $disableSidebar "hx:md:hidden" "" -}}
   {{ $displayThemeToggle := (site.Params.theme.displayToggle | default true) -}}
@@ -189,7 +200,7 @@
               {{- $shouldOpen := or ($item.Params.sidebar.open) ($item.IsAncestor $page) $active | default true }}
               <li class="{{ if $shouldOpen }}open{{ end }}">
                 {{- template "sidebar-item-link" dict "context" $item "active" $active "open" $shouldOpen "title" (index $entry "title") "link" $item.RelPermalink -}}
-                {{- if and $toc $active (ne $item.Params.toc false) -}}
+                {{- if and $toc $active (ne $item.Params.toc false) (ne $item.Section "wiki") -}}
                   {{- template "sidebar-toc" dict "page" $item -}}
                 {{- end -}}
                 {{- template "sidebar-tree" dict "context" $item "page" $page "pageURL" $pageURL "level" (add $level 1) "toc" $toc -}}
@@ -232,7 +243,7 @@
             <li class="{{ if $shouldOpen }}open{{ end }}">
               {{- $linkTitle := partial "utils/title" . -}}
               {{- template "sidebar-item-link" dict "context" . "active" $active "open" $shouldOpen "title" $linkTitle "link" .RelPermalink -}}
-              {{- if and $toc $active (ne .Params.toc false) -}}
+              {{- if and $toc $active (ne .Params.toc false) (ne .Section "wiki") -}}
                 {{- template "sidebar-toc" dict "page" . -}}
               {{- end -}}
               {{- template "sidebar-tree" dict "context" . "page" $page "pageURL" $pageURL "level" (add $level 1) "toc" $toc -}}
@@ -249,7 +260,7 @@
             {{- $linkTitle := partial "utils/title" . -}}
             <li class="hx:flex hx:flex-col {{ if $shouldOpen }}open{{ end }}">
               {{- template "sidebar-item-link" dict "context" . "active" $active "open" $shouldOpen "title" $linkTitle "link" .RelPermalink -}}
-              {{- if and $toc $active (ne .Params.toc false) -}}
+              {{- if and $toc $active (ne .Params.toc false) (ne .Section "wiki") -}}
                 {{ template "sidebar-toc" dict "page" . }}
               {{- end }}
               {{ template "sidebar-tree" dict "context" . "page" $page "pageURL" $pageURL "level" (add $level 1) "toc" $toc }}
