@@ -4,6 +4,8 @@ description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
 draft: false
 contentType: "hub"
 weight: 1
+sidebar:
+  hide: true
 cascade:
   type: docs
 ---
@@ -13,6 +15,8 @@ Chào bạn,
 Đây là chỗ mình ghi lại những thứ đã học được trong quá trình làm Data Engineer. Có thứ rất căn bản như SQL, database. Có thứ đi làm vài năm rồi mình vẫn phải mở tài liệu ra đọc lại, như checkpoint, transaction hay mấy kiểu join của Spark.
 
 Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng giải thích theo cách mà ngày trước mình cũng muốn được nghe. Chỗ nào cần giữ tiếng Anh thì mình vẫn giữ, vì trước sau gì đi làm cũng gặp.
+
+{{< wiki-categories >}}
 
 ## Bạn đang ở đâu?
 

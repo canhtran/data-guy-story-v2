@@ -2,3 +2,11 @@
   <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" />
 {{- end }}
 <link rel="describedby" href="{{ "llms.txt" | absURL }}" type="text/plain" />
+{{- /* Wiki reading width: constrain article prose on Wiki section and
+     article pages (not the landing page, whose card grid stays wide). */ -}}
+{{- $wikiPage := site.GetPage "/wiki" -}}
+{{- if and $wikiPage (eq .Section "wiki") (ne .RelPermalink $wikiPage.RelPermalink) }}
+<style>
+  main#content .content { max-width: 52rem; }
+</style>
+{{- end }}
