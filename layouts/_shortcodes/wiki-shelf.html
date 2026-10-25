@@ -1,0 +1,21 @@
+{{/* One Wiki library shelf on the landing page: a group header with its
+     computed article count, the group's existing description, the group's
+     immediate children (subsections with their own counts, then up to six
+     direct articles by curated order), and the link to the group index.
+     Counts come from the actual content, so they stay correct as the
+     Wiki grows; nothing here is hand-written copy except the description
+     and link text passed in by the landing page. */}}
+{{- $section := site.GetPage (.Get "section") -}}
+<section class="dgs-wiki-shelf">
+  <h3 class="dgs-wiki-shelf-title">{{ .Get "emoji" }} {{ $section.Title }} <span class="dgs-wiki-shelf-count">{{ len $section.RegularPagesRecursive }} bài viết</span></h3>
+  <p class="dgs-wiki-shelf-desc">{{ .Get "description" }}</p>
+  <ul class="dgs-wiki-shelf-links">
+    {{- range $section.Sections }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a><span>{{ len .RegularPagesRecursive }} bài viết</span></li>
+    {{- end }}
+    {{- range first 6 $section.RegularPages }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{- end }}
+  </ul>
+  <p class="dgs-wiki-shelf-more"><a href="{{ $section.RelPermalink }}">{{ .Get "linkText" }}</a></p>
+</section>

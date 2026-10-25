@@ -178,7 +178,7 @@ main.dgs-notes-main .content p { line-height: 1.8; }
 }
 /* Wiki landing beginner callout: compact horizontal band on a pale teal
    surface with a thin teal left border, not a card. */
-.dgs-wiki-beginner { display: flex; align-items: center; gap: 1.5rem; margin: 1.25rem 0 2.5rem; padding: 1rem 1.25rem; background: var(--dgs-surface); border: 1px solid var(--dgs-border); border-left: 3px solid var(--dgs-accent); border-radius: .7rem; }
+.dgs-wiki-beginner { display: flex; align-items: center; gap: 1.5rem; max-width: 52rem; margin: 1.25rem 0 2.5rem; padding: 1rem 1.25rem; background: var(--dgs-surface); border: 1px solid var(--dgs-border); border-left: 3px solid var(--dgs-accent); border-radius: .7rem; }
 .dgs-wiki-beginner-text { flex: 1 1 auto; min-width: 0; }
 .dgs-wiki-beginner-label { display: block; margin-bottom: .25rem; font-size: .8rem; font-weight: 750; color: var(--dgs-accent); }
 .dgs-wiki-beginner-title { margin: 0 0 .25rem; font-size: 1.125rem; font-weight: 750; line-height: 1.3; color: var(--dgs-ink); }
@@ -191,25 +191,35 @@ main.dgs-notes-main .content p { line-height: 1.8; }
 @media (max-width: 680px) {
   .dgs-wiki-beginner { flex-direction: column; align-items: flex-start; gap: .6rem; }
 }
-/* Wiki landing directory: three group panels in a grid, index link
-   pinned to each panel's bottom. */
-.dgs-wiki-dir-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0 2.5rem; align-items: stretch; }
-.dgs-wiki-dir-group { display: flex; flex-direction: column; gap: .6rem; min-width: 0; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-radius: .9rem; background: var(--dgs-card); }
-.dgs-wiki-dir-group > h3 { margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
-.dgs-wiki-dir-group > p { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
-.dgs-wiki-dir-group > ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .4rem; color: var(--dgs-muted); line-height: 1.6; }
-.dgs-wiki-dir-group > ul strong { color: var(--dgs-ink); }
-.dgs-wiki-dir-group > p:last-child { margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--dgs-border); }
-.dgs-wiki-dir-group > p:last-child a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
-.dgs-wiki-dir-group > p:last-child a:hover { text-decoration: underline; }
-.dgs-wiki-dir-group > p:last-child a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-wiki-dir-group > p:last-child a::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
-.dgs-wiki-dir-group > p:last-child a:hover::after { transform: translateX(3px); }
+/* Wiki landing library: stacked shelf sections, not cards. Each group is
+   a hairline-separated section with a header (name + computed article
+   count), its existing description, a compact two-column index of its
+   immediate children, and the link to the group index. Deliberately
+   unlike Learning Paths: no large numbers, no top border, no sequence,
+   no progression motif — this is browsing, not a journey. The 52rem
+   cap aligns shelves with the intro prose and the beginner callout. */
+.dgs-wiki-shelf { max-width: 52rem; border-top: 1px solid var(--dgs-border); padding: 2rem 0; }
+.dgs-wiki-shelf:last-of-type { border-bottom: 1px solid var(--dgs-border); margin-bottom: 2.5rem; }
+.dgs-wiki-shelf-title { margin: 0 0 .5rem; font-size: 1.35rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-shelf-count { margin-left: .5rem; font-size: .9rem; font-weight: 600; color: var(--dgs-muted); }
+.dgs-wiki-shelf-desc { margin: 0 0 1.25rem; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-shelf-links { margin: 0 0 1.25rem; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 2rem; }
+.dgs-wiki-shelf-links li { display: flex; justify-content: space-between; gap: 1rem; min-width: 0; }
+.dgs-wiki-shelf-links a { color: var(--dgs-ink); text-decoration: none; overflow-wrap: break-word; }
+.dgs-wiki-shelf-links a:hover { color: var(--dgs-accent-strong); text-decoration: underline; }
+.dgs-wiki-shelf-links a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-shelf-links span { flex-shrink: 0; color: var(--dgs-muted); font-size: .85rem; }
+.dgs-wiki-shelf-more { margin: 0; }
+.dgs-wiki-shelf-more a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-shelf-more a:hover { text-decoration: underline; }
+.dgs-wiki-shelf-more a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-shelf-more a::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
+.dgs-wiki-shelf-more a:hover::after { transform: translateX(3px); }
 @media (prefers-reduced-motion: reduce) {
-  .dgs-wiki-beginner-link::after, .dgs-wiki-dir-group > p:last-child a::after { transition: none; }
-  .dgs-wiki-beginner-link:hover::after, .dgs-wiki-dir-group > p:last-child a:hover::after { transform: none; }
+  .dgs-wiki-beginner-link::after, .dgs-wiki-shelf-more a::after { transition: none; }
+  .dgs-wiki-beginner-link:hover::after, .dgs-wiki-shelf-more a:hover::after { transform: none; }
 }
-@media (max-width: 900px) { .dgs-wiki-dir-grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .dgs-wiki-shelf-links { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }

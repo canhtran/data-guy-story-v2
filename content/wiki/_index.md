@@ -21,29 +21,9 @@ Từ SQL, cơ sở dữ liệu đến Spark, Flink hay những khái niệm như
 
 ## Khám phá thư viện
 
-{{< wiki-directory >}}
-{{% wiki-group %}}
-### 📚 Nền tảng
-
-SQL, Python, cơ sở dữ liệu, mô hình hóa dữ liệu và hệ thống phân tán.
-
-[Xem kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
-{{% /wiki-group %}}
-{{% wiki-group %}}
-### ⚙️ Data Engineering
-
-Các kiến thức, khái niệm và bài toán trong công việc Data Engineer.
-
-[Xem kiến thức Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
-{{% /wiki-group %}}
-{{% wiki-group %}}
-### 🧰 Công nghệ
-
-Kiến thức về các công cụ và hệ thống như Spark, Flink, Kafka và DuckDB.
-
-[Xem kiến thức theo công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
-{{% /wiki-group %}}
-{{< /wiki-directory >}}
+{{< wiki-shelf section="/wiki/nen-tang" emoji="📚" description="SQL, Python, cơ sở dữ liệu, mô hình hóa dữ liệu và hệ thống phân tán." linkText="Xem kiến thức nền tảng" >}}
+{{< wiki-shelf section="/wiki/data-engineering" emoji="⚙️" description="Các kiến thức, khái niệm và bài toán trong công việc Data Engineer." linkText="Xem kiến thức Data Engineering" >}}
+{{< wiki-shelf section="/wiki/technologies" emoji="🧰" description="Kiến thức về các công cụ và hệ thống như Spark, Flink, Kafka và DuckDB." linkText="Xem kiến thức theo công nghệ" >}}
 
 ## Chuyện cái Sổ tay này
 
