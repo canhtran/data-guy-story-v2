@@ -1,5 +1,6 @@
 ---
-title: "Wiki"
+title: "Wiki Data Engineering"
+linkTitle: "Wiki"
 description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
 draft: false
 contentType: "hub"
@@ -10,11 +11,9 @@ cascade:
   type: docs
 ---
 
-Chào bạn,
+Đây là nơi mình ghi lại những kiến thức về Data Engineering mà mình học được và thường phải tra cứu trong công việc.
 
-Đây là chỗ mình ghi lại những thứ đã học được trong quá trình làm Data Engineer. Có thứ rất căn bản như SQL, database. Có thứ đi làm vài năm rồi mình vẫn phải mở tài liệu ra đọc lại, như checkpoint, transaction hay mấy kiểu join của Spark.
-
-Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng giải thích theo cách mà ngày trước mình cũng muốn được nghe. Chỗ nào cần giữ tiếng Anh thì mình vẫn giữ, vì trước sau gì đi làm cũng gặp.
+Từ SQL, cơ sở dữ liệu đến Spark, Flink hay những khái niệm như checkpoint và transaction. Mình viết lại bằng tiếng Việt để dễ đọc, dễ hiểu và tiện xem lại khi cần.
 
 ## Bạn đang ở đâu?
 
@@ -22,29 +21,27 @@ Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng 
 
 ## Khám phá thư viện
 
-Bạn có thể duyệt theo chủ đề hoặc công nghệ để tìm đúng bài cần đọc.
-
 {{< wiki-directory >}}
 {{% wiki-group %}}
 ### 📚 Nền tảng
 
-SQL, Python, cơ sở dữ liệu, mô hình hóa và hệ thống phân tán.
+SQL, Python, cơ sở dữ liệu, mô hình hóa dữ liệu và hệ thống phân tán.
 
-[Khám phá kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
+[Xem kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
 ### ⚙️ Data Engineering
 
-Data pipeline, ingestion, storage, chất lượng dữ liệu và vận hành.
+Các kiến thức, khái niệm và bài toán trong công việc Data Engineer.
 
-[Khám phá cách xây dựng data pipeline]({{< relref "/wiki/data-engineering/_index.md" >}})
+[Xem kiến thức Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
 ### 🧰 Công nghệ
 
-Các bài viết về Spark, Flink, Kafka, DuckDB và những công cụ dữ liệu.
+Kiến thức về các công cụ và hệ thống như Spark, Flink, Kafka và DuckDB.
 
-[Khám phá các công cụ dữ liệu]({{< relref "/wiki/technologies/_index.md" >}})
+[Xem kiến thức theo công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
 {{% /wiki-group %}}
 {{< /wiki-directory >}}
 
