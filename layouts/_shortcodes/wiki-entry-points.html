@@ -1,37 +1,13 @@
-{{/* Three intent-based entry points for the Wiki landing page, replacing
-     the old text-heavy "Bạn đang ở đâu?" section. Destinations and the
-     Bắt đầu description come from the sections' own pages, so routes and
-     labels stay in sync with the content structure. Cards are articles
-     with real links inside (the lookup card needs two destinations), not
-     whole-card links, so no nested links are created. */}}
+{{/* Single new-reader entry point for the Wiki landing page. The directory
+     below ("Khám phá theo chủ đề") already covers foundations and lookup,
+     so this section keeps only the Bắt đầu card, as one compact horizontal
+     callout instead of a three-card grid. Destination and description come
+     from the section's own page, so route and label stay in sync. */}}
 {{- $batDau := site.GetPage "/wiki/bat-dau" -}}
-{{- $nenTang := site.GetPage "/wiki/nen-tang" -}}
-{{- $dataEng := site.GetPage "/wiki/data-engineering" -}}
-{{- $tech := site.GetPage "/wiki/technologies" -}}
-<div class="dgs-wiki-entry-grid">
-  <article class="dgs-wiki-entry-card">
-    <span class="dgs-wiki-entry-number">01</span>
-    <h3 class="dgs-wiki-entry-title">Mới tìm hiểu Data Engineering</h3>
-    <p class="dgs-wiki-entry-desc">{{ $batDau.Description }}</p>
-    <div class="dgs-wiki-entry-links">
-      <a href="{{ $batDau.RelPermalink }}">{{ $batDau.Title }}</a>
-    </div>
-  </article>
-  <article class="dgs-wiki-entry-card">
-    <span class="dgs-wiki-entry-number">02</span>
-    <h3 class="dgs-wiki-entry-title">Đang học nền tảng</h3>
-    <p class="dgs-wiki-entry-desc">SQL, Python, cơ sở dữ liệu, mô hình hóa dữ liệu và hệ thống phân tán — những kiến thức giúp mình hiểu và kiểm chứng việc các công cụ đang làm.</p>
-    <div class="dgs-wiki-entry-links">
-      <a href="{{ $nenTang.RelPermalink }}">{{ $nenTang.Title }}</a>
-    </div>
-  </article>
-  <article class="dgs-wiki-entry-card">
-    <span class="dgs-wiki-entry-number">03</span>
-    <h3 class="dgs-wiki-entry-title">Đang tra cứu kiến thức</h3>
-    <p class="dgs-wiki-entry-desc">Tra cứu khái niệm Data Engineering và cách hoạt động của các công cụ như Spark, Kafka, Flink và DuckDB.</p>
-    <div class="dgs-wiki-entry-links">
-      <a href="{{ $dataEng.RelPermalink }}">{{ $dataEng.Title }}</a>
-      <a href="{{ $tech.RelPermalink }}">{{ $tech.Title }}</a>
-    </div>
-  </article>
+<div class="dgs-wiki-entry-featured">
+  <div class="dgs-wiki-entry-featured-text">
+    <h3 class="dgs-wiki-entry-featured-title">Mới tìm hiểu Data Engineering</h3>
+    <p class="dgs-wiki-entry-featured-desc">{{ $batDau.Description }}</p>
+  </div>
+  <a class="dgs-wiki-entry-featured-link" href="{{ $batDau.RelPermalink }}">{{ $batDau.Title }}</a>
 </div>
