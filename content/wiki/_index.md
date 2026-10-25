@@ -22,50 +22,29 @@ Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng 
 
 ## Khám phá thư viện
 
-Bạn có thể duyệt theo chủ đề hoặc công nghệ để tìm đúng bài cần đọc. Mình vẫn bổ sung bài mới; những chủ đề chưa có bài được ghi rõ để bạn dễ phân biệt.
+Bạn có thể duyệt theo chủ đề hoặc công nghệ để tìm đúng bài cần đọc.
 
 {{< wiki-directory >}}
 {{% wiki-group %}}
 ### Nền tảng
 
-Những kiến thức giúp mình hiểu và kiểm chứng việc các công cụ đang làm.
+SQL, Python, cơ sở dữ liệu, mô hình hóa và hệ thống phân tán.
 
-- **Dữ liệu cơ bản — đang biên soạn:** bản ghi, schema, kiểu dữ liệu, giá trị thiếu, thời gian và múi giờ.
-- **SQL:** lọc, tổng hợp, JOIN, CTE, window functions và kế hoạch thực thi.
-- **Python:** [script đầu tiên, đọc CSV/JSON và logging]({{< relref "/wiki/nen-tang/python/_index.md" >}}). Phần kết nối database/API đang được bổ sung.
-- **Cơ sở dữ liệu:** khóa, ràng buộc, transaction, isolation và index.
-- **Mô hình hóa dữ liệu:** grain, fact, dimension, star schema và lịch sử thay đổi.
-- **Hệ thống phân tán:** partitioning, replication, consistency và phục hồi khi có lỗi.
-- **Môi trường làm việc và AI — đang biên soạn:** terminal, Git, cài đặt công cụ, hỏi để debug và kiểm chứng code AI gợi ý.
-
-[Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
+[Xem các chủ đề nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
-### Data Engineering — Đã có các bài khái niệm
+### Data Engineering
 
-Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến nơi có thể sử dụng.
+Data pipeline, ingestion, storage, chất lượng dữ liệu và vận hành.
 
-- **Thu thập và tích hợp:** ingestion, batch, CDC, ETL/ELT và data contract.
-- **Lưu trữ và xử lý:** warehouse, lake, lakehouse, file format và table format.
-- **Độ tin cậy:** data quality, idempotency, retry, schema evolution và backfill.
-- **Vận hành:** orchestration, observability, độ mới dữ liệu và phục hồi pipeline.
-- **Hiểu dữ liệu trong hệ thống:** metadata, catalog và lineage.
-- **Nội dung mở rộng đang biên soạn:** kiến trúc, streaming, bảo mật, kiểm thử và nền tảng tự phục vụ cho nhiều team.
-
-[Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
+[Xem các chủ đề Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
-### Công nghệ — Đã có bài Spark và Flink
+### Công nghệ
 
-Đi từ cơ chế của công cụ đến cách đọc kế hoạch, kiểm tra kết quả và chẩn đoán lỗi.
+Các bài viết về Spark, Flink, Kafka, DuckDB và những công cụ dữ liệu.
 
-- **Spark:** 9 bài và ví dụ PySpark cục bộ đã kiểm tra, từ DataFrame đến shuffle, JOIN và Structured Streaming.
-- **Flink:** 11 bài khái niệm với ví dụ kiểm tra bằng tay về state, thời gian và phục hồi; lab local đang biên soạn.
-- **Kafka:** 9 bài đã viết, đang kiểm tra hướng dẫn local trước khi mở liên kết.
-- **DuckDB:** 4 bài và ví dụ SQL/Python đã kiểm tra về truy vấn file, transaction và xử lý lỗi.
-- **Đang biên soạn:** Docker, PostgreSQL, Airflow, dbt, HDFS, MinIO, Iceberg và các công cụ vận hành.
-
-[Đọc các bài công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
+[Xem các bài theo công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
 {{% /wiki-group %}}
 {{< /wiki-directory >}}
 
