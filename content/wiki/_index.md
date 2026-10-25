@@ -24,7 +24,7 @@ Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng 
 
 Nếu chưa rõ Data Engineer làm gì, cần học những gì, hoặc đang đứng giữa một rừng roadmap trên mạng mà không biết tin cái nào, bắt đầu ở đây.
 
-→ [Bắt đầu với Data Engineering]({{< relref "/wiki/bat-dau/_index.md" >}})
+[Bắt đầu với Data Engineering]({{< relref "/wiki/bat-dau/_index.md" >}})
 
 ### Các phần tiếp theo
 
@@ -42,7 +42,7 @@ Những kiến thức giúp mình hiểu và kiểm chứng việc các công c�
 - **Hệ thống phân tán:** partitioning, replication, consistency và phục hồi khi có lỗi.
 - **Môi trường làm việc và AI — đang biên soạn:** terminal, Git, cài đặt công cụ, hỏi để debug và kiểm chứng code AI gợi ý.
 
-→ [Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
+[Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
 
 #### Data Engineering — Đã có các bài khái niệm
 
@@ -55,7 +55,7 @@ Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến n
 - **Hiểu dữ liệu trong hệ thống:** metadata, catalog và lineage.
 - **Nội dung mở rộng đang biên soạn:** kiến trúc, streaming, bảo mật, kiểm thử và nền tảng tự phục vụ cho nhiều team.
 
-→ [Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
+[Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
 
 #### Công nghệ — Đã có bài Spark và Flink
 
@@ -67,7 +67,7 @@ Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến n
 - **DuckDB:** 4 bài và ví dụ SQL/Python đã kiểm tra về truy vấn file, transaction và xử lý lỗi.
 - **Đang biên soạn:** Docker, PostgreSQL, Airflow, dbt, HDFS, MinIO, Iceberg và các công cụ vận hành.
 
-→ [Đọc các bài công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
+[Đọc các bài công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
 
 
 ## Chuyện cái Sổ tay này

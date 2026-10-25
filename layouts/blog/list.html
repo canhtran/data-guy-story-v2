@@ -3,7 +3,6 @@
   {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" false) }}
   <main id="content" class="dgs-blog-shell">
     <header class="dgs-blog-header">
-      <span class="dgs-eyebrow">CHUYỆN HỌC VÀ LÀM NGHỀ</span>
       <h1>{{ .Title }}</h1>
       <div class="content">{{ .Content }}</div>
     </header>
@@ -17,7 +16,7 @@
         </div>
         <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
         <p>{{ partial "utils/page-description" . | plainify | truncate 240 }}</p>
-        <a class="dgs-route-link" href="{{ .RelPermalink }}" aria-label="Đọc bài {{ .Title }}">Đọc bài <span aria-hidden="true">→</span></a>
+        <a class="dgs-route-link" href="{{ .RelPermalink }}" aria-label="Đọc bài {{ .Title }}">Đọc bài</a>
       </article>
       {{ end }}
     </div>
