@@ -14,6 +14,14 @@ first, not a one-off override.
   letter-spacing tight on heads only. No tracked-caps labels anywhere
   (gate 67): labels are the body face, a step smaller, sentence case,
   untracked.
+- Type borrow (Garden, content only, brand colours untouched): content
+  heads take Vollkorn 600, tracking -0.012em, line-height 1.04; content
+  body takes Hanken Grotesk 400/500 with old-style figures (tables take
+  lining tabular figures). Hextra chrome (navbar, sidebar, TOC, footer,
+  search) keeps Hextra's faces. Garden surfaces borrowed alongside:
+  4px radius on cards and wells, pill buttons, flat no-shadow surfaces,
+  1px hairlines, accent-tinted text selection. No Garden colour is taken:
+  paper, ink, accent and tints stay the brand tokens.
 - Voice: Calvin's own words, Vietnamese, first-person. Copy changes only
   when a gate names them, and are listed in the PR body.
 

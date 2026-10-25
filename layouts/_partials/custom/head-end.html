@@ -1,3 +1,9 @@
+{{- /* Garden type borrow (PR #24): Vollkorn display + Hanken Grotesk
+     body for content only. Brand colours, logo and Hextra chrome faces
+     are untouched; this only loads the two borrowed faces. */ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@600&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
 {{- with .OutputFormats.Get "markdown" }}
   <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" />
 {{- end }}
