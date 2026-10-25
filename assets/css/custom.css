@@ -135,27 +135,28 @@
 @media (min-width: 768px) {
   .hextra-sidebar-container.dgs-has-wiki-footer .hextra-scrollbar { height: calc(100vh - var(--navbar-height) - var(--menu-height) - 4.1rem); }
 }
-/* Wiki landing entry points: intent-based navigation cards, sharing the
-   Learning Paths card language (teal top border, hairline link block). */
-.dgs-wiki-entry-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.5rem 0 2.5rem; }
-.dgs-wiki-entry-card { display: flex; flex-direction: column; gap: .6rem; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-top: 3px solid var(--dgs-accent); border-radius: .9rem; background: var(--dgs-card); transition: border-color .18s ease, transform .18s ease; }
-.dgs-wiki-entry-card:hover { border-color: var(--dgs-accent); transform: translateY(-2px); }
-.dgs-wiki-entry-number { font-size: 1.4rem; font-weight: 750; line-height: 1; color: var(--dgs-accent); }
-.dgs-wiki-entry-title { margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
-.dgs-wiki-entry-desc { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
-.dgs-wiki-entry-links { display: flex; flex-direction: column; gap: .35rem; margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--dgs-border); }
-.dgs-wiki-entry-links a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
-.dgs-wiki-entry-links a:hover { text-decoration: underline; }
-.dgs-wiki-entry-links a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-wiki-entry-links a::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
-.dgs-wiki-entry-links a:hover::after { transform: translateX(3px); }
+/* Wiki landing entry point: one compact horizontal callout for new
+   readers, in the Learning Paths card language (teal top border, accent
+   link with arrow). The topic directory below covers everything else, so
+   this is a single band, not a card grid. */
+.dgs-wiki-entry-featured { display: flex; align-items: center; gap: 1.5rem; margin: 1.25rem 0 2.5rem; padding: 1.25rem 1.5rem; border: 1px solid var(--dgs-border); border-top: 3px solid var(--dgs-accent); border-radius: .9rem; background: var(--dgs-card); transition: border-color .18s ease; }
+.dgs-wiki-entry-featured:hover { border-color: var(--dgs-accent); }
+.dgs-wiki-entry-featured-text { flex: 1 1 auto; min-width: 0; }
+.dgs-wiki-entry-featured-title { margin: 0 0 .25rem; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-entry-featured-desc { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-entry-featured-link { flex-shrink: 0; font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-entry-featured-link:hover { text-decoration: underline; }
+.dgs-wiki-entry-featured-link:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-entry-featured-link::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
+.dgs-wiki-entry-featured-link:hover::after { transform: translateX(3px); }
 @media (prefers-reduced-motion: reduce) {
-  .dgs-wiki-entry-card { transition: none; }
-  .dgs-wiki-entry-card:hover { transform: none; }
-  .dgs-wiki-entry-links a::after { transition: none; }
-  .dgs-wiki-entry-links a:hover::after { transform: none; }
+  .dgs-wiki-entry-featured { transition: none; }
+  .dgs-wiki-entry-featured-link::after { transition: none; }
+  .dgs-wiki-entry-featured-link:hover::after { transform: none; }
 }
-@media (max-width: 900px) { .dgs-wiki-entry-grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) {
+  .dgs-wiki-entry-featured { flex-direction: column; align-items: flex-start; gap: .75rem; padding: 1.25rem; }
+}
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
