@@ -1,0 +1,11 @@
+{{/* Compact beginner entry point for the Wiki landing page: a pale teal
+     callout with a thin teal left border. Destination comes from the
+     section's own page, so route and label stay in sync. */}}
+{{- $batDau := site.GetPage "/wiki/bat-dau" -}}
+<div class="dgs-wiki-beginner">
+  <div class="dgs-wiki-beginner-text">
+    <span class="dgs-wiki-beginner-label">MỚI VỚI DATA ENGINEERING?</span>
+    <p class="dgs-wiki-beginner-desc">Bắt đầu với các bài nhập môn để hiểu nghề Data Engineer và nắm được bức tranh tổng quan trước khi đi sâu vào từng chủ đề.</p>
+  </div>
+  <a class="dgs-wiki-beginner-link" href="{{ $batDau.RelPermalink }}">{{ $batDau.Title }}</a>
+</div>
