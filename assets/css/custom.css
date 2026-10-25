@@ -225,32 +225,3 @@ button:active { filter: brightness(.97); }
 /* Gate F20: a grid never orphans one item on its last row. */
 .dgs-path-grid > :last-child:nth-child(odd),
 .dgs-story-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
-
-/* Hallmark Garden borrow (PR #24): type + surfaces only. No colour is
-   taken from Garden — paper, ink, accent and tints stay the brand
-   tokens. Scoped to <main> so Hextra chrome keeps its own faces. */
-main {
-  font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-variant-numeric: oldstyle-nums;
-}
-main h1, main h2, main h3 {
-  font-family: "Vollkorn", ui-serif, Georgia, serif;
-  font-weight: 600;
-  letter-spacing: -0.012em;
-  line-height: 1.04;
-}
-.dgs2-hero h1 { font-weight: 600; letter-spacing: -0.012em; }
-main table { font-variant-numeric: lining-nums tabular-nums; }
-.dgs-path-card, .dgs-wiki-card, .dgs-story-card, .dgs-story-entry,
-.dgs-notebook-card, .dgs-notebook-welcome, .dgs-prompt-card,
-.dgs-mentor-prompt, .dgs-callout, .dgs-free-note, .dgs-route {
-  border-radius: 4px;
-}
-.dgs-button { border-radius: 999px; }
-main .content img {
-  border-radius: 4px;
-  outline: 1px solid var(--dgs-border);
-  outline-offset: -1px;
-}
-main a:hover { text-decoration-color: var(--dgs-accent); }
-::selection { background: color-mix(in oklab, var(--dgs-accent) 22%, transparent); }
