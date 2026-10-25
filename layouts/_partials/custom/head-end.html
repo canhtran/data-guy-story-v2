@@ -9,4 +9,10 @@
 <style>
   main#content .content { max-width: 52rem; }
 </style>
+{{- else if and $wikiPage (eq .RelPermalink $wikiPage.RelPermalink) }}
+{{- /* Wiki landing: comfortable prose width, while the entry-card grid
+     (a div, not prose) keeps the full content width. */ -}}
+<style>
+  main#content .content > p, main#content .content > ul, main#content .content > blockquote { max-width: 52rem; }
+</style>
 {{- end }}
