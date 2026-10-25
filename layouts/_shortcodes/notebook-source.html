@@ -4,7 +4,7 @@
 {{- if not (and $config $path) -}}{{ errorf "Missing NotebookLM path: %s" $slug }}{{- end -}}
 {{ $publicURL := printf "%slearning-paths/%s/hoc-cung-ai/" hugo.Data.notebooklm.public_base_url $slug }}
 <div class="dgs-notebook-welcome">
-  <span class="dgs-eyebrow">HỌC CÙNG AI · NGUỒN {{ hugo.Data.notebooklm.version }}</span>
+  <span class="dgs-eyebrow">Học cùng AI · Nguồn {{ hugo.Data.notebooklm.version }}</span>
   <p class="dgs-lead">Mở notebook của bạn, thêm link bên dưới, rồi dán prompt mentor. Mình đã gom bài đọc và hướng dẫn vào trang này để bạn có thể bắt đầu từng bước.</p>
   <ol class="dgs-notebook-steps"><li><strong>Thêm nguồn</strong><span>Sao chép link, chọn Add sources → Website trong NotebookLM.</span></li><li><strong>Gặp mentor</strong><span>Dán prompt “Bắt đầu học” vào chat và trả lời về môi trường của bạn.</span></li><li><strong>Làm rồi kiểm tra</strong><span>Tự chạy trên máy, gửi kết quả, lưu nhật ký sau mỗi buổi.</span></li></ol>
   <div class="dgs-copy-box"><code id="notebook-public-url">{{ $publicURL }}</code><button type="button" class="dgs-button" data-notebook-copy="notebook-public-url">Sao chép link nguồn</button><span role="status" aria-live="polite"></span></div>

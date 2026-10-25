@@ -18,11 +18,11 @@
 }
 .dgs-home { width: 100%; max-width: 76rem; padding: clamp(1rem, 3vw, 2rem) 0 4rem; color: var(--dgs-ink); }
 .dgs-home h1 { max-width: 18ch; font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: 1.08; letter-spacing: -.045em; font-weight: 750; margin: 1.2rem 0; }
-.dgs-eyebrow, .dgs-route-kicker { color: var(--dgs-accent); font-size: .76rem; font-weight: 760; letter-spacing: .1em; }
+.dgs-eyebrow, .dgs-route-kicker { color: var(--dgs-accent); font-size: .76rem; font-weight: 760; letter-spacing: .02em; }
 .dgs-lead { max-width: 46rem; font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.65; color: var(--dgs-muted); }
 .dgs-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin: 2rem 0 2.8rem; }
 .dgs-button { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 2.9rem; padding: .7rem 1.1rem; border-radius: .65rem; font-weight: 700; text-decoration: none !important; }
-.dgs-button-primary { background: var(--dgs-accent-strong); color: #fff !important; }
+.dgs-button-primary { background: var(--dgs-accent-strong); color: #f2faf8 !important; }
 .dgs-button-secondary { color: var(--dgs-accent-strong) !important; border: 1px solid var(--dgs-border); background: var(--dgs-card); }
 .dgs-text-link { display: inline-flex; align-items: center; gap: .35rem; min-height: 2.9rem; padding: .7rem .2rem; font-weight: 650; color: var(--dgs-accent-strong); text-decoration: none !important; }
 .dgs-text-link:hover { text-decoration: underline !important; text-underline-offset: .25rem; }
@@ -42,7 +42,7 @@
 .dgs-path-card .dgs-card-audience { font-weight: 600; color: var(--dgs-ink); }
 .dgs-path-number { font-size: .78rem; font-weight: 700; letter-spacing: .14em; color: var(--dgs-accent); }
 .dgs-card-project { display: flex; flex-direction: column; gap: .2rem; margin-top: auto; padding-top: .8rem; border-top: 1px solid var(--dgs-border); font-size: .9rem; }
-.dgs-project-label { font-size: .66rem; font-weight: 760; letter-spacing: .14em; color: var(--dgs-accent); }
+.dgs-project-label { font-size: .7rem; font-weight: 760; letter-spacing: .02em; color: var(--dgs-accent); }
 .dgs-project-name { font-weight: 600; color: var(--dgs-ink); }
 .dgs-path-card .dgs-route-link { padding-top: .5rem; }
 .dgs-path-card a, .dgs-module-preview a { color: var(--dgs-accent-strong); font-weight: 700; }
@@ -121,7 +121,6 @@
 .dgs-wiki-card:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
 .dgs-wiki-card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: var(--dgs-ink); }
 .dgs-wiki-card-desc { line-height: 1.55; }
-.dgs-wiki-card-arrow { margin-top: auto; color: var(--dgs-accent-strong); font-weight: 700; }
 @media (max-width: 680px) { .dgs-wiki-grid { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
@@ -163,3 +162,66 @@
 .dgs-prompt-card summary { cursor: pointer; font-weight: 650; }
 .dgs-prompt-card .dgs-mentor-prompt { max-height: 24rem; }
 @media (max-width: 680px) { .content .dgs-notebook-steps { grid-template-columns: 1fr; } .dgs-notebook-welcome { padding: 1rem; } }
+
+/* Hallmark · shape: kept (Hextra chrome) · genre: editorial · theme: brand · redesign: full
+ * paper: #ffffff · accent: #0d766d · display: theme sans · body: theme sans · hero: Settled · nav: kept · footer: kept · signature: two doors as one tint band, not two cards
+ * axes: light/grotesk/warm · posture: Settled · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V3 · weakest: V, first run with no log to differ from; composition differs from the old page on three axes (hero tightened to one screen, doors as one tint band instead of two cards, bottom as hairline rows) */
+/* Hallmark · redesign: full · scope: homepage only · keeps: every word and link from content/_index.md, tree logo, green brand, Hextra chrome · dropped: none (eyebrow line cut per gate 54; door kickers cut per gate 54, their facts survive in the descriptions; tracked-caps reset to sentence case per 67; glued arrows removed per 63) */
+:root { --dgs2-on-accent: #f2faf8; --dgs2-on-accent-dark: #092b2d; }
+.dgs2-home { width: 100%; max-width: 76rem; padding: 1rem 0 4rem; color: var(--dgs-ink); }
+.dgs2-hero { padding-top: clamp(6rem, 24vh, 13.75rem); padding-bottom: 3rem; }
+.dgs2-home h1 { font-size: clamp(2.75rem, 9vw, 8.5rem); line-height: 1.04; letter-spacing: -.02em; font-weight: 750; margin: 0 0 1rem; text-wrap: balance; }
+.dgs2-lead { max-width: 46rem; font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.65; color: var(--dgs-muted); margin: 0 0 1.25rem; }
+.dgs2-actions { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin: 0 0 2rem; }
+.dgs2-button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.9rem; padding: .7rem 1.25rem; border-radius: 999px; font-weight: 700; text-decoration: none !important; background: var(--dgs-accent-strong); color: var(--dgs2-on-accent) !important; transition: background-color .15s ease, filter .15s ease; }
+.dgs2-button:hover { filter: brightness(1.08); }
+.dark .dgs2-button { background: var(--dgs-accent); color: var(--dgs2-on-accent-dark) !important; }
+.dgs2-text-link { display: inline-flex; align-items: center; min-height: 2.9rem; padding: .7rem .2rem; font-weight: 650; color: var(--dgs-accent-strong); text-decoration: underline !important; text-underline-offset: .25rem; }
+.dgs2-text-link:hover { text-decoration-color: var(--dgs-accent); }
+.dgs2-home a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs2-doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); background: var(--dgs-surface); border-radius: .25rem; padding: clamp(1.25rem, 2.5vw, 2rem); }
+.dgs2-door + .dgs2-door { border-left: 1px solid var(--dgs-border); padding-left: clamp(1.25rem, 3vw, 2.5rem); }
+.dgs2-door h2, .dgs2-row h2 { line-height: 1.35; margin: 0 0 .5rem; font-weight: 700; }
+.dgs2-door h2 { font-size: 1.5rem; }
+.dgs2-row h2 { font-size: 1.25rem; }
+.dgs2-door h2 a, .dgs2-row h2 a { color: var(--dgs-ink); text-decoration: none; }
+.dgs2-door h2 a:hover, .dgs2-row h2 a:hover { text-decoration: underline; text-decoration-color: var(--dgs-accent); }
+.dgs2-door p, .dgs2-row p { color: var(--dgs-muted); line-height: 1.65; margin: 0 0 .75rem; }
+.dgs2-door p:last-child, .dgs2-row p:last-child { margin-bottom: 0; }
+.dgs2-verb { color: var(--dgs-accent-strong); font-weight: 700; text-decoration: underline; text-underline-offset: .25rem; }
+.dgs2-verb:hover { text-decoration-color: var(--dgs-accent); }
+.dgs2-more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); margin-top: 2rem; }
+.dgs2-row { border-top: 1px solid var(--dgs-border); padding-top: 1.25rem; }
+@media (max-width: 680px) { .dgs2-doors, .dgs2-more { grid-template-columns: 1fr; } .dgs2-door + .dgs2-door { border-left: none; border-top: 1px solid var(--dgs-border); padding-left: 0; padding-top: 1.25rem; } }
+@media (prefers-reduced-motion: reduce) { .dgs2-button { transition: none; } }
+
+/* Hallmark whole-site (PR #24): chrome-level gates, applied site-wide. */
+html { overflow-x: clip; }
+body { overflow-x: clip; }
+
+/* Gate 40: the search field edge must read 3:1 against the navbar. */
+input.hextra-search-input { border: 1px solid var(--dgs-muted); }
+
+/* Gate 39b: the theme toggle is a 44px hit target. */
+button.hextra-theme-toggle { min-width: 44px; min-height: 44px; }
+
+/* Gate 75: shortcut hints are functional text, 11px or more. */
+kbd { font-size: 11px; }
+
+/* Gates 26b: disabled controls read disabled; buttons read pressed. */
+:disabled, [disabled] { opacity: .55; cursor: not-allowed; }
+button:active { filter: brightness(.97); }
+
+/* Gate 27: every theme transition gets a reduced-motion fallback. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Gate F20: a grid never orphans one item on its last row. */
+.dgs-path-grid > :last-child:nth-child(odd),
+.dgs-story-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }

@@ -1,6 +1,6 @@
 # Pandas: báo cáo đơn hàng quán cà phê
 
-Nguồn demo 0.1 · 02/10/2026 · Khoảng 30–45 phút. Đây là một buổi thử độc lập, không phải toàn bộ khóa Data Engineering.
+Nguồn demo 0.1, ngày 02/10/2026, khoảng 30–45 phút. Đây là một buổi thử độc lập, không phải toàn bộ khóa Data Engineering.
 
 ## Mục tiêu và hợp đồng dữ liệu
 

@@ -3,7 +3,7 @@ title: Về tui
 type: about
 ---
 
-## 🙋‍♂️ Cảnh
+## Cảnh
 
 Chào bạn, tui là Cảnh – bạn bè quốc tế hay gọi là Calvin.
 
@@ -14,7 +14,7 @@ Nhờ đó, tui có thể kể nhiều hơn cho mọi người về đa dạng c
 Ngoài trang web này, tui còn có một kênh YouTube và một blog tiếng Anh. Tuỳ gu của bạn, thích đọc hay xem, thích tiếng Việt hay tiếng Anh – ghé qua bên đó cũng được hen. Nếu thấy bài viết hay hoặc có bất kỳ góp ý gì – đừng ngại inbox nha, tui hứa sẽ trả lời ❤️.
 
 
-## 🙋‍♂️ Nhân
+## Nhân
 
 Chào mọi người, mình là Nhân. Mình đã có gần 15 năm "cày cuốc" trong ngành data, bắt đầu từ thời còn làm việc ở Robert Bosch và hiện tại thì mình đang sinh sống, làm việc tại Saudi Arabia. 
 
@@ -22,6 +22,6 @@ Thú thật với các bạn là mình khá bận rộn và cũng "lười" vi�
 
 Dù sao thì mình cũng hy vọng rằng, với những trải nghiệm thực tế trong suốt ngần ấy năm làm nghề, những câu chuyện và góc nhìn của một "lão làng" như mình sẽ mang lại cho các bạn nhiều điều thú vị, thô nhưng thật về thế giới Data!
 
-## 🙋‍♂️ Hiếu
+## Hiếu
 
 Chào các bạn, mình là Hiếu. Nói ra hơi ngại nhưng thực ra mình… chả đóng góp gì trực tiếp cho cái trang web này cả. Sự thật là Cảnh thấy mấy bài viết trên blog cá nhân của mình hợp gu quá nên đã tự động "chôm" mang sang đây đăng lại. Thế là tự dưng mình bị réo tên vô danh sách tác giả ở đây luôn. Dù sao thì cũng mong những bài viết (dù bị chôm) của mình sẽ có ích cho các bạn đang theo đuổi ngành này!

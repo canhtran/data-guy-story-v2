@@ -19,7 +19,7 @@
     {{ with first 3 $others.ByDate.Reverse }}
     <nav class="dgs-blog-next" aria-label="Đọc tiếp trong Blog">
       <h2>Đọc tiếp</h2>
-      {{ range . }}<a href="{{ .RelPermalink }}"><span>{{ .Title }}</span><span aria-hidden="true">→</span></a>{{ end }}
+      {{ range . }}<a href="{{ .RelPermalink }}"><span>{{ .Title }}</span></a>{{ end }}
     </nav>
     {{ end }}
   </main>

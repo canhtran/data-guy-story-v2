@@ -1,0 +1,20 @@
+{{/* Site override of Hextra's utils/icon: every icon this partial renders is
+     decorative (its link or button already carries the name), so it is
+     hidden from assistive tech (Hallmark gate 33). */}}
+{{- $icon := index site.Data.icons .name -}}
+
+{{- if not $icon -}}
+  {{ errorf "icon %q not found" .name }}
+{{- end -}}
+
+{{- $icon = $icon | safeHTML -}}
+
+{{- if .attributes -}}
+  {{- $icon = replaceRE "<svg" (printf "<svg %s" .attributes) $icon -}}
+{{- end -}}
+
+{{- if not (in $icon "aria-hidden") -}}
+  {{- $icon = replaceRE "<svg" "<svg aria-hidden=\"true\"" $icon 1 -}}
+{{- end -}}
+
+{{- return ($icon | safeHTML) -}}
