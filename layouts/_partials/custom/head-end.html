@@ -10,9 +10,13 @@
   main#content .content { max-width: 52rem; }
 </style>
 {{- else if and $wikiPage (eq .RelPermalink $wikiPage.RelPermalink) }}
-{{- /* Wiki landing: comfortable prose width, while the entry-card grid
-     (a div, not prose) keeps the full content width. */ -}}
+{{- /* Wiki landing: comfortable prose width, plus a slightly stronger
+     title/introduction hierarchy — breathing room under the title and
+     a lede first paragraph. Group sections are divs/sections, not prose,
+     so they keep their own width from the stylesheet. */ -}}
 <style>
   main#content .content > p, main#content .content > ul, main#content .content > blockquote { max-width: 52rem; }
+  main#content .content h1 { margin-bottom: .5rem; }
+  main#content .content > p:first-of-type { font-size: 1.125rem; line-height: 1.7; color: var(--dgs-ink); }
 </style>
 {{- end }}

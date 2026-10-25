@@ -191,24 +191,16 @@ main.dgs-notes-main .content p { line-height: 1.8; }
 @media (max-width: 680px) {
   .dgs-wiki-beginner { flex-direction: column; align-items: flex-start; gap: .6rem; }
 }
-/* Wiki landing library: stacked shelf sections, not cards. Each group is
-   a hairline-separated section with a header (name + computed article
-   count), its existing description, a compact two-column index of its
-   immediate children, and the link to the group index. Deliberately
-   unlike Learning Paths: no large numbers, no top border, no sequence,
-   no progression motif — this is browsing, not a journey. The 52rem
-   cap aligns shelves with the intro prose and the beginner callout. */
-.dgs-wiki-shelf { max-width: 52rem; border-top: 1px solid var(--dgs-border); padding: 2rem 0; }
+/* Wiki landing groups: quiet stacked sections, not cards. Each group is
+   separated from the next by a hairline and generous spacing — no card
+   background, no grid, no counts, no child lists. Group headings sit a
+   touch larger than the previous version's so they read clearly above
+   the muted description and the index link. The 52rem cap aligns groups
+   with the intro prose and the beginner callout. */
+.dgs-wiki-shelf { max-width: 52rem; border-top: 1px solid var(--dgs-border); padding: 1.75rem 0; }
 .dgs-wiki-shelf:last-of-type { border-bottom: 1px solid var(--dgs-border); margin-bottom: 2.5rem; }
-.dgs-wiki-shelf-title { margin: 0 0 .5rem; font-size: 1.35rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
-.dgs-wiki-shelf-count { margin-left: .5rem; font-size: .9rem; font-weight: 600; color: var(--dgs-muted); }
-.dgs-wiki-shelf-desc { margin: 0 0 1.25rem; color: var(--dgs-muted); line-height: 1.6; }
-.dgs-wiki-shelf-links { margin: 0 0 1.25rem; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 2rem; }
-.dgs-wiki-shelf-links li { display: flex; justify-content: space-between; gap: 1rem; min-width: 0; }
-.dgs-wiki-shelf-links a { color: var(--dgs-ink); text-decoration: none; overflow-wrap: break-word; }
-.dgs-wiki-shelf-links a:hover { color: var(--dgs-accent-strong); text-decoration: underline; }
-.dgs-wiki-shelf-links a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-wiki-shelf-links span { flex-shrink: 0; color: var(--dgs-muted); font-size: .85rem; }
+.dgs-wiki-shelf-title { margin: 0 0 .5rem; font-size: 1.3rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-shelf-desc { margin: 0 0 1rem; color: var(--dgs-muted); line-height: 1.6; }
 .dgs-wiki-shelf-more { margin: 0; }
 .dgs-wiki-shelf-more a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
 .dgs-wiki-shelf-more a:hover { text-decoration: underline; }
@@ -219,7 +211,7 @@ main.dgs-notes-main .content p { line-height: 1.8; }
   .dgs-wiki-beginner-link::after, .dgs-wiki-shelf-more a::after { transition: none; }
   .dgs-wiki-beginner-link:hover::after, .dgs-wiki-shelf-more a:hover::after { transform: none; }
 }
-@media (max-width: 680px) { .dgs-wiki-shelf-links { grid-template-columns: 1fr; } }
+
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
