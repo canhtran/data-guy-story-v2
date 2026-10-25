@@ -18,12 +18,14 @@ Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng 
 
 ## Bạn đang ở đâu?
 
-{{< wiki-entry-points >}}
+{{< wiki-beginner-callout >}}
 
-## Khám phá theo chủ đề
+## Khám phá thư viện
 
-Dưới đây là các phần bạn có thể đọc tiếp. Mình vẫn bổ sung bài mới; những chủ đề chưa có bài được ghi rõ để bạn dễ phân biệt.
+Bạn có thể duyệt theo chủ đề hoặc công nghệ để tìm đúng bài cần đọc. Mình vẫn bổ sung bài mới; những chủ đề chưa có bài được ghi rõ để bạn dễ phân biệt.
 
+{{< wiki-directory >}}
+{{% wiki-group %}}
 ### Nền tảng
 
 Những kiến thức giúp mình hiểu và kiểm chứng việc các công cụ đang làm.
@@ -37,7 +39,8 @@ Những kiến thức giúp mình hiểu và kiểm chứng việc các công c�
 - **Môi trường làm việc và AI — đang biên soạn:** terminal, Git, cài đặt công cụ, hỏi để debug và kiểm chứng code AI gợi ý.
 
 [Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
-
+{{% /wiki-group %}}
+{{% wiki-group %}}
 ### Data Engineering — Đã có các bài khái niệm
 
 Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến nơi có thể sử dụng.
@@ -50,7 +53,8 @@ Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến n
 - **Nội dung mở rộng đang biên soạn:** kiến trúc, streaming, bảo mật, kiểm thử và nền tảng tự phục vụ cho nhiều team.
 
 [Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
-
+{{% /wiki-group %}}
+{{% wiki-group %}}
 ### Công nghệ — Đã có bài Spark và Flink
 
 Đi từ cơ chế của công cụ đến cách đọc kế hoạch, kiểm tra kết quả và chẩn đoán lỗi.
@@ -62,7 +66,8 @@ Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến n
 - **Đang biên soạn:** Docker, PostgreSQL, Airflow, dbt, HDFS, MinIO, Iceberg và các công cụ vận hành.
 
 [Đọc các bài công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
-
+{{% /wiki-group %}}
+{{< /wiki-directory >}}
 
 ## Chuyện cái Sổ tay này
 
