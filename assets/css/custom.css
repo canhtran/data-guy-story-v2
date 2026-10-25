@@ -135,13 +135,27 @@
 @media (min-width: 768px) {
   .hextra-sidebar-container.dgs-has-wiki-footer .hextra-scrollbar { height: calc(100vh - var(--navbar-height) - var(--menu-height) - 4.1rem); }
 }
-.dgs-wiki-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
-.dgs-wiki-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.2rem 1.3rem; border: 1px solid var(--dgs-border); border-radius: 1rem; background: var(--dgs-surface); color: var(--dgs-muted) !important; text-decoration: none !important; }
-.dgs-wiki-card:hover { border-color: var(--dgs-accent); }
-.dgs-wiki-card:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-wiki-card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: var(--dgs-ink); }
-.dgs-wiki-card-desc { line-height: 1.55; }
-@media (max-width: 680px) { .dgs-wiki-grid { grid-template-columns: 1fr; } }
+/* Wiki landing entry points: intent-based navigation cards, sharing the
+   Learning Paths card language (teal top border, hairline link block). */
+.dgs-wiki-entry-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.5rem 0 2.5rem; }
+.dgs-wiki-entry-card { display: flex; flex-direction: column; gap: .6rem; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-top: 3px solid var(--dgs-accent); border-radius: .9rem; background: var(--dgs-card); transition: border-color .18s ease, transform .18s ease; }
+.dgs-wiki-entry-card:hover { border-color: var(--dgs-accent); transform: translateY(-2px); }
+.dgs-wiki-entry-number { font-size: 1.4rem; font-weight: 750; line-height: 1; color: var(--dgs-accent); }
+.dgs-wiki-entry-title { margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-entry-desc { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-entry-links { display: flex; flex-direction: column; gap: .35rem; margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--dgs-border); }
+.dgs-wiki-entry-links a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-entry-links a:hover { text-decoration: underline; }
+.dgs-wiki-entry-links a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-entry-links a::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
+.dgs-wiki-entry-links a:hover::after { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .dgs-wiki-entry-card { transition: none; }
+  .dgs-wiki-entry-card:hover { transform: none; }
+  .dgs-wiki-entry-links a::after { transition: none; }
+  .dgs-wiki-entry-links a:hover::after { transform: none; }
+}
+@media (max-width: 900px) { .dgs-wiki-entry-grid { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
