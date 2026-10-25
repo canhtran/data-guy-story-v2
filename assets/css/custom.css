@@ -82,20 +82,39 @@
 .dgs-path-card:hover .dgs-route-link, .dgs-path-card:focus-visible .dgs-route-link { text-decoration: underline; }
 .dgs-path-card .dgs-route-link::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
 .dgs-path-card:hover .dgs-route-link::after { transform: translateX(3px); }
-/* Notes index: hairline-row editorial list, same language as the blog list. */
-.dgs-note-list { margin: 1.5rem 0 2rem; }
-.dgs-note-entry { padding: 1.6rem 0; border-top: 1px solid var(--dgs-border); }
+/* Notes: editorial publication layout. The theme docs column is 72rem wide;
+   Notes caps its column at the site's 52rem reading width (same as Wiki prose
+   and the blog shell) and uses only design tokens, so light/dark both hold. */
+main.dgs-notes-main { max-width: 52rem; }
+/* Index header: large restrained title, lede-style introduction. */
+.dgs-notes-header { margin: 1rem 0 2.5rem; }
+.dgs-notes-title { margin: 0 0 1rem; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 750; line-height: 1.15; letter-spacing: -.02em; color: var(--dgs-ink); }
+.dgs-notes-intro { font-size: 1.125rem; line-height: 1.7; color: var(--dgs-ink); }
+.dgs-notes-intro p { margin: 0; }
+/* Index list: hairline rows, generous spacing, title as the visual focus. */
+.dgs-note-list { margin: 0 0 2rem; border-bottom: 1px solid var(--dgs-border); }
+.dgs-note-entry { padding: 2rem 0; border-top: 1px solid var(--dgs-border); }
 .dgs-note-entry h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); font-weight: 700; line-height: 1.35; margin: .65rem 0; }
-.dgs-note-entry h2 a { color: var(--dgs-ink); }
+.dgs-note-entry h2 a { color: var(--dgs-ink); text-decoration: none; }
+.dgs-note-entry h2 a:hover { color: var(--dgs-accent-strong); text-decoration: underline; }
 .dgs-note-entry p { color: var(--dgs-muted); line-height: 1.75; margin-bottom: .8rem; }
 .dgs-note-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; color: var(--dgs-muted); font-size: .85rem; }
-.dgs-note-entry a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-note-tag { color: var(--dgs-muted); text-decoration: none; }
+.dgs-note-tag:hover { color: var(--dgs-accent-strong); text-decoration: underline; }
+.dgs-note-entry a:focus-visible, .dgs-note-tag:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
 .dgs-note-empty { margin: 1.3rem 0 2rem; padding: 1rem 1.2rem; border-left: 3px solid var(--dgs-accent); background: var(--dgs-surface); color: var(--dgs-ink); }
-/* Notes article header: summary and meta sit inside the theme content wrapper,
-   so the summary rule needs the extra .content scope to hold its margins. */
-.content .dgs-note-summary { color: var(--dgs-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 0 1rem; }
-.content .dgs-note-meta { margin-bottom: 1.5rem; }
-.dgs-note-back { display: inline-block; margin-bottom: .75rem; color: var(--dgs-accent-strong); font-size: .9rem; }
+/* Article header: title, lede summary, discreet meta, hairline separation
+   from the body so the lede never reads as metadata. */
+.dgs-note-back { display: inline-block; margin-bottom: 1rem; color: var(--dgs-accent-strong); font-size: .9rem; text-decoration: none; }
+.dgs-note-back:hover { text-decoration: underline; }
+.dgs-notes-article-header { margin: 0 0 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--dgs-border); }
+.dgs-notes-article-title { margin: 0 0 1rem; font-size: clamp(1.9rem, 4vw, 2.75rem); font-weight: 750; line-height: 1.2; letter-spacing: -.02em; color: var(--dgs-ink); overflow-wrap: break-word; }
+.dgs-notes-article-summary { margin: 0 0 1rem; font-size: 1.15rem; line-height: 1.7; color: var(--dgs-ink); }
+/* Article body: theme prose keeps its headings, links, code, blockquotes and
+   table overflow behavior; Notes only sets a comfortable size and line length
+   via the capped column plus a slightly roomier line height. */
+main.dgs-notes-main .content { font-size: 1.05rem; line-height: 1.8; }
+main.dgs-notes-main .content p { line-height: 1.8; }
 /* Shared navigation skin; structure and mobile behavior stay owned by Hextra. */
 .dgs-sidebar-heading { display: flex; flex-direction: column; gap: .8rem; padding: .5rem .5rem 1rem; margin-bottom: .5rem; border-bottom: 1px solid var(--dgs-border); }
 .dgs-sidebar-heading a { color: var(--dgs-muted); font-size: .85rem; }
