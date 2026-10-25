@@ -1,6 +1,6 @@
 ---
 title: "Notes"
-description: "Những ghi chú, phân tích và góc nhìn của mình về các công nghệ, hệ thống và bài viết kỹ thuật đáng tìm hiểu."
+description: "Phân tích kỹ thuật, ghi chú thực hành và những ý tưởng đáng xem lại từ các hệ thống, bài viết và công việc của mình."
 draft: false
 contentType: "hub"
 weight: 5
@@ -13,4 +13,4 @@ cascade:
     hide: true
 ---
 
-Những ghi chú, phân tích và góc nhìn của mình về các công nghệ, hệ thống và bài viết kỹ thuật đáng tìm hiểu.
+Phân tích kỹ thuật, ghi chú thực hành và những ý tưởng đáng xem lại từ các hệ thống, bài viết và công việc của mình.

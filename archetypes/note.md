@@ -6,6 +6,8 @@ draft: true
 contentType: note
 sidebar:
   hide: true
+# Note type: analysis | concept | practical | reading (leave blank for untyped)
+note_type: ""
 
 original_title: ""
 source_url: ""

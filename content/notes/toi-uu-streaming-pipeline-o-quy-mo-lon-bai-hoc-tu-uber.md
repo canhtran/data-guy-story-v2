@@ -8,6 +8,12 @@ tags:
   - Stream Processing
   - Data Engineering
 contentType: note
+note_type: analysis
+original_title: "Building Scalable Streaming Pipelines for Near Real-Time Features"
+source_url: "https://www.uber.com/us/en/blog/building-scalable-streaming-pipelines/"
+source_publisher: "Uber Engineering"
+source_author: "Feng Xu và Gang Zhao"
+source_published: "24/08/2021"
 ---
 
 Bài viết mẫu này dựa trên bài viết kỹ thuật của Uber Engineering: [Building Scalable Streaming Pipelines for Near Real-Time Features](https://www.uber.com/us/en/blog/building-scalable-streaming-pipelines/).
