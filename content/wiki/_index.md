@@ -1,5 +1,6 @@
 ---
-title: "Wiki"
+title: "Wiki Data Engineering"
+linkTitle: "Wiki"
 description: "Kiến thức và tài liệu tra cứu dành cho Data Engineer."
 draft: false
 contentType: "hub"
@@ -10,65 +11,39 @@ cascade:
   type: docs
 ---
 
-Chào bạn,
+Đây là nơi mình ghi lại những kiến thức về Data Engineering mà mình học được và thường phải tra cứu trong công việc.
 
-Đây là chỗ mình ghi lại những thứ đã học được trong quá trình làm Data Engineer. Có thứ rất căn bản như SQL, database. Có thứ đi làm vài năm rồi mình vẫn phải mở tài liệu ra đọc lại, như checkpoint, transaction hay mấy kiểu join của Spark.
-
-Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng giải thích theo cách mà ngày trước mình cũng muốn được nghe. Chỗ nào cần giữ tiếng Anh thì mình vẫn giữ, vì trước sau gì đi làm cũng gặp.
-
-{{< wiki-categories >}}
+Từ SQL, cơ sở dữ liệu đến Spark, Flink hay những khái niệm như checkpoint và transaction. Mình viết lại bằng tiếng Việt để dễ đọc, dễ hiểu và tiện xem lại khi cần.
 
 ## Bạn đang ở đâu?
 
-### Mới tìm hiểu Data Engineering
+{{< wiki-beginner-callout >}}
 
-Nếu chưa rõ Data Engineer làm gì, cần học những gì, hoặc đang đứng giữa một rừng roadmap trên mạng mà không biết tin cái nào, bắt đầu ở đây.
+## Khám phá thư viện
 
-[Bắt đầu với Data Engineering]({{< relref "/wiki/bat-dau/_index.md" >}})
+{{< wiki-directory >}}
+{{% wiki-group %}}
+### 📚 Nền tảng
 
-### Các phần tiếp theo
+SQL, Python, cơ sở dữ liệu, mô hình hóa dữ liệu và hệ thống phân tán.
 
-Dưới đây là các phần bạn có thể đọc tiếp. Mình vẫn bổ sung bài mới; những chủ đề chưa có bài được ghi rõ để bạn dễ phân biệt.
+[Xem kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
+{{% /wiki-group %}}
+{{% wiki-group %}}
+### ⚙️ Data Engineering
 
-#### Nền tảng
+Các kiến thức, khái niệm và bài toán trong công việc Data Engineer.
 
-Những kiến thức giúp mình hiểu và kiểm chứng việc các công cụ đang làm.
+[Xem kiến thức Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
+{{% /wiki-group %}}
+{{% wiki-group %}}
+### 🧰 Công nghệ
 
-- **Dữ liệu cơ bản — đang biên soạn:** bản ghi, schema, kiểu dữ liệu, giá trị thiếu, thời gian và múi giờ.
-- **SQL:** lọc, tổng hợp, JOIN, CTE, window functions và kế hoạch thực thi.
-- **Python:** [script đầu tiên, đọc CSV/JSON và logging]({{< relref "/wiki/nen-tang/python/_index.md" >}}). Phần kết nối database/API đang được bổ sung.
-- **Cơ sở dữ liệu:** khóa, ràng buộc, transaction, isolation và index.
-- **Mô hình hóa dữ liệu:** grain, fact, dimension, star schema và lịch sử thay đổi.
-- **Hệ thống phân tán:** partitioning, replication, consistency và phục hồi khi có lỗi.
-- **Môi trường làm việc và AI — đang biên soạn:** terminal, Git, cài đặt công cụ, hỏi để debug và kiểm chứng code AI gợi ý.
+Kiến thức về các công cụ và hệ thống như Spark, Flink, Kafka và DuckDB.
 
-[Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
-
-#### Data Engineering — Đã có các bài khái niệm
-
-Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến nơi có thể sử dụng.
-
-- **Thu thập và tích hợp:** ingestion, batch, CDC, ETL/ELT và data contract.
-- **Lưu trữ và xử lý:** warehouse, lake, lakehouse, file format và table format.
-- **Độ tin cậy:** data quality, idempotency, retry, schema evolution và backfill.
-- **Vận hành:** orchestration, observability, độ mới dữ liệu và phục hồi pipeline.
-- **Hiểu dữ liệu trong hệ thống:** metadata, catalog và lineage.
-- **Nội dung mở rộng đang biên soạn:** kiến trúc, streaming, bảo mật, kiểm thử và nền tảng tự phục vụ cho nhiều team.
-
-[Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
-
-#### Công nghệ — Đã có bài Spark và Flink
-
-Đi từ cơ chế của công cụ đến cách đọc kế hoạch, kiểm tra kết quả và chẩn đoán lỗi.
-
-- **Spark:** 9 bài và ví dụ PySpark cục bộ đã kiểm tra, từ DataFrame đến shuffle, JOIN và Structured Streaming.
-- **Flink:** 11 bài khái niệm với ví dụ kiểm tra bằng tay về state, thời gian và phục hồi; lab local đang biên soạn.
-- **Kafka:** 9 bài đã viết, đang kiểm tra hướng dẫn local trước khi mở liên kết.
-- **DuckDB:** 4 bài và ví dụ SQL/Python đã kiểm tra về truy vấn file, transaction và xử lý lỗi.
-- **Đang biên soạn:** Docker, PostgreSQL, Airflow, dbt, HDFS, MinIO, Iceberg và các công cụ vận hành.
-
-[Đọc các bài công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
-
+[Xem kiến thức theo công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
+{{% /wiki-group %}}
+{{< /wiki-directory >}}
 
 ## Chuyện cái Sổ tay này
 

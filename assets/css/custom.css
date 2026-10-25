@@ -135,13 +135,40 @@
 @media (min-width: 768px) {
   .hextra-sidebar-container.dgs-has-wiki-footer .hextra-scrollbar { height: calc(100vh - var(--navbar-height) - var(--menu-height) - 4.1rem); }
 }
-.dgs-wiki-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
-.dgs-wiki-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.2rem 1.3rem; border: 1px solid var(--dgs-border); border-radius: 1rem; background: var(--dgs-surface); color: var(--dgs-muted) !important; text-decoration: none !important; }
-.dgs-wiki-card:hover { border-color: var(--dgs-accent); }
-.dgs-wiki-card:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-wiki-card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: var(--dgs-ink); }
-.dgs-wiki-card-desc { line-height: 1.55; }
-@media (max-width: 680px) { .dgs-wiki-grid { grid-template-columns: 1fr; } }
+/* Wiki landing beginner callout: compact horizontal band on a pale teal
+   surface with a thin teal left border, not a card. */
+.dgs-wiki-beginner { display: flex; align-items: center; gap: 1.5rem; margin: 1.25rem 0 2.5rem; padding: 1rem 1.25rem; background: var(--dgs-surface); border: 1px solid var(--dgs-border); border-left: 3px solid var(--dgs-accent); border-radius: .7rem; }
+.dgs-wiki-beginner-text { flex: 1 1 auto; min-width: 0; }
+.dgs-wiki-beginner-label { display: block; margin-bottom: .25rem; font-size: .8rem; font-weight: 750; color: var(--dgs-accent); }
+.dgs-wiki-beginner-title { margin: 0 0 .25rem; font-size: 1.125rem; font-weight: 750; line-height: 1.3; color: var(--dgs-ink); }
+.dgs-wiki-beginner-desc { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-beginner-link { flex-shrink: 0; font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-beginner-link:hover { text-decoration: underline; }
+.dgs-wiki-beginner-link:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-beginner-link::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
+.dgs-wiki-beginner-link:hover::after { transform: translateX(3px); }
+@media (max-width: 680px) {
+  .dgs-wiki-beginner { flex-direction: column; align-items: flex-start; gap: .6rem; }
+}
+/* Wiki landing directory: three group panels in a grid, index link
+   pinned to each panel's bottom. */
+.dgs-wiki-dir-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0 2.5rem; align-items: stretch; }
+.dgs-wiki-dir-group { display: flex; flex-direction: column; gap: .6rem; min-width: 0; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-radius: .9rem; background: var(--dgs-card); }
+.dgs-wiki-dir-group > h3 { margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+.dgs-wiki-dir-group > p { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-dir-group > ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .4rem; color: var(--dgs-muted); line-height: 1.6; }
+.dgs-wiki-dir-group > ul strong { color: var(--dgs-ink); }
+.dgs-wiki-dir-group > p:last-child { margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--dgs-border); }
+.dgs-wiki-dir-group > p:last-child a { font-weight: 700; color: var(--dgs-accent-strong); text-decoration: none; }
+.dgs-wiki-dir-group > p:last-child a:hover { text-decoration: underline; }
+.dgs-wiki-dir-group > p:last-child a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-wiki-dir-group > p:last-child a::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
+.dgs-wiki-dir-group > p:last-child a:hover::after { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .dgs-wiki-beginner-link::after, .dgs-wiki-dir-group > p:last-child a::after { transition: none; }
+  .dgs-wiki-beginner-link:hover::after, .dgs-wiki-dir-group > p:last-child a:hover::after { transform: none; }
+}
+@media (max-width: 900px) { .dgs-wiki-dir-grid { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
 .dgs-blog-header { margin-bottom: 2rem; }
 .dgs-blog-header h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.035em; margin: .75rem 0 1rem; }
