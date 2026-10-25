@@ -4,3 +4,14 @@ command = "hugo --gc --minify -b ${DEPLOY_PRIME_URL}"
 
 [build.environment]
 HUGO_VERSION = "0.156.0"
+
+# Stories was renamed to Notes: keep the old section URL working permanently.
+[[redirects]]
+  from = "/stories/"
+  to = "/notes/"
+  status = 301
+
+[[redirects]]
+  from = "/stories/*"
+  to = "/notes/:splat"
+  status = 301

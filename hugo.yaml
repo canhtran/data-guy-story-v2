@@ -33,8 +33,8 @@ menu:
     - name: Wiki
       pageRef: /wiki
       weight: 2
-    - name: Chuyện thực tế
-      pageRef: /stories
+    - name: Notes
+      pageRef: /notes
       weight: 3
     - name: Blog
       pageRef: /blog
@@ -55,7 +55,7 @@ menu:
         icon: facebook
 
 params:
-  description: "Wiki Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và những câu chuyện kỹ thuật thực tế."
+  description: "Wiki Data Engineering bằng tiếng Việt: kiến thức nền tảng, lộ trình học, công nghệ và ghi chú phân tích kỹ thuật."
 
   navbar:
     displayTitle: true
@@ -70,10 +70,6 @@ params:
   blog:
     list:
       displayTags: true
-      pagerSize: 10
-
-  stories:
-    list:
       pagerSize: 10
 
   footer:

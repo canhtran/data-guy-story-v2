@@ -27,9 +27,9 @@ toc: false
   </section>
   <section class="dgs2-more" aria-label="Đọc thêm">
     <div class="dgs2-row">
-      <h2>Chuyện thực tế</h2>
-      <p>Những bài học kỹ thuật từ các sự cố, quyết định và hệ thống thực tế, dựa trên nguồn công khai.</p>
-      <p><a class="dgs2-verb" href="stories/">Đọc thử một chuyện</a></p>
+      <h2>Notes</h2>
+      <p>Những ghi chú, phân tích và góc nhìn về các công nghệ, hệ thống và bài viết kỹ thuật đáng tìm hiểu.</p>
+      <p><a class="dgs2-verb" href="notes/">Đọc các ghi chú</a></p>
     </div>
     <div class="dgs2-row">
       <h2>Blog</h2>

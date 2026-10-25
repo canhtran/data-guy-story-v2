@@ -1,0 +1,66 @@
+{{ define "main" }}
+  <div class='hx:mx-auto hx:flex hextra-max-page-width'>
+    {{ partial "sidebar.html" (dict "context" .) }}
+    {{ partial "toc.html" . }}
+    <article class="hx:w-full hx:break-words hx:flex hx:min-h-[calc(100vh-var(--navbar-height))] hx:min-w-0 hx:justify-center hx:pb-8 hx:pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main id="content" class="dgs-notes-main hx:w-full hx:min-w-0 hextra-max-content-width hx:px-6 hx:pt-4 hx:md:px-12">
+        <a class="dgs-note-back" href="{{ .CurrentSection.RelPermalink }}">← Notes</a>
+        <header class="dgs-notes-article-header">
+          <h1 class="dgs-notes-article-title">{{ .Title }}</h1>
+          {{ with .Description }}<p class="dgs-notes-article-summary">{{ . }}</p>{{ end }}
+          {{ if or (not .Date.IsZero) .Params.topics .Params.technologies .Params.tags .Params.note_type .Params.source_publisher .Params.source_url }}
+          <div class="dgs-note-meta">
+            {{ with .Params.note_type }}<span class="dgs-note-type">{{ partial "note-type-label.html" . }}</span>{{ end }}
+            {{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>{{ end }}
+            {{ with .Params.topics }}<span>{{ delimit . ", " }}</span>{{ end }}
+            {{ with .Params.technologies }}<span>{{ delimit . ", " }}</span>{{ end }}
+            {{ range .GetTerms "tags" }}<a class="dgs-note-tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+            {{ if or .Params.source_publisher .Params.source_url }}<span>Nguồn:
+              {{ with .Params.source_publisher }}{{ if $.Params.source_url }}<a class="dgs-note-tag" href="{{ $.Params.source_url }}">{{ . }}</a>{{ else }}{{ . }}{{ end }}{{ else }}<a class="dgs-note-tag" href="{{ $.Params.source_url }}">Bài gốc</a>{{ end }}
+            </span>{{ end }}
+          </div>
+          {{ end }}
+        </header>
+        <div class="content">
+          {{ .Content }}
+        </div>
+        {{ if or .Params.source_url .Params.source_publisher .Params.original_title }}
+        <p class="dgs-notes-source">
+          Nguồn:
+          {{ with .Params.original_title }}
+            {{ if $.Params.source_url }}<a href="{{ $.Params.source_url }}">{{ . }}</a>{{ else }}{{ . }}{{ end }}
+          {{ else }}
+            {{ with .Params.source_publisher }}
+              {{ if $.Params.source_url }}<a href="{{ $.Params.source_url }}">{{ . }}</a>{{ else }}{{ . }}{{ end }}
+            {{ else }}
+              {{ with $.Params.source_url }}<a href="{{ . }}">{{ . }}</a>{{ end }}
+            {{ end }}
+          {{ end }}
+          {{ with .Params.source_author }} · {{ . }}{{ end }}
+          {{ with .Params.source_publisher }}{{ if $.Params.original_title }} · {{ . }}{{ end }}{{ end }}
+          {{ with .Params.source_published }} · {{ . }}{{ end }}
+        </p>
+        {{ end }}
+        {{ $keys := union (.Params.tags | default slice) (.Params.topics | default slice) }}
+        {{ $others := where .CurrentSection.RegularPages "RelPermalink" "ne" .RelPermalink }}
+        {{ $related := slice }}
+        {{ range $others }}
+          {{ $theirKeys := union (.Params.tags | default slice) (.Params.topics | default slice) }}
+          {{ if intersect $keys $theirKeys }}{{ $related = $related | append . }}{{ end }}
+        {{ end }}
+        {{ $related = sort $related "Date" "desc" }}
+        {{ with first 3 $related }}
+        <nav class="dgs-notes-related" aria-label="Ghi chú liên quan">
+          <h2>Ghi chú liên quan</h2>
+          {{ range . }}<a href="{{ .RelPermalink }}"><span>{{ .Title }}</span>{{ with .Params.note_type }}<span class="dgs-note-type">{{ partial "note-type-label.html" . }}</span>{{ end }}</a>{{ end }}
+        </nav>
+        {{ end }}
+        {{ partial "components/last-updated.html" . }}
+        {{- if (site.Params.page.displayPagination | default true) -}}
+          {{- partial "components/pager.html" . -}}
+        {{- end -}}
+        {{ partial "components/comments.html" . }}
+      </main>
+    </article>
+  </div>
+{{ end }}

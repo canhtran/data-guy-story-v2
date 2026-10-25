@@ -3,9 +3,11 @@ title: "{{ replace .File.ContentBaseName `-` ` ` | title }}"
 description: ""
 date: {{ .Date }}
 draft: true
-contentType: story
+contentType: note
 sidebar:
   hide: true
+# Note type: analysis | concept | practical | reading (leave blank for untyped)
+note_type: ""
 
 original_title: ""
 source_url: ""
@@ -17,17 +19,17 @@ topics: []
 technologies: []
 ---
 
-> **Nguồn gốc:** [Tên bài viết gốc](SOURCE_URL), tác giả/đơn vị xuất bản, ngày xuất bản. Bài này kể lại nguồn và thêm phần phân tích của mình; những suy luận được ghi rõ.
+> **Nguồn gốc:** [Tên bài viết gốc](SOURCE_URL), tác giả/đơn vị xuất bản, ngày xuất bản. Bài này phân tích nguồn và thêm góc nhìn của mình; những suy luận được ghi rõ.
 
-## Chuyện gì đã xảy ra?
+## Bối cảnh
 
-Nêu bối cảnh: hệ thống phục vụ ai, quy mô và giới hạn nào thực sự được nguồn công bố. Dùng một chi tiết cụ thể để mở câu chuyện.
+Nêu bối cảnh: hệ thống phục vụ ai, quy mô và giới hạn nào thực sự được nguồn công bố. Dùng một chi tiết cụ thể để mở bài.
 
-## Vấn đề họ cần giải quyết
+## Vấn đề cần giải quyết
 
 Tách sự kiện do nguồn thuật lại khỏi giả thuyết hoặc diễn giải của mình. Nêu tác động nếu nguồn có số liệu.
 
-## Họ đã quyết định thế nào?
+## Quyết định và cách làm
 
 Giải thích lựa chọn, phương án khác được cân nhắc và lý do; chỉ khẳng định những điều có trong nguồn. Dẫn nguồn gần thông tin quan trọng.
 
@@ -39,11 +41,6 @@ Ghi kết quả được báo cáo cùng cách đo và thời điểm. Nói rõ 
 
 Điều gì đáng học? Trong bối cảnh nào quyết định đó có thể phù hợp hoặc không phù hợp với một team khác? Đánh dấu đây là nhận xét của mình.
 
-## Nếu muốn tìm hiểu sâu hơn
+## Tham khảo
 
-Liên kết một hoặc hai bài Wiki liên quan khi có nội dung thực sự hữu ích; tránh tạo link tới placeholder.
-
-## Nguồn tham khảo
-
-- [Bài viết gốc](SOURCE_URL)
-- Các nguồn bổ sung nếu đã dùng; ghi tác giả, ngày và phần hỗ trợ cho bài.
+Liệt kê các nguồn đã dùng, kèm đường dẫn, khi bài dựa trên nhiều nguồn.

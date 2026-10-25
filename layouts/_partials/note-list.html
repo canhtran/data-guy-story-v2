@@ -1,0 +1,79 @@
+{{- $notes := where .RegularPagesRecursive "Params.contenttype" "note" -}}
+{{- $notes = $notes.ByDate.Reverse -}}
+{{- if $notes -}}
+  <div class="dgs-notes-controls">
+    <input class="dgs-notes-search" type="search" id="notes-search" placeholder="Tìm trong ghi chú…" aria-label="Tìm kiếm ghi chú">
+    <div class="dgs-notes-filters" role="group" aria-label="Lọc theo loại ghi chú">
+      <button type="button" class="dgs-notes-filter is-active" data-filter="all" aria-pressed="true">Tất cả</button>
+      <button type="button" class="dgs-notes-filter" data-filter="analysis" aria-pressed="false">Phân tích</button>
+      <button type="button" class="dgs-notes-filter" data-filter="concept" aria-pressed="false">Khái niệm</button>
+      <button type="button" class="dgs-notes-filter" data-filter="practical" aria-pressed="false">Thực hành</button>
+      <button type="button" class="dgs-notes-filter" data-filter="reading" aria-pressed="false">Đọc</button>
+    </div>
+  </div>
+  <div class="dgs-note-list">
+    {{- range $notes }}
+      {{- $page := . -}}
+      {{- $typeLabel := "" -}}
+      {{- with .Params.note_type }}{{ $typeLabel = partial "note-type-label.html" . }}{{ end -}}
+      {{- $search := printf "%s %s %s %s %s %s %s" .Title (.Description | default "") (.Params.note_type | default "") $typeLabel (delimit (.Params.tags | default slice) " ") (delimit (.Params.topics | default slice) " ") (delimit (.Params.technologies | default slice) " ") -}}
+      <article class="dgs-note-entry" data-note-type="{{ .Params.note_type | default "" }}" data-search="{{ $search }}">
+        <div class="dgs-note-meta">
+          {{ with .Params.note_type }}<span class="dgs-note-type">{{ partial "note-type-label.html" . }}</span>{{ end }}
+          {{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>{{ end }}
+          {{ with .Params.topics }}<span>{{ delimit . ", " }}</span>{{ end }}
+          {{ with .Params.technologies }}<span>{{ delimit . ", " }}</span>{{ end }}
+          {{ range .GetTerms "tags" }}<a class="dgs-note-tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+        </div>
+        <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+        {{ with .Description }}<p>{{ . }}</p>{{ end }}
+        {{ if or $page.Params.source_publisher $page.Params.source_url }}
+        <p class="dgs-note-source">Nguồn:
+          {{ with $page.Params.source_publisher }}{{ if $page.Params.source_url }}<a href="{{ $page.Params.source_url }}">{{ . }}</a>{{ else }}{{ . }}{{ end }}{{ else }}<a href="{{ $page.Params.source_url }}">Bài gốc</a>{{ end }}
+        </p>
+        {{ end }}
+      </article>
+    {{- end }}
+  </div>
+  <p class="dgs-notes-no-results" style="display: none;">Không tìm thấy ghi chú phù hợp với từ khóa hoặc loại đã chọn.</p>
+  <script>
+  (function () {
+    var list = document.querySelector('.dgs-note-list');
+    var input = document.querySelector('.dgs-notes-search');
+    var empty = document.querySelector('.dgs-notes-no-results');
+    if (!list || !input) return;
+    var buttons = document.querySelectorAll('.dgs-notes-filter');
+    var entries = Array.prototype.slice.call(list.querySelectorAll('.dgs-note-entry'));
+    var activeType = 'all';
+    function norm(s) {
+      return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+    }
+    function apply() {
+      var q = norm(input.value.trim());
+      var shown = 0;
+      entries.forEach(function (el) {
+        var typeOk = activeType === 'all' || el.getAttribute('data-note-type') === activeType;
+        var hay = norm(el.getAttribute('data-search') || '');
+        var ok = typeOk && (!q || hay.indexOf(q) !== -1);
+        el.style.display = ok ? '' : 'none';
+        if (ok) shown += 1;
+      });
+      if (empty) empty.style.display = shown === 0 ? '' : 'none';
+    }
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        activeType = btn.getAttribute('data-filter');
+        buttons.forEach(function (b) {
+          var on = b === btn;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.classList.toggle('is-active', on);
+        });
+        apply();
+      });
+    });
+    input.addEventListener('input', apply);
+  })();
+  </script>
+{{- else }}
+  <p class="dgs-note-empty">Mình sẽ thêm ghi chú ở đây khi có những chủ đề đáng để tìm hiểu và phân tích kỹ hơn.</p>
+{{- end }}
