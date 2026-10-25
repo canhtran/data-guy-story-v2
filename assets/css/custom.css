@@ -194,8 +194,20 @@ main.dgs-notes-main .content p { line-height: 1.8; }
 /* Wiki landing directory: three group panels in a grid, index link
    pinned to each panel's bottom. */
 .dgs-wiki-dir-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0 2.5rem; align-items: stretch; }
-.dgs-wiki-dir-group { display: flex; flex-direction: column; gap: .6rem; min-width: 0; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-radius: .9rem; background: var(--dgs-card); }
-.dgs-wiki-dir-group > h3 { margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+/* Wiki landing group cards, depth pass: the card surface moves from
+   plain card white to the pale surface token so cards stop blending
+   into the page background; the border is a token-derived shade darker
+   (with the plain token as fallback); a soft ink-tinted shadow lifts
+   the card. Radius, padding, and stretched equal heights are unchanged,
+   and every color still comes from the theme tokens, so dark mode
+   follows the same relationships. */
+.dgs-wiki-dir-group { display: flex; flex-direction: column; gap: .6rem; min-width: 0; padding: 1.4rem 1.5rem; border: 1px solid var(--dgs-border); border-color: color-mix(in srgb, var(--dgs-border) 75%, var(--dgs-ink) 25%); border-radius: .9rem; background: var(--dgs-surface); box-shadow: 0 1px 2px rgb(24 43 54 / .05), 0 4px 12px rgb(24 43 54 / .04); transition: box-shadow .18s ease, transform .18s ease; }
+.dgs-wiki-dir-group:hover { box-shadow: 0 2px 4px rgb(24 43 54 / .06), 0 10px 24px rgb(24 43 54 / .07); transform: translateY(-2px); }
+.dgs-wiki-dir-group > h3 { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: 1.2rem; font-weight: 750; line-height: 1.35; color: var(--dgs-ink); }
+/* Small tinted icon container, same pattern as the Learning Paths
+   number tiles: card background on the card's surface, thin token
+   border, kept small so the title stays the strongest element. */
+.dgs-wiki-dir-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 2.1rem; height: 2.1rem; font-size: 1.15rem; background: var(--dgs-card); border: 1px solid var(--dgs-border); border-radius: .6rem; }
 .dgs-wiki-dir-group > p { margin: 0; color: var(--dgs-muted); line-height: 1.6; }
 .dgs-wiki-dir-group > ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .4rem; color: var(--dgs-muted); line-height: 1.6; }
 .dgs-wiki-dir-group > ul strong { color: var(--dgs-ink); }
@@ -208,6 +220,8 @@ main.dgs-notes-main .content p { line-height: 1.8; }
 @media (prefers-reduced-motion: reduce) {
   .dgs-wiki-beginner-link::after, .dgs-wiki-dir-group > p:last-child a::after { transition: none; }
   .dgs-wiki-beginner-link:hover::after, .dgs-wiki-dir-group > p:last-child a:hover::after { transform: none; }
+  .dgs-wiki-dir-group { transition: none; }
+  .dgs-wiki-dir-group:hover { transform: none; }
 }
 @media (max-width: 900px) { .dgs-wiki-dir-grid { grid-template-columns: 1fr; } }
 .dgs-blog-shell { width: 100%; min-width: 0; max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; color: var(--dgs-ink); }
