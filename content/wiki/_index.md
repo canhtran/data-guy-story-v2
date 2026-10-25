@@ -16,21 +16,15 @@ Chào bạn,
 
 Mình gom chúng vào đây, viết lại bằng tiếng Việt và cố gắng giải thích theo cách mà ngày trước mình cũng muốn được nghe. Chỗ nào cần giữ tiếng Anh thì mình vẫn giữ, vì trước sau gì đi làm cũng gặp.
 
-{{< wiki-categories >}}
-
 ## Bạn đang ở đâu?
 
-### Mới tìm hiểu Data Engineering
+{{< wiki-entry-points >}}
 
-Nếu chưa rõ Data Engineer làm gì, cần học những gì, hoặc đang đứng giữa một rừng roadmap trên mạng mà không biết tin cái nào, bắt đầu ở đây.
-
-[Bắt đầu với Data Engineering]({{< relref "/wiki/bat-dau/_index.md" >}})
-
-### Các phần tiếp theo
+## Khám phá theo chủ đề
 
 Dưới đây là các phần bạn có thể đọc tiếp. Mình vẫn bổ sung bài mới; những chủ đề chưa có bài được ghi rõ để bạn dễ phân biệt.
 
-#### Nền tảng
+### Nền tảng
 
 Những kiến thức giúp mình hiểu và kiểm chứng việc các công cụ đang làm.
 
@@ -44,7 +38,7 @@ Những kiến thức giúp mình hiểu và kiểm chứng việc các công c�
 
 [Đọc các bài nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
 
-#### Data Engineering — Đã có các bài khái niệm
+### Data Engineering — Đã có các bài khái niệm
 
 Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến nơi có thể sử dụng.
 
@@ -57,7 +51,7 @@ Cách thiết kế, xây và vận hành hệ thống đưa dữ liệu đến n
 
 [Đọc các khái niệm Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
 
-#### Công nghệ — Đã có bài Spark và Flink
+### Công nghệ — Đã có bài Spark và Flink
 
 Đi từ cơ chế của công cụ đến cách đọc kế hoạch, kiểm tra kết quả và chẩn đoán lỗi.
 
