@@ -45,7 +45,7 @@ restyle a single page by accident.
 - **Links:** underlined verb labels. Never an arrow glued to a link
   (gate 63), never a bare arrow as a link, never an emoji as an icon
   (gate 30a).
-- **Rows:** stories, blog and bottom-of-page items are hairline rows, not
+- **Rows:** notes, blog and bottom-of-page items are hairline rows, not
   cards. Grids never orphan one item on the last row (gate F20): an odd
   last card spans the full width.
 - **Hubs:** a hub page is a lead, its doors, then its lists. Lists keep

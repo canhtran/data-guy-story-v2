@@ -12,13 +12,7 @@
             {{ partial "components/page-context-menu" . }}
           </div>
           {{ end }}
-          {{ $content := .Content }}
-          {{ if in $content "<div data-story-list-placeholder></div>" }}
-            {{ $stories := partial "story-list.html" . }}
-            {{ replace $content "<div data-story-list-placeholder></div>" $stories | safeHTML }}
-          {{ else }}
-            {{ $content }}
-          {{ end }}
+          {{ .Content }}
         </div>
         {{ partial "components/last-updated.html" . }}
         {{- if (site.Params.page.displayPagination | default true) -}}

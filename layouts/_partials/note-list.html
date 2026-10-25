@@ -1,0 +1,21 @@
+{{- $notes := where .RegularPagesRecursive "Params.contenttype" "note" -}}
+{{- $notes = $notes.ByDate.Reverse -}}
+{{- $paginator := .Paginate $notes (site.Params.notes.list.pagerSize | default 10) -}}
+{{- if $notes -}}
+  <div class="dgs-note-list">
+    {{- range $paginator.Pages }}
+      <article class="dgs-note-entry">
+        <div class="dgs-note-meta">
+          {{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02/01/2006" }}</time>{{ end }}
+          {{ with .Params.topics }}<span>{{ delimit . ", " }}</span>{{ end }}
+          {{ with .Params.technologies }}<span>{{ delimit . ", " }}</span>{{ end }}
+        </div>
+        <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+        {{ with .Description }}<p>{{ . }}</p>{{ end }}
+      </article>
+    {{- end }}
+  </div>
+  {{ if gt $paginator.TotalPages 1 }}{{ partial "components/blog-pager.html" $paginator }}{{ end }}
+{{- else }}
+  <p class="dgs-note-empty">Mình sẽ thêm ghi chú ở đây khi có những chủ đề đáng để tìm hiểu và phân tích kỹ hơn.</p>
+{{- end }}

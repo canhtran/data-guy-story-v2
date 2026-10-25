@@ -82,29 +82,20 @@
 .dgs-path-card:hover .dgs-route-link, .dgs-path-card:focus-visible .dgs-route-link { text-decoration: underline; }
 .dgs-path-card .dgs-route-link::after { content: "→"; display: inline-block; margin-left: .35rem; transition: transform .18s ease; }
 .dgs-path-card:hover .dgs-route-link::after { transform: translateX(3px); }
-.dgs-story-lead { max-width: 54rem; color: var(--dgs-ink); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.65; }
-.dgs-story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 2.25rem; }
-.dgs-story-card { display: flex; flex-direction: column; align-items: start; gap: .6rem; min-height: 12rem; padding: 1.25rem; border: 1px solid var(--dgs-border); border-radius: .85rem; background: var(--dgs-card); color: var(--dgs-muted) !important; text-decoration: none !important; }
-.dgs-story-card strong { color: var(--dgs-ink); font-size: 1.18rem; }
-.dgs-story-question { color: var(--dgs-accent-strong); font-weight: 700; }
-.dgs-story-card .dgs-status, .dgs-story-card .dgs-route-link { margin-top: auto; }
-.dgs-story-card[href]:hover { border-color: var(--dgs-accent); }
-.dgs-story-card[href]:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
-.dgs-story-method { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 2rem; }
-.dgs-story-method > div { border-top: 2px solid var(--dgs-border); padding-top: 1rem; }
-.dgs-story-method span { display: block; color: var(--dgs-accent); font-size: .82rem; font-weight: 800; letter-spacing: .08em; margin-bottom: .4rem; }
-.dgs-story-method strong { color: var(--dgs-ink); }
-.dgs-story-method p { color: var(--dgs-muted); margin: .4rem 0 0; }
-@media (max-width: 680px) { .dgs-story-grid, .dgs-story-method { grid-template-columns: 1fr; } }
-.dgs-story-empty { margin: 1.3rem 0 2rem; padding: 1rem 1.2rem; border-left: 3px solid var(--dgs-accent); background: var(--dgs-surface); color: var(--dgs-ink); }
-.dgs-story-empty p { margin: .4rem 0 0; color: var(--dgs-muted); }
-.dgs-story-list { display: grid; gap: 1rem; margin: 1.5rem 0 2rem; }
-.dgs-story-entry { border: 1px solid var(--dgs-border); border-radius: .85rem; padding: 1.25rem; background: var(--dgs-card); }
-.dgs-story-entry h3 { margin: .6rem 0; font-size: 1.35rem; line-height: 1.4; }
-.dgs-story-entry h3 a { color: var(--dgs-ink); }
-.dgs-story-entry p { color: var(--dgs-muted); margin: .4rem 0 .9rem; }
-.dgs-story-meta { display: flex; flex-wrap: wrap; gap: .4rem 1rem; color: var(--dgs-muted); font-size: .85rem; }
-.dgs-story-entry a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+/* Notes index: hairline-row editorial list, same language as the blog list. */
+.dgs-note-list { margin: 1.5rem 0 2rem; }
+.dgs-note-entry { padding: 1.6rem 0; border-top: 1px solid var(--dgs-border); }
+.dgs-note-entry h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); font-weight: 700; line-height: 1.35; margin: .65rem 0; }
+.dgs-note-entry h2 a { color: var(--dgs-ink); }
+.dgs-note-entry p { color: var(--dgs-muted); line-height: 1.75; margin-bottom: .8rem; }
+.dgs-note-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; color: var(--dgs-muted); font-size: .85rem; }
+.dgs-note-entry a:focus-visible { outline: 3px solid var(--dgs-accent); outline-offset: 3px; }
+.dgs-note-empty { margin: 1.3rem 0 2rem; padding: 1rem 1.2rem; border-left: 3px solid var(--dgs-accent); background: var(--dgs-surface); color: var(--dgs-ink); }
+/* Notes article header: summary and meta sit inside the theme content wrapper,
+   so the summary rule needs the extra .content scope to hold its margins. */
+.content .dgs-note-summary { color: var(--dgs-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 0 1rem; }
+.content .dgs-note-meta { margin-bottom: 1.5rem; }
+.dgs-note-back { display: inline-block; margin-bottom: .75rem; color: var(--dgs-accent-strong); font-size: .9rem; }
 /* Shared navigation skin; structure and mobile behavior stay owned by Hextra. */
 .dgs-sidebar-heading { display: flex; flex-direction: column; gap: .8rem; padding: .5rem .5rem 1rem; margin-bottom: .5rem; border-bottom: 1px solid var(--dgs-border); }
 .dgs-sidebar-heading a { color: var(--dgs-muted); font-size: .85rem; }
