@@ -26,25 +26,25 @@ Bạn có thể duyệt theo chủ đề hoặc công nghệ để tìm đúng b
 
 {{< wiki-directory >}}
 {{% wiki-group %}}
-### Nền tảng
+### 📚 Nền tảng
 
 SQL, Python, cơ sở dữ liệu, mô hình hóa và hệ thống phân tán.
 
-[Xem các chủ đề nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
+[Khám phá kiến thức nền tảng]({{< relref "/wiki/nen-tang/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
-### Data Engineering
+### ⚙️ Data Engineering
 
 Data pipeline, ingestion, storage, chất lượng dữ liệu và vận hành.
 
-[Xem các chủ đề Data Engineering]({{< relref "/wiki/data-engineering/_index.md" >}})
+[Khám phá cách xây dựng data pipeline]({{< relref "/wiki/data-engineering/_index.md" >}})
 {{% /wiki-group %}}
 {{% wiki-group %}}
-### Công nghệ
+### 🧰 Công nghệ
 
 Các bài viết về Spark, Flink, Kafka, DuckDB và những công cụ dữ liệu.
 
-[Xem các bài theo công nghệ]({{< relref "/wiki/technologies/_index.md" >}})
+[Khám phá các công cụ dữ liệu]({{< relref "/wiki/technologies/_index.md" >}})
 {{% /wiki-group %}}
 {{< /wiki-directory >}}
 
